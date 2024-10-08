@@ -1,28 +1,27 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  VStack,
-  HStack,
-  Heading,
-  Input,
-  Text,
-  Grid,
-  GridItem,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Image,
-  Flex,
-} from '@chakra-ui/react';
-import logo from './../../../assets/img/logo.png';
+import { Camera } from 'lucide-react';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Select } from '@/components/ui/select';
+import { DatePicker } from '@/components/ui/date-picker';
+
+const EditableField = ({ label, name, value, onChange, type = "text" }) => (
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-700">{label}</label>
+    <input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-300 focus:ring focus:ring-teal-200 focus:ring-opacity-50"
+    />
+  </div>
+);
 
 const GRN = () => {
   const [formData, setFormData] = useState({
     grnNo: '4961',
-    date: '16/02/2024',
+    date: '2024-02-16',
     supplier: 'Impexcor coffee',
     region: '',
     vehicleRegNo: 'RAE 298M',
@@ -36,195 +35,227 @@ const GRN = () => {
     subGrossKg: '10,893',
     lessMoistureKg: '-',
     lessQualityKg: '-',
-    netWeightKg: '10,893',
-    paymentWeight: '10,893',
-    rate: '4,575',
-    amount: '49,862,708',
+    netWeightKg: '10893',
+    paymentWeight: '10893',
+    rate: '4575',
   });
-
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const calculateAmount = () => {
+    const paymentWeight = parseFloat(formData.paymentWeight.replace(/,/g, ''));
+    const rate = parseFloat(formData.rate.replace(/,/g, ''));
+    return isNaN(paymentWeight) || isNaN(rate) ? '0' : (paymentWeight * rate).toFixed(2);
+  };
+
+  const supplierOptions = [
+    'Impexcor coffee',
+    'Rwanda Trading Company',
+    'Kivu Belt Coffee',
+    'Buf Coffee',
+    'Other'
+  ];
+
+  const coffeeTypeOptions = [
+    'Arabica parch fully',
+    'Arabica green',
+    'Robusta parch',
+    'Robusta green',
+    'Other'
+  ];
+
   return (
-    <Box maxWidth="800px" margin="auto" padding={4} borderWidth={2} borderRadius="md" borderColor="gray.300">
-      <VStack spacing={4} align="stretch">
-        <HStack justify="space-between" align="flex-start">
-          <Flex align="center">
-            <Image src={logo} alt="RWACOF logo" mr={2} height="5rem" />
-            <Box>
-              <Heading size="md">RWACOF EXPORTS LTD</Heading>
-              <Text fontSize="xs">P.O BOX:6934 KIGALI</Text>
-              <Text fontSize="xs">Tel:+250 252 575872/ Fax: 0252 572024</Text>
-            </Box>
-          </Flex>
-          <Box borderWidth={1} p={2}>
-            <Text fontWeight="bold">SOURCE</Text>
-          </Box>
-        </HStack>
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div className="flex items-center">
+              <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mr-4">
+                <img src="/api/placeholder/80/80" alt="Company Logo" className="w-16 h-16" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-800">RWACOF EXPORTS LTD</h1>
+                <p className="text-sm text-gray-600">P.O BOX:6934 KIGALI</p>
+                <p className="text-sm text-gray-600">Tel:+250 252 575872/ Fax: 0252 572024</p>
+              </div>
+            </div>
+            <div className="border border-gray-300 p-2 rounded">
+              <p className="font-semibold">SOURCE</p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <h2 className="text-3xl font-bold text-center my-6 text-teal-600">GOODS RECEIVED NOTE</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <EditableField label="GRN NO" name="grnNo" value={formData.grnNo} onChange={handleInputChange} />
+            <div className="flex flex-col">
+              <label className="text-sm font-medium text-gray-700">DATE</label>
+              <DatePicker
+                selected={new Date(formData.date)}
+                onChange={(date) => setFormData((prevData) => ({ ...prevData, date: date.toISOString().split('T')[0] }))}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-300 focus:ring focus:ring-teal-200 focus:ring-opacity-50"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-medium text-gray-700">SUPPLIER</label>
+              <Select
+                name="supplier"
+                value={formData.supplier}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-300 focus:ring focus:ring-teal-200 focus:ring-opacity-50"
+              >
+                {supplierOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </Select>
+            </div>
+            <EditableField label="REGION" name="region" value={formData.region} onChange={handleInputChange} />
+            <EditableField label="VEHICLE REG NO" name="vehicleRegNo" value={formData.vehicleRegNo} onChange={handleInputChange} />
+            <EditableField label="W.BRIDGE REF" name="wbridgeRef" value={formData.wbridgeRef} onChange={handleInputChange} />
+            <EditableField label="MOISTURE" name="moisture" value={formData.moisture} onChange={handleInputChange} />
+            <EditableField label="PARCH" name="parch" value={formData.parch} onChange={handleInputChange} />
+          </div>
 
-        <Heading size="lg" textAlign="center" my={4}>GOODS RECEIVED NOTE</Heading>
+          <table className="min-w-full divide-y divide-gray-200 mb-6">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">S.NO</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">TYPE OF COFFEE</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">BAGS</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">WEIGHT OF COFFEE</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap">1</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <Select
+                    name="coffeeType"
+                    value={formData.coffeeType}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-300 focus:ring focus:ring-teal-200 focus:ring-opacity-50"
+                  >
+                    {coffeeTypeOptions.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </Select>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <EditableField name="bags" value={formData.bags} onChange={handleInputChange} />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <EditableField name="weightOfCoffee" value={formData.weightOfCoffee} onChange={handleInputChange} />
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-        <Grid templateColumns="repeat(6, 1fr)" gap={2}>
-          <GridItem colSpan={2}>
-            <Text fontWeight="bold">GRN NO: {formData.grnNo}</Text>
-          </GridItem>
-          <GridItem colSpan={2}>
-            <Text fontWeight="bold">DATE: {formData.date}</Text>
-          </GridItem>
-          <GridItem colSpan={2} />
-          <GridItem colSpan={4}>
-            <Text fontWeight="bold">SUPPLIER: {formData.supplier}</Text>
-          </GridItem>
-          <GridItem colSpan={2}>
-            <Text fontWeight="bold">REGION:</Text>
-          </GridItem>
-          <GridItem colSpan={4}>
-            <Text fontWeight="bold">VEHICLE REG NO: {formData.vehicleRegNo}</Text>
-          </GridItem>
-          <GridItem colSpan={2}>
-            <Text fontWeight="bold">W.BRIDGE REF:</Text>
-          </GridItem>
-          <GridItem colSpan={2}>
-            <Text fontWeight="bold">MOISTURE: {formData.moisture}</Text>
-          </GridItem>
-          <GridItem colSpan={1}>
-            <Text fontWeight="bold">PARCH: {formData.parch}%</Text>
-          </GridItem>
-          <GridItem colSpan={1}>
-            <Text fontWeight="bold">GREEN:</Text>
-          </GridItem>
-        </Grid>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Weighing Details</h3>
+              <EditableField label="LESS NO OF BAGS" name="lessNoOfBags" value={formData.lessNoOfBags} onChange={handleInputChange} />
+              <EditableField label="SUB GROSS KG" name="subGrossKg" value={formData.subGrossKg} onChange={handleInputChange} />
+              <EditableField label="LESS MOISTURE KG" name="lessMoistureKg" value={formData.lessMoistureKg} onChange={handleInputChange} />
+              <EditableField label="LESS QUALITY KG" name="lessQualityKg" value={formData.lessQualityKg} onChange={handleInputChange} />
+              <EditableField label="NET WEIGHT KG" name="netWeightKg" value={formData.netWeightKg} onChange={handleInputChange} />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Approvals</h3>
+              <div className="space-y-4">
+                <div>
+                  <p className="font-medium">WEIGHED BY:</p>
+                  <div className="h-8 border-b border-gray-300"></div>
+                </div>
+                <div>
+                  <p className="font-medium">SUPPLIER:</p>
+                  <div className="h-8 border-b border-gray-300"></div>
+                </div>
+                <div>
+                  <p className="font-medium">APPROVED BY:</p>
+                  <div className="h-8 border-b border-gray-300"></div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <Table variant="simple" borderWidth={1}>
-          <Thead>
-            <Tr>
-              <Th borderWidth={1}>S.NO</Th>
-              <Th borderWidth={1}>TYPE OF COFFEE</Th>
-              <Th borderWidth={1}>BAGS</Th>
-              <Th borderWidth={1}>WEIGHT OF COFFEE</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            <Tr>
-              <Td borderWidth={1}>1</Td>
-              <Td borderWidth={1}>{formData.coffeeType}</Td>
-              <Td borderWidth={1}>{formData.bags}</Td>
-              <Td borderWidth={1}>{formData.weightOfCoffee}</Td>
-            </Tr>
-          </Tbody>
-        </Table>
+          <h3 className="text-2xl font-bold mb-4 text-teal-600">PAYMENT VOUCHER</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <EditableField label="DATE" name="paymentDate" value="" onChange={handleInputChange} />
+            <EditableField label="Dr. A/C" name="drAccount" value="" onChange={handleInputChange} />
+            <EditableField label="CHEQUE IN FAVOUR OF" name="chequeInFavourOf" value="" onChange={handleInputChange} />
+          </div>
 
-        <Grid templateColumns="repeat(2, 1fr)" gap={4} borderWidth={1} p={2}>
-          <GridItem>
-            <Text fontWeight="bold">WEIGHED BY:</Text>
-            <Box borderBottom="1px solid" width="100%" height="30px" />
-          </GridItem>
-          <GridItem>
-            <VStack align="stretch" spacing={1}>
-              <HStack justify="space-between">
-                <Text fontWeight="bold">LESS NO OF BAGS:</Text>
-                <Text>{formData.lessNoOfBags}</Text>
-              </HStack>
-              <HStack justify="space-between">
-                <Text fontWeight="bold">SUB GROSS KG:</Text>
-                <Text>{formData.subGrossKg}</Text>
-              </HStack>
-              <HStack justify="space-between">
-                <Text fontWeight="bold">LESS MOISTURE KG:</Text>
-                <Text>{formData.lessMoistureKg}</Text>
-              </HStack>
-              <HStack justify="space-between">
-                <Text fontWeight="bold">LESS QUALITY KG:</Text>
-                <Text>{formData.lessQualityKg}</Text>
-              </HStack>
-              <HStack justify="space-between">
-                <Text fontWeight="bold">NET WEIGHT KG:</Text>
-                <Text>{formData.netWeightKg}</Text>
-              </HStack>
-            </VStack>
-          </GridItem>
-          <GridItem>
-            <Text fontWeight="bold">SUPPLIER:</Text>
-            <Box borderBottom="1px solid" width="100%" height="30px" />
-          </GridItem>
-          <GridItem>
-            <Text fontWeight="bold">APPROVED BY:</Text>
-            <Box borderBottom="1px solid" width="100%" height="30px" />
-          </GridItem>
-        </Grid>
+          <table className="min-w-full divide-y divide-gray-200 mb-6">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ITEM</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QTY</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">RATE</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap">Payment weight</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <EditableField name="paymentWeight" value={formData.paymentWeight} onChange={handleInputChange} />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <EditableField name="rate" value={formData.rate} onChange={handleInputChange} />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {calculateAmount()}
+                </td>
+              </tr>
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap">Security Retained</td>
+                <td className="px-6 py-4 whitespace-nowrap"></td>
+                <td className="px-6 py-4 whitespace-nowrap"></td>
+                <td className="px-6 py-4 whitespace-nowrap"></td>
+              </tr>
+              <tr className="bg-gray-50">
+                <td colSpan="3" className="px-6 py-4 whitespace-nowrap font-bold">Total</td>
+                <td className="px-6 py-4 whitespace-nowrap font-bold">{calculateAmount()}</td>
+              </tr>
+            </tbody>
+          </table>
 
-        <Heading size="md" mt={4}>PAYMENT VOUCHER</Heading>
-        <Grid templateColumns="repeat(3, 1fr)" gap={2}>
-          <GridItem>
-            <Text fontWeight="bold">DATE:</Text>
-            <Box borderBottom="1px solid" width="100%" height="20px" />
-          </GridItem>
-          <GridItem colSpan={2}>
-            <Text fontWeight="bold">Dr. A/C:</Text>
-            <Box borderBottom="1px solid" width="100%" height="20px" />
-          </GridItem>
-          <GridItem colSpan={3}>
-            <Text fontWeight="bold">CHEQUE IN FAVOUR OF:</Text>
-            <Box borderBottom="1px solid" width="100%" height="20px" />
-          </GridItem>
-        </Grid>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700">In words:</label>
+            <div className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-300 focus:ring focus:ring-teal-200 focus:ring-opacity-50 h-10 bg-gray-100"></div>
+          </div>
 
-        <Table variant="simple" borderWidth={1}>
-          <Thead>
-            <Tr>
-              <Th borderWidth={1}>ITEM</Th>
-              <Th borderWidth={1}>QTY</Th>
-              <Th borderWidth={1}>RATE</Th>
-              <Th borderWidth={1}>AMOUNT</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            <Tr>
-              <Td borderWidth={1}>Payment weight</Td>
-              <Td borderWidth={1}>{formData.paymentWeight}</Td>
-              <Td borderWidth={1}>{formData.rate}</Td>
-              <Td borderWidth={1}>{formData.amount}</Td>
-            </Tr>
-            <Tr>
-              <Td borderWidth={1}>Security Retained</Td>
-              <Td borderWidth={1} />
-              <Td borderWidth={1} />
-              <Td borderWidth={1} />
-            </Tr>
-            <Tr>
-              <Td colSpan={3} borderWidth={1} fontWeight="bold">Total</Td>
-              <Td borderWidth={1} />
-            </Tr>
-          </Tbody>
-        </Table>
-
-        <Text fontWeight="bold">In words:</Text>
-        <Box borderBottom="1px solid" width="100%" height="20px" />
-
-        <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-          <GridItem>
-            <Text fontWeight="bold">PREPARED BY:</Text>
-            <Box borderBottom="1px solid" width="100%" height="30px" />
-          </GridItem>
-          <GridItem>
-            <Text fontWeight="bold">CHECKED BY:</Text>
-            <Box borderBottom="1px solid" width="100%" height="30px" />
-          </GridItem>
-          <GridItem>
-            <Text fontWeight="bold">AUTORIZED BY:</Text>
-            <Box borderBottom="1px solid" width="100%" height="30px" />
-          </GridItem>
-          <GridItem>
-            <Text fontWeight="bold">RECEIVED BY:</Text>
-            <Box borderBottom="1px solid" width="100%" height="30px" />
-          </GridItem>
-        </Grid>
-      </VStack>
-    </Box>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+              <p className="font-medium">PREPARED BY:</p>
+              <div className="h-8 border-b border-gray-300"></div>
+            </div>
+            <div>
+              <p className="font-medium">CHECKED BY:</p>
+              <div className="h-8 border-b border-gray-300"></div>
+            </div>
+            <div>
+              <p className="font-medium">AUTHORIZED BY:</p>
+              <div className="h-8 border-b border-gray-300"></div>
+            </div>
+            <div>
+              <p className="font-medium">RECEIVED BY:</p>
+              <div className="h-8 border-b border-gray-300"></div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Alert className="mt-6">
+        <AlertDescription>
+          This is an enhanced version of the Goods Received Note (GRN) form. All fields are editable. Please review and confirm all information before submission.
+        </AlertDescription>
+      </Alert>
+    </div>
   );
 };
 

@@ -1,116 +1,10 @@
-// import React from 'react';
-// import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
-// import { Home, Package, Plus, Eye } from 'lucide-react';
-// import {
-//   ChakraProvider,
-//   Box,
-//   Flex,
-//   VStack,
-//   Heading,
-//   Text,
-//   Button,
-//   Image,
-//   useColorModeValue,
-//   Container,
-//   HStack,
-//   Icon,
-// } from "@chakra-ui/react";
-// import ShipmentList from './components/Logistics/ShipmentList';
-// import ShipmentForm from './components/Logistics/ShipmentForm';
-// import ContainerList from './components/Logistics/ContainerList';
-// import ContainerForm from './components/Logistics/ContainerForm';
-// import ShipmentInfo from './components/Logistics/Shipment/ShipmentInfo';
-// import logo from './../assets/img/logo.png';
-// import logistics from './../assets/img/Logistics-rafiki.png';
-
-// const App = () => {
-//   const bgColor = useColorModeValue("gray.50", "gray.900");
-//   const cardBgColor = useColorModeValue("white", "gray.800");
-
-//   const NavItem = ({ to, icon, text }) => (
-//     <Link to={to}>
-//       <Button variant="ghost" leftIcon={<Icon as={icon} />} fontWeight="medium">
-//         {text}
-//       </Button>
-//     </Link>
-//   );
-
-//   const Welcome = () => {
-//     const navigate = useNavigate();
-
-//     return (
-//       <VStack spacing={8} align="center" w="full">
-//         <Image src={logistics} height="300px" width="auto" />
-//         <Box w="full" maxW="4xl" bg={cardBgColor} borderRadius="lg" boxShadow="md" p={8}>
-//           <VStack spacing={6} align="center">
-//             <Heading as="h1" size="2xl" textAlign="center">RWACOF Export Management</Heading>
-//             <Text fontSize="xl" textAlign="center">Manage your shipments efficiently</Text>
-//             <Text color="gray.600" textAlign="center">
-//               Use the navigation menu to manage all shipments. This platform provides comprehensive tools for tracking,
-//               organizing, and optimizing your export logistics processes.
-//             </Text>
-//             <HStack spacing={4}>
-//               <Button leftIcon={<Icon as={Plus} />} colorScheme="teal" onClick={() => navigate('/new-shipment')}>
-//                 New Shipment
-//               </Button>
-//               <Button leftIcon={<Icon as={Eye} />} variant="outline" onClick={() => navigate('/shipments')}>
-//                 View Shipments
-//               </Button>
-//             </HStack>
-//           </VStack>
-//         </Box>
-//       </VStack>
-//     );
-//   };
-
-//   return (
-//     <ChakraProvider>
-//       <Router>
-//         <Box minHeight="100vh" bg={bgColor}>
-//           <Flex
-//             as="nav"
-//             align="center"
-//             justify="space-between"
-//             wrap="wrap"
-//             padding={4}
-//             bg={cardBgColor}
-//             boxShadow="sm"
-//           >
-//             <Flex align="center">
-//               <Image height="50px" src={logo} alt="RWACOF Export Logistics" />
-              
-//             </Flex>
-//             <HStack spacing={4}>
-//               <NavItem to="/" icon={Home} text="Home" />
-//               <NavItem to="/shipments" icon={Package} text="Shipments" />
-//             </HStack>
-//           </Flex>
-
-//           <Container maxW="container.xl" py={8}>
-//             <Routes>
-//               <Route path="/" element={<Welcome />} />
-//               <Route path="/shipments" element={<ShipmentList />} />
-//               <Route path="/shipments/:id" element={<ShipmentInfo />} />
-//               <Route path="/new-shipment" element={<ShipmentForm />} />
-//               <Route path="/containers" element={<ContainerList />} />
-//               <Route path="/new-container" element={<ContainerForm />} />
-//             </Routes>
-//           </Container>
-//         </Box>
-//       </Router>
-//     </ChakraProvider>
-//   );
-// };
-
-// export default App;
-
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
-import { Home, Package,TrendingUp, Plus, Eye, LogOut, FileText, DollarSign, Users,Truck, Settings } from 'lucide-react';
-import { 
-  Box, VStack, HStack, Heading, Text, Button, Image, Icon, 
+import { Home, Package, TrendingUp, Plus, Eye, LogOut, FileText, DollarSign, Users, Truck, Settings } from 'lucide-react';
+import {
+  Box, VStack, HStack, Heading, Text, Button, Image, Icon,
   useColorModeValue, Grid, GridItem, Stat, StatLabel, StatNumber, StatHelpText,
-  SimpleGrid, Card, CardHeader, CardBody, CardFooter,ChakraProvider,Flex,Container,Menu,MenuButton,MenuList,MenuItem
+  SimpleGrid, Card, CardHeader, CardBody, CardFooter, ChakraProvider, Flex, Container, Menu, MenuButton, MenuList, MenuItem
 } from "@chakra-ui/react";
 import ShipmentList from './components/Logistics/ShipmentList';
 import ShipmentForm from './components/Logistics/ShipmentForm';
@@ -121,11 +15,13 @@ import logo from './../assets/img/logo.png';
 import logistics from './../assets/img/Logistics-rafiki.png';
 import financeimg from './../assets/img/Finance-app-cuate.png';
 import Login from './components/Auth/Login';
-import GRN from './components/Finance/GRN'
+import GRN from './components/Finance/GRN/GRN'
 import Payments from './components/Finance/Payments'
 import FinancialReports from './components/Finance/FinancialReports'
 import UserManagment from './components/Admin/UserManagment';
 import SystemSettings from './components/Admin/SystemSettings';
+import GrnList from './components/Finance/GRN/GrnList';
+import GrnView from './components/Finance/GRN/GrnView';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -150,6 +46,10 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('firstName');
+    localStorage.removeItem('lastName');
+    localStorage.removeItem('email');
+    localStorage.removeItem('userId');
     setIsAuthenticated(false);
     setUserRole(null);
   };
@@ -205,12 +105,12 @@ const App = () => {
     const navigate = useNavigate();
     const cardBg = useColorModeValue("white", "gray.700");
     const statCardBg = useColorModeValue("teal.50", "teal.900");
-  
+
     return (
       <VStack spacing={8} align="stretch" w="full">
         <Heading as="h1" size="2xl" textAlign="center">Finance Dashboard</Heading>
         <Text fontSize="xl" textAlign="center" color="gray.500">Manage All Financial Documents Here</Text>
-        
+
         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
           <Stat bg={statCardBg} p={4} borderRadius="lg" boxShadow="md">
             <StatLabel>Total GRNs</StatLabel>
@@ -223,12 +123,12 @@ const App = () => {
             <StatHelpText>↓ 5% from last month</StatHelpText>
           </Stat>
           <Stat bg={statCardBg} p={4} borderRadius="lg" boxShadow="md">
-            <StatLabel>Financial Health</StatLabel>
-            <StatNumber>Good</StatNumber>
+            <StatLabel>Total Payments</StatLabel>
+            <StatNumber>$4.7M</StatNumber>
             <StatHelpText>Based on current metrics</StatHelpText>
           </Stat>
         </SimpleGrid>
-  
+
         <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
           <GridItem>
             <Card bg={cardBg}>
@@ -239,9 +139,14 @@ const App = () => {
                 <Text>View and manage the latest Goods Received Notes.</Text>
               </CardBody>
               <CardFooter>
-                <Button leftIcon={<Icon as={Eye} />} colorScheme="teal" onClick={() => navigate('/grn')}>
-                  View GRNs
-                </Button>
+                <HStack spacing={4} width="100%" justifyContent="center">
+                  <Button leftIcon={<Icon as={Plus} />} colorScheme="teal" onClick={() => navigate('/grn')}>
+                    Add GRN
+                  </Button>
+                  <Button leftIcon={<Icon as={Eye} />} colorScheme="blue" onClick={() => navigate('/allgrns')}>
+                    View GRNs
+                  </Button>
+                </HStack>
               </CardFooter>
             </Card>
           </GridItem>
@@ -264,35 +169,16 @@ const App = () => {
       </VStack>
     );
   };
-  
+
   const WelcomeLogistics = () => {
     const navigate = useNavigate();
     const cardBg = useColorModeValue("white", "gray.700");
     const statCardBg = useColorModeValue("blue.50", "blue.900");
-  
+
     return (
       <VStack spacing={8} align="stretch" w="full">
         <Heading as="h1" size="2xl" textAlign="center">Logistics Dashboard</Heading>
         <Text fontSize="xl" textAlign="center" color="gray.500">Manage your shipments efficiently</Text>
-  
-        {/* <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-          <Stat bg={statCardBg} p={4} borderRadius="lg" boxShadow="md">
-            <StatLabel>Active Shipments</StatLabel>
-            <StatNumber>28</StatNumber>
-            <StatHelpText>↑ 12% from last week</StatHelpText>
-          </Stat>
-          <Stat bg={statCardBg} p={4} borderRadius="lg" boxShadow="md">
-            <StatLabel>On-Time Deliveries</StatLabel>
-            <StatNumber>96%</StatNumber>
-            <StatHelpText>↑ 3% from last month</StatHelpText>
-          </Stat>
-          <Stat bg={statCardBg} p={4} borderRadius="lg" boxShadow="md">
-            <StatLabel>Avg. Transit Time</StatLabel>
-            <StatNumber>4.2 days</StatNumber>
-            <StatHelpText>↓ 0.3 days from last month</StatHelpText>
-          </Stat>
-        </SimpleGrid> */}
-  
         <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={6}>
           <GridItem>
             <Card bg={cardBg}>
@@ -328,17 +214,17 @@ const App = () => {
       </VStack>
     );
   };
-  
+
   const WelcomeAdmin = () => {
     const navigate = useNavigate();
     const cardBg = useColorModeValue("white", "gray.700");
     const statCardBg = useColorModeValue("purple.50", "purple.900");
-  
+
     return (
       <VStack spacing={8} align="stretch" w="full">
         <Heading as="h1" size="2xl" textAlign="center">Admin Dashboard</Heading>
         <Text fontSize="xl" textAlign="center" color="gray.500">Manage all aspects of the export system</Text>
-  
+
         <SimpleGrid columns={{ base: 1, md: 4 }} spacing={6}>
           <Stat bg={statCardBg} p={4} borderRadius="lg" boxShadow="md">
             <StatLabel>Total Users</StatLabel>
@@ -361,7 +247,7 @@ const App = () => {
             <StatHelpText>Last 30 days</StatHelpText>
           </Stat>
         </SimpleGrid>
-  
+
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
           <Card bg={cardBg}>
             <CardHeader>
@@ -419,9 +305,9 @@ const App = () => {
       </VStack>
     );
   };
-  
+
   const Welcome = () => {
-    switch(userRole) {
+    switch (userRole) {
       case 'FINANCE':
         return <WelcomeFinance />;
       case 'LOGISTICS':
@@ -440,13 +326,16 @@ const App = () => {
         );
     }
   };
-  
+
 
   const ProtectedRoute = ({ children, allowedRoles }) => {
-    if (!isAuthenticated) {
+    const token = localStorage.getItem('token');
+    const storedUserRole = localStorage.getItem('userRole');
+
+    if (!token || !storedUserRole) {
       return <Navigate to="/login" />;
     }
-    if (allowedRoles && !allowedRoles.includes(userRole)) {
+    if (allowedRoles && !allowedRoles.includes(storedUserRole)) {
       return <Navigate to="/" />;
     }
     return children;
@@ -490,7 +379,7 @@ const App = () => {
                   <Welcome />
                 </ProtectedRoute>
               } />
-              
+
               {/* Admin Routes */}
               <Route path="/shipments" element={
                 <ProtectedRoute allowedRoles={['ADMIN', 'LOGISTICS']}>
@@ -504,7 +393,7 @@ const App = () => {
               } />
               <Route path="/users" element={
                 <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <UserManagment/>
+                  <UserManagment />
                 </ProtectedRoute>
               } />
               <Route path="/settings" element={
@@ -517,6 +406,16 @@ const App = () => {
               <Route path="/grn" element={
                 <ProtectedRoute allowedRoles={['FINANCE']}>
                   <GRN />
+                </ProtectedRoute>
+              } />
+              <Route path="/grn/:id" element={
+                <ProtectedRoute allowedRoles={['FINANCE']}>
+                  <GrnView />
+                </ProtectedRoute>
+              } />
+              <Route path="/allgrns" element={
+                <ProtectedRoute allowedRoles={['FINANCE']}>
+                  <GrnList />
                 </ProtectedRoute>
               } />
               <Route path="/payments" element={

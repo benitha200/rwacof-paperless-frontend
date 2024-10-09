@@ -17,6 +17,17 @@ import {
     Spinner,
     useToast,
 } from '@chakra-ui/react';
+import {
+    Stepper,
+    Step,
+    StepIndicator,
+    StepStatus,
+    StepTitle,
+    StepDescription,
+    StepSeparator,
+    StepIcon,
+    StepNumber,
+} from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -28,6 +39,16 @@ const GrnView = () => {
     const [isLoading, setIsLoading] = useState(true);
     const { id } = useParams();
     const toast = useToast();
+
+    const steps = [
+        { title: 'Receive Coffee', description: 'Receive and weigh the coffee' },
+        { title: 'Quality Check', description: 'Perform quality checks' },
+        { title: 'Documentation', description: 'Complete GRN documentation' },
+        { title: 'Approval', description: 'Get necessary approvals' },
+        { title: 'Payment', description: 'Process payment' },
+    ];
+
+    const [activeStep, setActiveStep] = useState(1);
 
     useEffect(() => {
         fetchGrnDetails();
@@ -67,6 +88,7 @@ const GrnView = () => {
     const calculateAmount = () => {
         return (grnData.paymentWeight * grnData.rate).toFixed(2);
     };
+
 
     return (
         <Container maxW="6xl" py={6}>
@@ -231,7 +253,34 @@ const GrnView = () => {
                             </Box>
                         ))}
                     </HStack>
+
                 </VStack>
+
+                <Box mt={10}>
+                    <Heading as="h3" size="md" mb={4}>
+                        GRN Process
+                    </Heading>
+                    <Stepper index={activeStep} colorScheme="teal">
+                        {steps.map((step, index) => (
+                            <Step key={index}>
+                                <StepIndicator>
+                                    <StepStatus
+                                        complete={<StepIcon />}
+                                        incomplete={<StepNumber />}
+                                        active={<StepNumber />}
+                                    />
+                                </StepIndicator>
+
+                                <Box flexShrink='0'>
+                                    <StepTitle>{step.title}</StepTitle>
+                                    <StepDescription>{step.description}</StepDescription>
+                                </Box>
+
+                                <StepSeparator />
+                            </Step>
+                        ))}
+                    </Stepper>
+                </Box>
             </Box>
         </Container>
     );

@@ -258,7 +258,7 @@ const GrnView = () => {
 
                 <Box mt={10}>
                     <Heading as="h3" size="md" mb={4}>
-                        GRN Process
+                        GRN Status
                     </Heading>
                     <Stepper index={activeStep} colorScheme="teal">
                         {steps.map((step, index) => (

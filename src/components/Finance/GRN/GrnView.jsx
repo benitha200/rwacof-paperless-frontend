@@ -16,6 +16,7 @@ import {
     Divider,
     Spinner,
     useToast,
+    Button,
 } from '@chakra-ui/react';
 import {
     Stepper,
@@ -41,11 +42,11 @@ const GrnView = () => {
     const toast = useToast();
 
     const steps = [
-        { title: 'Receive Coffee', description: 'Receive and weigh the coffee' },
-        { title: 'Quality Check', description: 'Perform quality checks' },
-        { title: 'Documentation', description: 'Complete GRN documentation' },
-        { title: 'Approval', description: 'Get necessary approvals' },
-        { title: 'Payment', description: 'Process payment' },
+        { title: 'Receive', description: 'Weight Bridge Manager' },
+        { title: 'Quality', description: 'Quality Manager' },
+        { title: 'Document', description: 'COO' },
+        { title: 'Approve', description: 'Managing Director' },
+        { title: 'Payment', description: 'Finance' },
     ];
 
     const [activeStep, setActiveStep] = useState(1);
@@ -59,6 +60,7 @@ const GrnView = () => {
         try {
             const response = await axios.get(`${API_URL}/api/grn/${id}`);
             setGrnData(response.data);
+            setActiveStep(response.data.currentStep);
             setIsLoading(false);
         } catch (error) {
             toast({
@@ -69,6 +71,61 @@ const GrnView = () => {
                 isClosable: true,
             });
             setIsLoading(false);
+        }
+    };
+
+    const handleApprove = async () => {
+        try {
+            const nextStep = activeStep + 1;
+            const response = await axios.post(`${API_URL}/api/grn`, {
+                ...grnData,
+                currentStep: nextStep,
+                status: nextStep === 4 ? 'approved' : grnData.status,
+            });
+            setGrnData(response.data);
+            setActiveStep(nextStep);
+            toast({
+                title: "GRN approved successfully.",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
+            // Send email to next person in workflow if not the last step
+            if (nextStep < 4) {
+                await sendEmailToNextPerson(nextStep + 1, grnData.id);
+            }
+        } catch (error) {
+            toast({
+                title: "Error approving GRN.",
+                description: "An unexpected error occurred.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+        }
+    };
+
+    const sendEmailToNextPerson = async (nextStep, grnId) => {
+        try {
+            await axios.post(`${API_URL}/api/send-email`, {
+                nextStep,
+                grnId,
+            });
+            toast({
+                title: "Email sent to next person in workflow.",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
+        } catch (error) {
+            console.error('Error sending email:', error);
+            toast({
+                title: "Error sending email.",
+                description: "An unexpected error occurred.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
         }
     };
 
@@ -88,7 +145,6 @@ const GrnView = () => {
     const calculateAmount = () => {
         return (grnData.paymentWeight * grnData.rate).toFixed(2);
     };
-
 
     return (
         <Container maxW="6xl" py={6}>
@@ -281,6 +337,12 @@ const GrnView = () => {
                         ))}
                     </Stepper>
                 </Box>
+
+                {activeStep < 4 && (
+                    <Button mt={6} colorScheme="teal" onClick={handleApprove}>
+                        Approve and Send to Next Step
+                    </Button>
+                )}
             </Box>
         </Container>
     );

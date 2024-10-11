@@ -77,6 +77,11 @@ const App = () => {
         { to: "/payments", icon: DollarSign, text: "Payments" },
         { to: "/financial-reports", icon: FileText, text: "Financial Reports" },
       ],
+      QualityManager:[
+        { to: "/", icon: Home, text: "Dashboard" },
+        { to: "/grn", icon: FileText, text: "GRN" },
+        { to: "/allgrns", icon: FileText, text: "ALL GRNS" },
+      ],
       LOGISTICS: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/shipments", icon: Package, text: "Shipments" },
@@ -404,17 +409,17 @@ const App = () => {
 
               {/* Finance Routes */}
               <Route path="/grn" element={
-                <ProtectedRoute allowedRoles={['FINANCE']}>
+                <ProtectedRoute allowedRoles={['FINANCE','QualityManager']}>
                   <GRN />
                 </ProtectedRoute>
               } />
               <Route path="/grn/:id" element={
-                <ProtectedRoute allowedRoles={['FINANCE']}>
+                <ProtectedRoute allowedRoles={['FINANCE','QualityManager']}>
                   <GrnView />
                 </ProtectedRoute>
               } />
               <Route path="/allgrns" element={
-                <ProtectedRoute allowedRoles={['FINANCE']}>
+                <ProtectedRoute allowedRoles={['FINANCE','QualityManager']}>
                   <GrnList />
                 </ProtectedRoute>
               } />

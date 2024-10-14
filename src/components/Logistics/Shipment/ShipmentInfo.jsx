@@ -212,125 +212,185 @@ function ShipmentInfo() {
                         title: "VGM",
                         content: (
                             <div className="border border-gray-300 p-4 rounded-lg m-4">
-                                <div className="flex flex-col md:flex-row items-center justify-between mb-4">
-                                    <div className="flex items-center mb-4 md:mb-0">
-                                        <div className="mr-2"><img src={logo} width="100" height="300" /></div>
-                                        <div>
-                                            <h2 className="text-xl font-bold">RWACOF</h2>
-                                            <p className="text-sm">RWACOF EXPORTS LTD</p>
-                                            <p className="text-sm">GIKONDO-KIGALI</p>
-                                        </div>
-                                    </div>
-                                    <img src={maersklogo} alt="Maersk logo" className="h-20 w-30" />
-                                </div>
+                                <form onSubmit={handleSubmit}>
+                                    <h3 className="text-lg font-bold text-center mb-4 underline">VERIFIED GROSS MASS (VGM)</h3>
 
-                                <h3 className="text-lg font-bold text-center mb-4 underline">VERIFIED GROSS MASS (VGM)</h3>
-
-                                <table className="w-full border-collapse mb-4 overflow-auto w-full">
-                                    <thead>
-                                        <tr className="bg-yellow-400">
-                                            <th className="border border-black p-1 text-left">Shipper Name</th>
-                                            <th className="border border-black p-1 text-left">Booking or B/L Number</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td className="border border-black p-1" colSpan="2">
-                                                <input type="text" className="border w-full" defaultValue="RWACOF EXPORTS LIMITED" />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <table className="w-full overflow-auto border-collapse mb-4">
-                                    <thead>
-                                        <tr className="bg-yellow-400">
-                                            <th className="border border-black p-1">Container number</th>
-                                            <th className="border border-black p-1">Container type/size</th>
-                                            <th className="border border-black p-1">VGM (KGS)</th>
-                                            <th className="border border-black p-1">Cargo G.W. (KGS)</th>
-                                            <th className="border border-black p-1">Method (I or II)</th>
-                                            <th className="border border-black p-1">Remarks</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {[
-                                            { containerNumber: "MRKU7019589", type: "20/DV", vgm: "40,320.00 KGS", cargoGW: "21,620.00 KGS", method: "1", remarks: "XXXX" },
-                                            { containerNumber: "SUDU7675134", type: "20/DV", vgm: "39,100.00 KGS", cargoGW: "21,620.00 KGS", method: "1", remarks: "XXXX" },
-                                        ].map((row, index) => (
-                                            <tr key={index}>
-                                                <td className="border border-black p-1">
-                                                    <input type="text" className="border w-full" defaultValue={row.containerNumber} />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input type="text" className="border w-full" defaultValue={row.type} />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input type="text" className="border w-full" defaultValue={row.vgm} />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input type="text" className="border w-full" defaultValue={row.cargoGW} />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input type="text" className="border w-full" defaultValue={row.method} />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input type="text" className="border w-full" defaultValue={row.remarks} />
+                                    <table className="w-full border-collapse mb-4">
+                                        <thead>
+                                            <tr className="bg-yellow-400">
+                                                <th className="border border-black p-1 text-left">Shipper Name</th>
+                                                <th className="border border-black p-1 text-left">Booking or B/L Number</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td className="border border-black p-1" colSpan="2">
+                                                    <input
+                                                        type="text"
+                                                        className="border w-full"
+                                                        name="bookingBlNumber"
+                                                        onChange={handleInputChange}
+                                                        defaultValue="RWACOF EXPORTS LIMITED"
+                                                    />
                                                 </td>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div className="border border-black p-1">
-                                        <p className="font-bold">Vessel Name</p>
-                                        <input type="text" className="border w-full" defaultValue="Your Vessel Name" />
+                                    <table className="w-full border-collapse mb-4">
+                                        <thead>
+                                            <tr className="bg-yellow-400">
+                                                <th className="border border-black p-1">Container number</th>
+                                                <th className="border border-black p-1">Container type/size</th>
+                                                <th className="border border-black p-1">VGM (KGS)</th>
+                                                <th className="border border-black p-1">Cargo G.W. (KGS)</th>
+                                                <th className="border border-black p-1">Method (I or II)</th>
+                                                <th className="border border-black p-1">Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td className="border border-black p-1">
+                                                    <input
+                                                        type="text"
+                                                        className="border w-full"
+                                                        name="containerNumber"
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </td>
+                                                <td className="border border-black p-1">
+                                                    <input
+                                                        type="text"
+                                                        className="border w-full"
+                                                        name="containerTypeSize"
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </td>
+                                                <td className="border border-black p-1">
+                                                    <input
+                                                        type="text"
+                                                        className="border w-full"
+                                                        name="vgmKgs"
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </td>
+                                                <td className="border border-black p-1">
+                                                    <input
+                                                        type="text"
+                                                        className="border w-full"
+                                                        name="cargoGwKgs"
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </td>
+                                                <td className="border border-black p-1">
+                                                    <input
+                                                        type="text"
+                                                        className="border w-full"
+                                                        name="method"
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </td>
+                                                <td className="border border-black p-1">
+                                                    <input
+                                                        type="text"
+                                                        className="border w-full"
+                                                        name="remarks"
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div className="border border-black p-1">
+                                            <p className="font-bold">Vessel Name</p>
+                                            <input
+                                                type="text"
+                                                className="border w-full"
+                                                name="vesselName"
+                                                onChange={handleInputChange}
+                                            />
+                                        </div>
+                                        <div className="border border-black p-1">
+                                            <p className="font-bold">Voyage Number</p>
+                                            <input
+                                                type="text"
+                                                className="border w-full"
+                                                name="voyageNumber"
+                                                onChange={handleInputChange}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="border border-black p-1">
-                                        <p className="font-bold">Voyage Number</p>
-                                        <input type="text" className="border w-full" defaultValue="Your Voyage Number" />
+
+                                    <table className="w-full border-collapse mb-4">
+                                        <tbody>
+                                            <tr>
+                                                <th className="border border-black p-1">Full Name of Authorized Person (in CAPITAL letters)</th>
+                                                <th className="border border-black p-1">Position</th>
+                                                <th className="border border-black p-1">Contact Number</th>
+                                            </tr>
+                                            <tr>
+                                                <td className="border border-black p-1">
+                                                    <input
+                                                        type="text"
+                                                        className="border w-full"
+                                                        name="authorizedPerson"
+                                                        onChange={handleInputChange}
+                                                        defaultValue="Berthe MUKANOHERI"
+                                                    />
+                                                </td>
+                                                <td className="border border-black p-1">
+                                                    <input
+                                                        type="text"
+                                                        className="border w-full"
+                                                        name="position"
+                                                        onChange={handleInputChange}
+                                                        defaultValue="LOGISTICS MANAGER"
+                                                    />
+                                                </td>
+                                                <td className="border border-black p-1">
+                                                    <input
+                                                        type="text"
+                                                        className="border w-full"
+                                                        name="contactNumber"
+                                                        onChange={handleInputChange}
+                                                        defaultValue="250.788.249.673"
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <p className="font-bold mb-2">Authorized Signature</p>
+                                            <div className="border border-black h-12"></div>
+                                        </div>
+                                        <div>
+                                            <p className="font-bold mb-2">Date (dd/mm/yy)</p>
+                                            <input
+                                                type="date"
+                                                className="border w-full"
+                                                name="signatureDate"
+                                                onChange={handleInputChange}
+                                                defaultValue="2024-07-26"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
 
-                                <table className="w-full border-collapse mb-4">
-                                    <tbody>
-                                        <tr>
-                                            <th className="border border-black p-1">Full Name of Authorized Person (in CAPITAL letters)</th>
-                                            <th className="border border-black p-1">Position</th>
-                                            <th className="border border-black p-1">Contact Number</th>
-                                        </tr>
-                                        <tr>
-                                            <td className="border border-black p-1">
-                                                <input type="text" className="border w-full" defaultValue="Berthe MUKANOHERI" />
-                                            </td>
-                                            <td className="border border-black p-1">
-                                                <input type="text" className="border w-full" defaultValue="LOGISTICS MANAGER" />
-                                            </td>
-                                            <td className="border border-black p-1">
-                                                <input type="text" className="border w-full" defaultValue="250.788.249.673" />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <p className="font-bold mb-2">Authorized Signature</p>
-                                        <div className="border border-black h-12"></div>
+                                    <div className="mt-4">
+                                        <p className="font-bold text-blue-600">KMA Approval no. (Method 2) or Equipment certificate no. (Method 1)</p>
+                                        <input
+                                            type="text"
+                                            className="border w-full h-8"
+                                            name="kmaApprovalNo"
+                                            onChange={handleInputChange}
+                                        />
                                     </div>
-                                    <div>
-                                        <p className="font-bold mb-2">Date (dd/mm/yy)</p>
-                                        <input type="date" className="border w-full" defaultValue="2024-07-26" />
-                                    </div>
-                                </div>
 
-                                <div className="mt-4">
-                                    <p className="font-bold text-blue-600">KMA Approval no. (Method 2) or Equipment certificate no. (Method 1)</p>
-                                    <input type="text" className="border w-full h-8" />
-                                </div>
-
-
+                                    <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded">Update VGM</button>
+                                </form>
                             </div>
                         ),
                         filename: 'vgm.pdf',

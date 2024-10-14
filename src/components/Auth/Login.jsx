@@ -59,7 +59,9 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <Box maxWidth="400px" margin="auto" mt={8}>
+    
+    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+      {/* <Box maxWidth="400px" margin="auto" mt={8}> */}
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>
           <Heading>Login</Heading>
@@ -84,7 +86,7 @@ const Login = ({ onLogin }) => {
           </Button>
         </VStack>
       </form>
-    </Box>
+    </div>
   );
 };
 

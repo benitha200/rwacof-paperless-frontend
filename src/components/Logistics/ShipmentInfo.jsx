@@ -662,19 +662,19 @@ function ShipmentInfo() {
         const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
         const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
         const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-
+    
         function convertLessThanOneThousand(n) {
             if (n === 0) {
                 return '';
             }
-
+    
             let result = '';
-
+    
             if (n >= 100) {
                 result += ones[Math.floor(n / 100)] + ' Hundred ';
                 n %= 100;
             }
-
+    
             if (n >= 20) {
                 result += tens[Math.floor(n / 10)] + ' ';
                 n %= 10;
@@ -682,47 +682,69 @@ function ShipmentInfo() {
                 result += teens[n - 10] + ' ';
                 return result.trim();
             }
-
+    
             if (n > 0) {
                 result += ones[n] + ' ';
             }
-
+    
             return result.trim();
         }
-
+    
+        function convertDecimals(n) {
+            if (n === 0) {
+                return 'Zero';
+            }
+            let result = '';
+            const digits = n.toString().split('');
+            for (let i = 0; i < digits.length; i++) {
+                result += ones[parseInt(digits[i])] + ' ';
+            }
+            return result.trim();
+        }
+    
         if (num === 0) {
             return 'Zero';
         }
-
-        const billion = Math.floor(num / 1000000000);
-        const million = Math.floor((num % 1000000000) / 1000000);
-        const thousand = Math.floor((num % 1000000) / 1000);
-        const remainder = num % 1000;
-
+    
+        const parts = num.toString().split('.');
+        const wholePart = parseInt(parts[0]);
+        const decimalPart = parts.length > 1 ? parseInt(parts[1]) : 0;
+    
+        const billion = Math.floor(wholePart / 1000000000);
+        const million = Math.floor((wholePart % 1000000000) / 1000000);
+        const thousand = Math.floor((wholePart % 1000000) / 1000);
+        const remainder = wholePart % 1000;
+    
         let result = '';
-
+    
         if (billion) {
             result += convertLessThanOneThousand(billion) + ' Billion ';
         }
-
+    
         if (million) {
             result += convertLessThanOneThousand(million) + ' Million ';
         }
-
+    
         if (thousand) {
             result += convertLessThanOneThousand(thousand) + ' Thousand ';
         }
-
+    
         if (remainder) {
             result += convertLessThanOneThousand(remainder);
         }
-
-        return result.trim();
+    
+        result = result.trim();
+    
+        if (decimalPart > 0) {
+            result += ' and ' + convertDecimals(decimalPart) + ' Cents';
+        }
+    
+        return result;
     }
 
     return (
         <div className="p-4">
-          <h1 className="text-2xl font-bold mb-4">Shipment Info - ID: {id} Lot No {shipment.lotNo || ''}</h1>
+          <h1 className="text-2xl font-bold mb-4">Shipment Info - ID: {id} - Lot No {shipment.lotNo || ''}</h1>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="md:col-span-1">

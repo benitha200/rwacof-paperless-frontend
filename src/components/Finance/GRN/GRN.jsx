@@ -31,12 +31,12 @@ import {
     StepSeparator,
     useToast,
     useBreakpointValue,
+    SimpleGrid,
 } from '@chakra-ui/react';
-import logo from './../../../../assets/img/logo.png';
 import DatePicker from "react-datepicker";
-
 import "react-datepicker/dist/react-datepicker.css";
 import API_URL from '../../../constants/Constants';
+import logo from './../../../../assets/img/logo.png';
 
 const EditableField = ({ label, name, value, onChange, type = "text" }) => (
     <FormControl>
@@ -62,9 +62,9 @@ const GRN = () => {
         coffee_type: '',
         bags: '100',
         quantity: '6000',
-        quantityUnit: 'kgs', // Added quantityUnit
-        totalWeight: '6000', // Added totalWeight
-        weightUnit: 'kgs', // Added weightUnit
+        quantityUnit: 'kgs',
+        totalWeight: '6000',
+        weightUnit: 'kgs',
         lessNoOfBags: '100',
         subGrossKg: '5980',
         lessMoistureKg: '',
@@ -77,16 +77,17 @@ const GRN = () => {
         payment_amount: '675600',
         paymentDate: new Date(),
         drAc: '',
-        qualityGrade: 'Grade A', // Updated qualityGrade
+        qualityGrade: 'Grade A',
         rate: '10',
         preparedById: 1,
-        checkedById: 2,
-        authorizedById: 3,
-        receivedById: 4,
+        checkedById: 1,
+        authorizedById: 1,
+        receivedById: 1,
         remarks: '',
-        status:'Recieved',
-        currentStep: '0',
+        status: 'Received',
+        currentStep: 0,
     });
+    
     const [activeStep, setActiveStep] = useState(0);
     const toast = useToast();
 
@@ -96,10 +97,12 @@ const GRN = () => {
         { title: 'Document', description: 'COO' },
         { title: 'Approve', description: 'Managing Director' },
         { title: 'Payment', description: 'Finance' },
-      ];
+    ];
     
-      const orientation = useBreakpointValue({ base: 'vertical', md: 'horizontal' });
-      const stepperWidth = useBreakpointValue({ base: '100%', md: '90%', lg: '80%' });
+    const orientation = useBreakpointValue({ base: 'vertical', md: 'horizontal' });
+    const stepperWidth = useBreakpointValue({ base: '100%', md: '90%', lg: '80%' });
+    const stackDirection = useBreakpointValue({ base: "column", md: "row" });
+    const spacing = useBreakpointValue({ base: 4, md: 6 });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -155,7 +158,7 @@ const GRN = () => {
                 duration: 3000,
                 isClosable: true,
             });
-            setActiveStep(5); // Move to the final step after successful submission
+            setActiveStep(5);
         } catch (error) {
             if (error.response && error.response.data && error.response.data.errors) {
                 error.response.data.errors.forEach((err) => {
@@ -179,31 +182,32 @@ const GRN = () => {
         }
     };
 
-
     return (
         <Container maxW="6xl" py={6}>
             <form onSubmit={handleSubmit}>
                 <Box bg="white" shadow="lg" rounded="lg" p={6}>
-                    <HStack justify="space-between" align="start" mb={6}>
-                        <HStack spacing={4}>
-                            <Image src={logo} alt="Company Logo" boxSize="120px" width="150px" />
-                            <Box>
-                                <Heading as="h1" size="lg">RWACOF EXPORTS LTD</Heading>
-                                <Text fontSize="sm">P.O BOX:6934 KIGALI</Text>
-                                <Text fontSize="sm">Tel:+250 252 575872/ Fax: 0252 572024</Text>
+                    <VStack spacing={4} align="stretch">
+                        <HStack justify="space-between" align="start" direction={stackDirection} spacing={4} wrap="wrap">
+                            <HStack spacing={4} align="center" direction={stackDirection}>
+                                <Image src={logo} alt="Company Logo" boxSize={{ base: "100px", md: "120px" }} width={{ base: "120px", md: "150px" }} />
+                                <Box textAlign={{ base: "center", md: "left" }}>
+                                    <Heading as="h1" size="lg">RWACOF EXPORTS LTD</Heading>
+                                    <Text fontSize="sm">P.O BOX:6934 KIGALI</Text>
+                                    <Text fontSize="sm">Tel:+250 252 575872/ Fax: 0252 572024</Text>
+                                </Box>
+                            </HStack>
+                            <Box border="1px" borderColor="gray.300" p={2} rounded="md" width={{ base: "100%", md: "auto" }} mt={{ base: 4, md: 0 }}>
+                                <Text fontWeight="semibold">SOURCE</Text>
+                                <Divider my={2} />
+                                <Text fontWeight="semibold">Kigali</Text>
                             </Box>
                         </HStack>
-                        <Box border="1px" borderColor="gray.300" p={2} rounded="md">
-                            <Text fontWeight="semibold">SOURCE</Text>
-                        </Box>
-                    </HStack>
 
-                    <Heading as="h2" size="xl" textAlign="center" my={6} color="teal.600">
-                        GOODS RECEIVED NOTE
-                    </Heading>
+                        <Heading as="h2" size="xl" textAlign="center" my={6} color="teal.600">
+                            GOODS RECEIVED NOTE
+                        </Heading>
 
-                    <VStack spacing={6} align="stretch">
-                        <HStack spacing={6}>
+                        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={spacing}>
                             <FormControl>
                                 <FormLabel>RECEIVED DATE</FormLabel>
                                 <DatePicker
@@ -214,86 +218,86 @@ const GRN = () => {
                                 />
                             </FormControl>
                             <EditableField label="SUPPLIER NAME" name="supplierName" value={formData.supplierName} onChange={handleInputChange} />
-                        </HStack>
+                        </SimpleGrid>
 
-                        <HStack spacing={6}>
+                        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={spacing}>
                             <EditableField label="SUPPLIER ADDRESS" name="supplierAddress" value={formData.supplierAddress} onChange={handleInputChange} />
                             <EditableField label="PLATE NO" name="plate_no" value={formData.plate_no} onChange={handleInputChange} />
-                        </HStack>
+                        </SimpleGrid>
 
-                        <HStack spacing={6}>
+                        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={spacing}>
                             <EditableField label="W.BRIDGE REF" name="wbridgeRef" value={formData.wbridgeRef} onChange={handleInputChange} />
                             <EditableField label="MOISTURE" name="moisture" value={formData.moisture} onChange={handleInputChange} />
                             <EditableField label="PARCH" name="parch" value={formData.parch} onChange={handleInputChange} />
-                        </HStack>
+                        </SimpleGrid>
 
-                        {/* <EditableField label="PRODUCT DESCRIPTION" name="productDescription" value={formData.productDescription} onChange={handleInputChange} /> */}
+                        <Box overflowX="auto">
+                            <Table variant="simple">
+                                <Thead>
+                                    <Tr>
+                                        <Th>TYPE OF COFFEE</Th>
+                                        <Th>BAGS</Th>
+                                        <Th>QUANTITY</Th>
+                                        <Th>UNIT</Th>
+                                        <Th>TOTAL WEIGHT</Th>
+                                        <Th>WEIGHT UNIT</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    <Tr>
+                                        <Td>
+                                            <Select
+                                                name="coffee_type"
+                                                value={formData.coffee_type}
+                                                onChange={handleInputChange}
+                                            >
+                                                <option value="">Select coffee type</option>
+                                                {coffeeTypeOptions.map((option) => (
+                                                    <option key={option} value={option}>{option}</option>
+                                                ))}
+                                            </Select>
+                                        </Td>
+                                        <Td>
+                                            <Input name="bags" value={formData.bags} onChange={handleInputChange} />
+                                        </Td>
+                                        <Td>
+                                            <Input name="quantity" value={formData.quantity} onChange={handleInputChange} />
+                                        </Td>
+                                        <Td>
+                                            <Input name="quantityUnit" value={formData.quantityUnit} onChange={handleInputChange} />
+                                        </Td>
+                                        <Td>
+                                            <Input name="totalWeight" value={formData.totalWeight} onChange={handleInputChange} />
+                                        </Td>
+                                        <Td>
+                                            <Input name="weightUnit" value={formData.weightUnit} onChange={handleInputChange} />
+                                        </Td>
+                                    </Tr>
+                                </Tbody>
+                            </Table>
+                        </Box>
 
-                        <Table variant="simple">
-                            <Thead>
-                                <Tr>
-                                    <Th>TYPE OF COFFEE</Th>
-                                    <Th>BAGS</Th>
-                                    <Th>QUANTITY</Th>
-                                    <Th>UNIT</Th>
-                                    <Th>TOTAL WEIGHT</Th>
-                                    <Th>WEIGHT UNIT</Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                <Tr>
-                                    <Td>
-                                        <Select
-                                            name="coffee_type"
-                                            value={formData.coffee_type}
-                                            onChange={handleInputChange}
-                                        >
-                                            <option value="">Select coffee type</option>
-                                            {coffeeTypeOptions.map((option) => (
-                                                <option key={option} value={option}>{option}</option>
-                                            ))}
-                                        </Select>
-                                    </Td>
-                                    <Td>
-                                        <Input name="bags" value={formData.bags} onChange={handleInputChange} />
-                                    </Td>
-                                    <Td>
-                                        <Input name="quantity" value={formData.quantity} onChange={handleInputChange} />
-                                    </Td>
-                                    <Td>
-                                        <Input name="quantityUnit" value={formData.quantityUnit} onChange={handleInputChange} />
-                                    </Td>
-                                    <Td>
-                                        <Input name="totalWeight" value={formData.totalWeight} onChange={handleInputChange} />
-                                    </Td>
-                                    <Td>
-                                        <Input name="weightUnit" value={formData.weightUnit} onChange={handleInputChange} />
-                                    </Td>
-                                </Tr>
-                            </Tbody>
-                        </Table>
-
-                        <HStack spacing={6}>
+                        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={spacing}>
                             <EditableField label="LESS NO OF BAGS" name="lessNoOfBags" value={formData.lessNoOfBags} onChange={handleInputChange} />
                             <EditableField label="SUB GROSS KG" name="subGrossKg" value={formData.subGrossKg} onChange={handleInputChange} />
-                        </HStack>
+                        </SimpleGrid>
 
-                        <HStack spacing={6}>
+                        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={spacing}>
                             <EditableField label="LESS MOISTURE KG" name="lessMoistureKg" value={formData.lessMoistureKg} onChange={handleInputChange} />
                             <EditableField label="LESS QUALITY KG" name="lessQualityKg" value={formData.lessQualityKg} onChange={handleInputChange} />
-                        </HStack>
+                        </SimpleGrid>
 
                         <EditableField label="NET WEIGHT KG" name="netWeightKg" value={formData.netWeightKg} onChange={handleInputChange} />
 
                         <Heading as="h3" size="lg" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
 
-                        <HStack spacing={6}>
+                        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={spacing}>
                             <EditableField label="PAYMENT WEIGHT" name="payment_weight" value={formData.payment_weight} onChange={handleInputChange} />
                             <EditableField label="PAYMENT QUANTITY" name="payment_quantity" value={formData.payment_quantity} onChange={handleInputChange} />
                             <EditableField label="PAYMENT RATE" name="payment_rate" value={formData.payment_rate} onChange={handleInputChange} />
-                        </HStack>
+                        </SimpleGrid>
 
-                        <HStack spacing={6}>
+                        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={spacing}>
                             <EditableField label="PAYMENT AMOUNT" name="payment_amount" value={calculateAmount()} readOnly />
                             <FormControl>
                                 <FormLabel>PAYMENT DATE</FormLabel>
@@ -305,7 +309,7 @@ const GRN = () => {
                                 />
                             </FormControl>
                             <EditableField label="DR. A/C" name="drAc" value={formData.drAc} onChange={handleInputChange} />
-                        </HStack>
+                        </SimpleGrid>
 
                         <EditableField label="CHEQUE IN FAVOUR OF" name="cheque_in_favor_of" value={formData.cheque_in_favor_of} onChange={handleInputChange} />
                         <EditableField label="QUALITY GRADE" name="qualityGrade" value={formData.qualityGrade} onChange={handleInputChange} />

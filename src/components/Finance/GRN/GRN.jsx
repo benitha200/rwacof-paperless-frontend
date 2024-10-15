@@ -148,8 +148,20 @@ const GRN = () => {
                 parch: parseFloat(formData.parch) || null,
                 totalWeight: parseFloat(formData.totalWeight),
             };
-
-            const response = await axios.post(`${API_URL}/api/grn`, transformedData);
+    
+            // Get the token from localStorage (or wherever you store it)
+            const token = localStorage.getItem('token'); // Adjust this if you store the token differently
+    
+            // Set up the config object for axios, including the Authorization header
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+    
+            const response = await axios.post(`${API_URL}/api/grn`, transformedData, config);
+            
             toast({
                 title: "GRN submitted successfully.",
                 status: "success",
@@ -179,6 +191,61 @@ const GRN = () => {
             }
         }
     };
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         const transformedData = {
+    //             ...formData,
+    //             receivedDate: formData.receivedDate.toISOString(),
+    //             paymentDate: formData.paymentDate.toISOString(),
+    //             quantity: parseInt(formData.quantity, 10),
+    //             bags: parseInt(formData.bags, 10),
+    //             lessNoOfBags: parseInt(formData.lessNoOfBags, 10) || 0,
+    //             subGrossKg: parseInt(formData.subGrossKg, 10),
+    //             lessMoistureKg: parseInt(formData.lessMoistureKg, 10) || 0,
+    //             lessQualityKg: parseInt(formData.lessQualityKg, 10) || 0,
+    //             netWeightKg: parseInt(formData.netWeightKg, 10),
+    //             payment_quantity: parseInt(formData.payment_quantity, 10),
+    //             payment_rate: parseInt(formData.payment_rate, 10),
+    //             payment_amount: parseInt(formData.payment_amount, 10),
+    //             drAc: parseInt(formData.drAc, 10),
+    //             rate: parseInt(formData.rate, 10),
+    //             moisture: parseFloat(formData.moisture),
+    //             parch: parseFloat(formData.parch) || null,
+    //             totalWeight: parseFloat(formData.totalWeight),
+    //         };
+
+    //         const response = await axios.post(`${API_URL}/api/grn`, transformedData);
+    //         toast({
+    //             title: "GRN submitted successfully.",
+    //             status: "success",
+    //             duration: 3000,
+    //             isClosable: true,
+    //         });
+    //         setActiveStep(5); // Move to the final step after successful submission
+    //     } catch (error) {
+    //         if (error.response && error.response.data && error.response.data.errors) {
+    //             error.response.data.errors.forEach((err) => {
+    //                 toast({
+    //                     title: "Error",
+    //                     description: err.msg,
+    //                     status: "error",
+    //                     duration: 5000,
+    //                     isClosable: true,
+    //                 });
+    //             });
+    //         } else {
+    //             toast({
+    //                 title: "Error submitting GRN.",
+    //                 description: "An unexpected error occurred.",
+    //                 status: "error",
+    //                 duration: 5000,
+    //                 isClosable: true,
+    //             });
+    //         }
+    //     }
+    // };
+
 
     return (
         <Container maxW="6xl" py={6}>

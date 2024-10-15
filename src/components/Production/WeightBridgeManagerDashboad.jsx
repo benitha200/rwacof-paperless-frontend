@@ -26,82 +26,38 @@ const WeightBridgeManagerDashboad = () => {
       <Heading as="h1" size="2xl" textAlign="center" mb={2}>WeightBridgeManager Dashboard</Heading>
       <Text fontSize="xl" textAlign="center" color="gray.500" mb={6}>Manage All Weight Bridge Documents Here</Text>
 
-      {/* <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-        <Stat bg={statCardBg} p={6} borderRadius="lg" boxShadow="md">
-          <StatLabel fontSize="lg">Total GRNs</StatLabel>
-          <StatNumber fontSize="4xl">145</StatNumber>
-          <StatHelpText>
-            <StatArrow type="increase" />
-            23% from last month
-          </StatHelpText>
-        </Stat>
-        <Stat bg={statCardBg} p={6} borderRadius="lg" boxShadow="md">
-          <StatLabel fontSize="lg">Pending Payments</StatLabel>
-          <StatNumber fontSize="4xl">$1.2M</StatNumber>
-          <StatHelpText>
-            <StatArrow type="decrease" />
-            5% from last month
-          </StatHelpText>
-        </Stat>
-        <Stat bg={statCardBg} p={6} borderRadius="lg" boxShadow="md">
-          <StatLabel fontSize="lg">Total Payments</StatLabel>
-          <StatNumber fontSize="4xl">$4.7M</StatNumber>
-          <StatHelpText>Based on current metrics</StatHelpText>
-        </Stat>
-      </SimpleGrid> */}
+      <SimpleGrid columns={2} spacing={6} h="full">
+        <Card bg={cardBg}>
+          <CardHeader>
+            <Heading size="md">Recent GRNs</Heading>
+          </CardHeader>
+          <CardBody>
+            <Text>View and manage the latest Goods Received Notes.</Text>
+          </CardBody>
+          <CardFooter>
+            <Button leftIcon={<Plus />} colorScheme="teal" mr={3} onClick={() => navigate('/grn')}>
+              Add GRN
+            </Button>
+            <Button leftIcon={<Eye />} colorScheme="blue" onClick={() => navigate('/allgrns')}>
+              View GRNs
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card bg={cardBg}>
+          <CardHeader>
+            <Heading size="md">Weight Bridge Reports</Heading>
+          </CardHeader>
+          <CardBody>
+            <Text>Access and generate comprehensive Weight Bridge reports.</Text>
+          </CardBody>
+          <CardFooter>
+            <Button leftIcon={<FileText />} colorScheme="blue" onClick={() => navigate('/financial-reports')}>
+              Generate Reports
+            </Button>
+          </CardFooter>
+        </Card>
+      </SimpleGrid>
 
-      <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={6}>
-        <GridItem colSpan={1}>
-          {/* <Card bg={cardBg} h="full">
-            <CardHeader>
-              <Heading size="md">Monthly Revenue</Heading>
-            </CardHeader>
-            <CardBody>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={data}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="amount" fill={chartColor} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardBody>
-          </Card> */}
-        </GridItem>
-        <GridItem colSpan={1}>
-          <SimpleGrid columns={1} spacing={6} h="full">
-            <Card bg={cardBg}>
-              <CardHeader>
-                <Heading size="md">Recent GRNs</Heading>
-              </CardHeader>
-              <CardBody>
-                <Text>View and manage the latest Goods Received Notes.</Text>
-              </CardBody>
-              <CardFooter>
-                <Button leftIcon={<Plus />} colorScheme="teal" mr={3} onClick={() => navigate('/grn')}>
-                  Add GRN
-                </Button>
-                <Button leftIcon={<Eye />} colorScheme="blue" onClick={() => navigate('/allgrns')}>
-                  View GRNs
-                </Button>
-              </CardFooter>
-            </Card>
-            <Card bg={cardBg}>
-              <CardHeader>
-                <Heading size="md">Weight Bridge Reports</Heading>
-              </CardHeader>
-              <CardBody>
-                <Text>Access and generate comprehensive Weight Bridge reports.</Text>
-              </CardBody>
-              <CardFooter>
-                <Button leftIcon={<FileText />} colorScheme="blue" onClick={() => navigate('/financial-reports')}>
-                  Generate Reports
-                </Button>
-              </CardFooter>
-            </Card>
-          </SimpleGrid>
-        </GridItem>
-      </Grid>
     </VStack>
   );
 };

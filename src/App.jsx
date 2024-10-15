@@ -255,7 +255,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
-import { Home, Package, TrendingUp, Plus, Eye, LogOut, FileText, DollarSign, Users, Truck, Settings, Menu as MenuIcon } from 'lucide-react';
+import { Home, Package, TrendingUp, Plus, Eye, LogOut, FileText, DollarSign, Users, Truck, Settings, Menu as MenuIcon, Bold } from 'lucide-react';
 import {
   Box, VStack, HStack, Heading, Text, Button, Image, Icon,
   useColorModeValue, ChakraProvider, Flex, Menu, MenuButton, MenuList, MenuItem,
@@ -281,6 +281,9 @@ import LogisticsDashboard from './components/Logistics/LogisticsDashboard';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import WeightBridgeManagerDashboad from './components/Production/WeightBridgeManagerDashboad';
 import ManagingDirectorDashboard from './components/ManagingDirector/ManagingDirectorDashboard';
+import ShipmentDetails from './components/Logistics/Shipment/ShipmentDetails';
+import QualityManagerDashboard from './components/Quality/QualityManagerDashboard';
+import CooDashboard from './components/COO/CooDashboard';
 
 // Custom theme
 const theme = extendTheme({
@@ -350,6 +353,11 @@ const App = () => {
         { to: "/payments", icon: DollarSign, text: "Payments" },
         { to: "/financial-reports", icon: FileText, text: "Financial Reports" },
       ],
+      WeightBridgeManager: [
+        { to: "/", icon: Home, text: "Dashboard" },
+        { to: "/grn", icon: FileText, text: "GRN" },
+        { to: "/allgrns", icon: FileText, text: "ALL GRNS" },
+      ],
       QualityManager: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/grn", icon: FileText, text: "GRN" },
@@ -394,14 +402,18 @@ const App = () => {
         return <WeightBridgeManagerDashboad />
       case 'ManagingDirector':
         return <ManagingDirectorDashboard />
+      case 'QualityManager':
+        return <QualityManagerDashboard />
+      case 'COO':
+        return <CooDashboard />
       default:
         return (
           <VStack spacing={8} align="center" w="full" h="80vh" justify="center">
             <Heading as="h1" size="2xl" textAlign="center">Welcome to RWACOF Export Management</Heading>
-            <Text fontSize="xl" textAlign="center" color="gray.500">Please log in to access your dashboard.</Text>
+            {/* <Text fontSize="xl" textAlign="center" color="gray.500">Please log in to access your dashboard.</Text>
             <Button size="lg" colorScheme="teal" onClick={() => navigate('/login')}>
               Log In
-            </Button>
+            </Button> */}
           </VStack>
         );
     }
@@ -447,6 +459,10 @@ const App = () => {
                       </Button>
                     </Tooltip>
                   )}
+                  <Text fontWeight="bold" size="2xl">
+                    Welcome <Text as="span" color="teal">{`${localStorage.getItem('firstName')} ${localStorage.getItem('lastName')}`}</Text>!
+                  </Text>
+
                   <Menu>
                     <MenuButton colorScheme="teal" as={Button} variant="ghost">
                       <Avatar size="sm" name={`${localStorage.getItem('firstName')} ${localStorage.getItem('lastName')}`} />
@@ -568,12 +584,12 @@ const App = () => {
 
                   {/* ManagingDirector Manager Routes */}
                   <Route path="/grn/:id" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager','ManagingDirector']}>
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
                       <GrnView />
                     </ProtectedRoute>
                   } />
                   <Route path="/allgrns" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager','ManagingDirector']}>
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
                       <GrnList />
                     </ProtectedRoute>
                   } />

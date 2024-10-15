@@ -59,7 +59,7 @@ const GRN = () => {
         wbridgeRef: '',
         moisture: '12.3',
         parch: '14.4',
-        coffee_type: '',
+        coffee_type: 'ARABICA PARCH FW',
         bags: '100',
         quantity: '6000',
         quantityUnit: 'kgs',
@@ -87,7 +87,7 @@ const GRN = () => {
         status: 'Received',
         currentStep: 0,
     });
-    
+
     const [activeStep, setActiveStep] = useState(0);
     const toast = useToast();
 
@@ -98,7 +98,7 @@ const GRN = () => {
         { title: 'Approve', description: 'Managing Director' },
         { title: 'Payment', description: 'Finance' },
     ];
-    
+
     const orientation = useBreakpointValue({ base: 'vertical', md: 'horizontal' });
     const stepperWidth = useBreakpointValue({ base: '100%', md: '90%', lg: '80%' });
     const stackDirection = useBreakpointValue({ base: "column", md: "row" });
@@ -122,9 +122,7 @@ const GRN = () => {
     const coffeeTypeOptions = [
         'Arabica parch fully',
         'Arabica green',
-        'Robusta parch',
-        'Robusta green',
-        'Other'
+
     ];
 
     const handleSubmit = async (e) => {
@@ -326,41 +324,12 @@ const GRN = () => {
                         </HStack>
                     </VStack>
                 </Box>
-                <Button mt={6} colorScheme="teal" type="submit">
-                    Submit GRN
-                </Button>
-                <Box mt={10} px={4}>
-                    <Heading as="h3" size="md" mb={6} textAlign="center">
-                        GRN Process
-                    </Heading>
-                    <Stepper
-                        index={activeStep}
-                        orientation={orientation}
-                        height={{ base: 'auto', md: '100px' }}
-                        gap={{ base: 2, md: 0 }}
-                        width={stepperWidth}
-                        mx="auto"
-                    >
-                        {steps.map((step, index) => (
-                            <Step key={index}>
-                                <StepIndicator>
-                                    <StepStatus
-                                        complete={<StepIcon />}
-                                        incomplete={<StepNumber />}
-                                        active={<StepNumber />}
-                                    />
-                                </StepIndicator>
-
-                                <Box flexShrink='0'>
-                                    <StepTitle fontSize={{ base: 'sm', md: 'md' }}>{step.title}</StepTitle>
-                                    <StepDescription fontSize={{ base: 'xs', md: 'sm' }}>{step.description}</StepDescription>
-                                </Box>
-
-                                <StepSeparator />
-                            </Step>
-                        ))}
-                    </Stepper>
+                <Box display="flex" justifyContent="center">
+                    <Button mt={6} width="container.md" colorScheme="teal" type="submit">
+                        Submit GRN
+                    </Button>
                 </Box>
+
             </form>
         </Container>
     );

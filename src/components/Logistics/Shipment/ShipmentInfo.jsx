@@ -37,7 +37,14 @@ function ShipmentInfo() {
         }));
     };
 
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onUpdate(formData);
+    };
+
     const fetchShipment = () => {
+        console.log(API_URL);
         axios.get(`${API_URL}/api/shipments/${id}`)
             .then(response => {
                 setShipment(response.data);
@@ -389,7 +396,7 @@ function ShipmentInfo() {
                                         />
                                     </div>
 
-                                    <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded">Update VGM</button>
+                                    {/* <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded">Update VGM</button> */}
                                 </form>
                             </div>
                         ),

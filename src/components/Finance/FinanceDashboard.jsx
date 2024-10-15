@@ -18,8 +18,7 @@ const data = [
 const DashboardFinance = () => {
   const navigate = useNavigate();
   const cardBg = useColorModeValue("white", "gray.700");
-  const statCardBg = useColorModeValue("teal.50", "teal.800");
-  const chartColor = useColorModeValue("teal.500", "teal.200");
+  const statCardBg = useColorModeValue("gray.100", "gray.800");
 
   return (
     <VStack spacing={8} align="stretch" w="full" p={5}>
@@ -54,7 +53,7 @@ const DashboardFinance = () => {
         <GridItem colSpan={1}>
           <Card bg={cardBg} h="full">
             <CardHeader>
-              <Heading size="md">Monthly Revenue</Heading>
+              <Heading size="md">Monthly Payment</Heading>
             </CardHeader>
             <CardBody>
               <ResponsiveContainer width="100%" height={200}>
@@ -62,7 +61,7 @@ const DashboardFinance = () => {
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="amount" fill={chartColor} />
+                  <Bar dataKey="amount" fill="#66b2b2" />
                 </BarChart>
               </ResponsiveContainer>
             </CardBody>

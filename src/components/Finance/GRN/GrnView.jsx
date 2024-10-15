@@ -350,7 +350,7 @@
 
 // export default GrnView;
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Box,
     VStack,
@@ -380,25 +380,32 @@ import {
     StepSeparator,
     StepIcon,
     StepNumber,
+    useBreakpointValue,
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { format } from 'date-fns';
 import logo from './../../../../assets/img/logo.png';
 import API_URL from '../../../constants/Constants';
+import { DownloadIcon } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const GrnView = () => {
     const [grnData, setGrnData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [currentUserRole, setCurrentUserRole] = useState(null);
+    const [isDownloading, setIsDownloading] = useState(false);
     const { id } = useParams();
     const toast = useToast();
+    const grnRef = useRef(null);
+    const orientation = useBreakpointValue({ base: 'vertical', md: 'horizontal' });
 
     const steps = [
         { title: 'Receive', description: 'Weight Bridge Manager' },
-        { title: 'Quality', description: 'Quality Manager' },
-        { title: 'Document', description: 'COO' },
-        { title: 'Approve', description: 'Managing Director' },
+        { title: 'Quality', description: 'QualityManager' },
+        { title: 'Update Price', description: 'COO' },
+        { title: 'Approve', description: 'ManagingDirector' },
         { title: 'Payment', description: 'Finance' },
     ];
 
@@ -406,10 +413,6 @@ const GrnView = () => {
         fetchGrnDetails();
         fetchCurrentUserRole();
     }, [id]);
-
-    const calculateAmount = () => {
-        return (grnData.paymentWeight * grnData.rate).toFixed(2);
-    };
 
 
     const fetchGrnDetails = async () => {
@@ -442,23 +445,93 @@ const GrnView = () => {
     const handleApprove = async () => {
         try {
             const nextStep = grnData.currentStep + 1;
+            let status;
+
+            switch (nextStep) {
+                case 0:
+                    status = 'Received';
+                    break;
+                case 1:
+                    status = 'QualityApproved';
+                    break;
+                case 2:
+                    status = 'PriceSet';
+                    break;
+                case 3:
+                    status = 'MDApproved';
+                    break;
+                case 4:
+                    status = 'Paid';
+                    break;
+                default:
+                    status = 'pending';
+            }
+
             const response = await axios.post(`${API_URL}/api/grn`, {
                 ...grnData,
                 currentStep: nextStep,
-                status: nextStep === steps.length - 1 ? 'completed' : 'pending',
+                status: status,
             });
+
             setGrnData(response.data);
             toast({
-                title: "GRN approved successfully.",
+                title: `GRN ${status} successfully.`,
                 status: "success",
                 duration: 3000,
                 isClosable: true,
             });
         } catch (error) {
             toast({
-                title: "Error approving GRN.",
+                title: "Error updating GRN.",
                 description: "An unexpected error occurred.",
                 status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+        }
+    };
+
+    const handleDownloadPDF = async () => {
+        setIsDownloading(true);
+        try {
+            const element = grnRef.current;
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                logging: false,
+                useCORS: true
+            });
+
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
+
+            const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+
+            const imgX = (pdfWidth - imgWidth * ratio) / 2;
+            const imgY = 30;
+
+            pdf.addImage(imgData, 'JPEG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+            pdf.save(`GRN_${id}.pdf`);
+
+            setIsDownloading(false);
+            toast({
+                title: "PDF downloaded successfully.",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
+        } catch (error) {
+            console.error('PDF generation error:', error);
+            setIsDownloading(false);
+            toast({
+                title: "downloading PDF.",
+                description: "This feature is in implementation.",
+                status: "info",
                 duration: 5000,
                 isClosable: true,
             });
@@ -483,23 +556,35 @@ const GrnView = () => {
     return (
         <Container maxW="6xl" py={6}>
             <Box bg="white" shadow="lg" rounded="lg" p={6}>
+                <Box display="flex" justifyContent="right" mb={4}>
+                    <Button
+                        leftIcon={<DownloadIcon />}
+                        colorScheme="teal"
+                        onClick={handleDownloadPDF}
+                        isLoading={isDownloading}
+                        loadingText="Downloading..."
+                    >
+                        Download PDF
+                    </Button>
+                </Box>
+
                 <HStack justify="space-between" align="start" mb={6}>
                     <HStack spacing={4}>
                         <Image src={logo} alt="Company Logo" boxSize="120px" width="150px" />
                         <Box>
-                            <Heading as="h1" size="lg">RWACOF EXPORTS LTD</Heading>
+                            <Heading size="md">RWACOF EXPORTS LTD</Heading>
                             <Text fontSize="sm">P.O BOX:6934 KIGALI</Text>
                             <Text fontSize="sm">Tel:+250 252 575872/ Fax: 0252 572024</Text>
                         </Box>
                     </HStack>
                     <Box border="1px" borderColor="gray.300" p={2} rounded="md" width={{ base: "100%", md: "auto" }} mt={{ base: 4, md: 0 }}>
-                                <Text fontWeight="semibold">SOURCE</Text>
-                                <Divider my={2} />
-                                <Text fontWeight="semibold">Kigali</Text>
-                            </Box>
+                        <Text fontWeight="semibold">SOURCE</Text>
+                        <Divider my={2} />
+                        <Text fontWeight="semibold">Kigali</Text>
+                    </Box>
                 </HStack>
 
-                <Heading as="h2" size="xl" textAlign="center" my={6} color="teal.600">
+                <Heading size="md" textAlign="center" my={6} color="teal.600">
                     GOODS RECEIVED NOTE
                 </Heading>
 
@@ -605,7 +690,44 @@ const GrnView = () => {
                         </Box>
                     </HStack>
 
-                    <Heading as="h3" size="lg" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
+                    <Heading size="md" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
+                    <Table variant="simple">
+                        <Thead>
+                            <Tr>
+                                <Th>RPG</Th>
+                                <Th>PRICE</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            <Tr>
+                                {/* <Td><input className='border border-1 p-2 rounded w-full' placeholder='Contract Ref'/></Td>
+                                <Td><input className='border border-1 p-2 rounded w-full' placeholder='Price'/></Td>
+                                 */}
+
+                                <Td>
+                                    <select className="border border-1 p-2 rounded w-full">
+                                        <option value="" disabled selected>
+                                            Select Contract Ref
+                                        </option>
+                                        <option value="23551">23551</option>
+                                        <option value="23551">23551</option>
+                                        <option value="23551">23551</option>
+                                    </select>
+                                </Td>
+                                <Td>
+                                    <input
+                                        className="border border-1 p-2 rounded w-full"
+                                        placeholder="Price"
+                                    />
+                                </Td>
+
+                            </Tr>
+                            <Tr fontWeight="bold">
+                                <Td colSpan={3}>Total</Td>
+                                <Td>{(parseFloat(grnData.payment_weight) * parseFloat(grnData.payment_rate)).toFixed(0)}</Td>
+                            </Tr>
+                        </Tbody>
+                    </Table>
 
                     <Table variant="simple">
                         <Thead>
@@ -636,52 +758,80 @@ const GrnView = () => {
                         </Tbody>
                     </Table>
 
-                    <HStack justify="space-between">
+                    {/* <HStack justify="space-between">
                         {['PREPARED BY:', 'CHECKED BY:', 'AUTHORIZED BY:', 'RECEIVED BY:'].map((label) => (
                             <Box key={label}>
                                 <Text fontWeight="medium">{label}</Text>
                                 <Divider borderColor="gray.400" />
                             </Box>
                         ))}
-                    </HStack>
+                    </HStack> */}
 
                 </VStack>
 
                 <Box mt={10}>
-                <Heading as="h3" size="md" mb={4}>
-                    GRN Status
-                </Heading>
-                <Stepper index={grnData.currentStep} colorScheme="teal">
-                    {steps.map((step, index) => (
-                        <Step key={index}>
-                            <StepIndicator>
-                                <StepStatus
-                                    complete={<StepIcon />}
-                                    incomplete={<StepNumber />}
-                                    active={<StepNumber />}
-                                />
-                            </StepIndicator>
+                    <Heading as="h3" size="md" mb={4}>
+                        GRN Status
+                    </Heading>
+                    {/* <Stepper
+                        index={grnData.currentStep+1}
+                        orientation={orientation}
+                        colorScheme="teal"
+                        spacing={{ base: '2', md: '4' }}
+                        hasSte
+                    >
+                        {steps.map((step, index) => (
+                            <Step key={index} flexDirection={{ base: 'row', md: 'column' }}>
+                                <StepIndicator>
+                                    <StepStatus
+                                        complete={<StepIcon />}
+                                        incomplete={<StepNumber />}
+                                        active={<StepNumber />}
+                                    />
+                                </StepIndicator>
 
-                            <Box flexShrink='0'>
-                                <StepTitle>{step.title}</StepTitle>
-                                <StepDescription>{step.description}</StepDescription>
-                            </Box>
+                                <Box flexShrink='0' textAlign={{ base: 'left', md: 'center' }} ml={{ base: 3, md: 0 }}>
+                                    <StepTitle>{step.title}</StepTitle>
+                                    <StepDescription display={{ base: 'none', sm: 'block' }}>{step.description}</StepDescription>
+                                </Box>
+                            </Step>
+                        ))}
+                    </Stepper> */}
+                    <Stepper
+                        index={grnData.currentStep + 1}
+                        orientation={orientation}
+                        colorScheme="teal"
+                        spacing={{ base: '2', md: '4' }}
+                        hasStepSeparator={true}
+                    >
+                        {steps.map((step, index) => (
+                            <Step key={index} flexDirection={{ base: 'row', md: 'column' }}>
+                                <StepIndicator>
+                                    <StepStatus
+                                        complete={<StepIcon />}
+                                        incomplete={<StepNumber />}
+                                        active={<StepNumber />}
+                                    />
+                                </StepIndicator>
+                                <Box flexShrink='0' textAlign={{ base: 'left', md: 'center' }} ml={{ base: 3, md: 0 }}>
+                                    <StepTitle>{step.title}</StepTitle>
+                                    <StepDescription display={{ base: 'none', sm: 'block' }}>{step.description}</StepDescription>
+                                </Box>
+                            </Step>
+                        ))}
+                    </Stepper>
+                </Box>
 
-                            <StepSeparator />
-                        </Step>
-                    ))}
-                </Stepper>
-            </Box>
+                {currentUserRole === steps[grnData.currentStep + 1].description && grnData.currentStep < steps.length - 1 && (
+                    <Button mt={6} colorScheme="teal" onClick={handleApprove}>
+                        Approve and Send to Next Step
+                    </Button>
+                )}
 
-            {/* {currentUserRole === steps[grnData.currentStep].description && grnData.currentStep < steps.length - 1 && ( */}
-                <Button mt={6} colorScheme="teal" onClick={handleApprove}>
-                    Approve and Send to Next Step
-                </Button>
-            {/* )} */}
-
-            <Text mt={4} fontWeight="bold">
-                Current Status: {grnData.status}
-            </Text>
+                <Text mt={4} fontWeight="bold">
+                    {/* {steps[grnData.currentStep+1].description} */}
+                    Current Status: {grnData.status}
+                </Text>
             </Box>
         </Container>
     );

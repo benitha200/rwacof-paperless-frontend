@@ -21,6 +21,7 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import API_URL from '../../constants/Constants';
+import { Edit, Eye } from 'lucide-react';
 
 function ShipmentList() {
   const [shipments, setShipments] = useState([]);
@@ -54,6 +55,10 @@ function ShipmentList() {
   const handleView = (id) => {
     console.log("View button clicked for shipment:", id);
     navigate(`/shipments/${id}`);
+  };
+  const handleEdit = (id) => {
+    console.log("View button clicked for shipment:", id);
+    // navigate(`/shipments/${id}`);
   };
 
   // Pagination logic
@@ -111,8 +116,9 @@ function ShipmentList() {
                 <Td>{shipment.amount}</Td>
                 <Td>{shipment.consignee}</Td>
                 <Td>{new Date(shipment.date).toLocaleDateString()}</Td>
-                <Td>
-                  <Button colorScheme="teal" onClick={() => handleView(shipment.id)}>View</Button>
+                <Td gap={2} className='flex p-2'>
+                  <Button colorScheme="green" onClick={() => handleView(shipment.id)}><Eye/></Button>
+                  <Button colorScheme="teal" onClick={() => handleEdit(shipment.id)}><Edit/></Button>
                 </Td>
               </Tr>
             ))}

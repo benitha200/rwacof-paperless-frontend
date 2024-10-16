@@ -3,13 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import API_URL from '../../../constants/Constants';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from '../../ui/button';
 import { CheckCircle2, Circle } from "lucide-react";
 import { handleDownload, handleUpdate, formatDate, numberToWords } from './ShipmentUtils';
-// import logo from "./../../../assets/img/logo.png";
-import logo from "./../../../../assets/img/logo.png";
-import maersklogo from "./../../../../assets/img/maersklogo.jpg";
 import ShipmentDetails from './ShipmentDetails';
 
 function ShipmentInfo() {
@@ -18,6 +14,7 @@ function ShipmentInfo() {
     const [shipment, setShipment] = useState({});
     const navigate = useNavigate();
     const [steps, setSteps] = useState([]);
+    const [containerCount, setContainerCount] = useState(1);
 
     useEffect(() => {
         fetchShipment();
@@ -155,7 +152,7 @@ function ShipmentInfo() {
                         filename: 'tally-sheet.pdf'
                     },
                     {
-                        title: "Invoice",
+                        title: "invoice",
                         content: (
                             <div className="border border-gray-300 p-4 rounded-lg m-4">
                                 <h2 className="text-xl font-bold mb-4">RWACOF EXPORTS LTD</h2>
@@ -169,48 +166,98 @@ function ShipmentInfo() {
                                     </div>
                                     <div>
                                         <h4 className="font-semibold">CONSIGNEE:</h4>
-                                        <p>{response.data.consignee || 'SUCAFINA S.A GENEVA'}</p>
+                                        <input
+                                            type="text"
+                                            className="border w-full mb-2"
+                                            name="consignee"
+                                            defaultValue={shipment.consignee || 'SUCAFINA S.A GENEVA'}
+                                        />
                                         <p>1PLACE ST GERVAIS, SWITZERLAND</p>
-                                        <p>{formatDate(response.data.date)}</p>
-                                        <p>SSRW-90706</p>
+                                        <input
+                                            type="date"
+                                            className="border w-full"
+                                            name="invoiceDate"
+                                            defaultValue={shipment.date ? new Date(shipment.date).toISOString().split('T')[0] : '2024-10-10'}
+                                        />
+                                        <input
+                                            type="text"
+                                            className="border w-full"
+                                            name="billOfLadingNo"
+                                            defaultValue={'SSRW-90706'}
+                                        />
+                                        {/* <p>SSRW-90706</p> */}
                                     </div>
                                 </div>
-                                <div className="border border-gray-300 p-2 mb-4 gap-2 ">
+                                <div className="border border-gray-300 p-2 mb-4 gap-2">
                                     <p className="mb-4">
-                                        <span className="font-semibold">TRUCK NO:</span> {response.data.truckNo || 'RAE2611/RL2728'}
+                                        <span className="font-semibold">TRUCK NO:</span>
+                                        <input
+                                            type="text"
+                                            className="border ml-1"
+                                            name="truckNo"
+                                            defaultValue={shipment.truckNo || 'RAE2611/RL2728'}
+                                        />
                                     </p>
                                     <p className="mb-4">
-                                        <span className="font-semibold">CONTAINER No:</span> {response.data.containerNo || 'MSMU5188197'}
-
+                                        <span className="font-semibold">CONTAINER No:</span>
+                                        <input
+                                            type="text"
+                                            className="border ml-1"
+                                            name="containerNo"
+                                            defaultValue={shipment.containerNo || 'MSMU5188197'}
+                                        />
                                     </p>
                                     <p className="mb-4">
-                                        <span className="font-semibold"> LOT No:</span>
-                                        <input type="text" className="border ml-1" value={response.data.lotNo || ''} readOnly />
+                                        <span className="font-semibold">LOT No:</span>
+                                        <input
+                                            type="text"
+                                            className="border ml-1"
+                                            name="lotNo"
+                                            defaultValue={shipment.lotNo || ''}
+                                        />
                                     </p>
                                     <p className="mb-4">
                                         <span className="font-semibold">DESCRIPTION:</span>
-                                        <input type="text" className="border ml-1" value={response.data.description || ''} readOnly />
+                                        <input
+                                            type="text"
+                                            className="border ml-1"
+                                            name="description"
+                                            defaultValue={shipment.description || ''}
+                                        />
                                     </p>
                                     <p className="mb-4">
                                         <span className="font-semibold">IN BIG BAGS:</span>
-                                        <input type="number" className="border ml-1" value={response.data.quantity || ''} readOnly />
+                                        <input
+                                            type="number"
+                                            className="border ml-1"
+                                            name="quantity"
+                                            defaultValue={shipment.quantity || ''}
+                                        />
                                     </p>
                                     <p className="mb-4">
                                         <span className="font-semibold">NET WEIGHT:</span>
-                                        <input type="number" className="border ml-1" value={response.data.netWeight || ''} readOnly />
+                                        <input
+                                            type="number"
+                                            className="border ml-1"
+                                            name="netWeight"
+                                            defaultValue={shipment.netWeight || ''}
+                                        />
                                     </p>
                                     <p className="mb-4">
-                                        <span className="font-semibold">AMOUNT: U.S DOLLARS</span> {response.data.amount ? `${response.data.amount.toLocaleString()} (${numberToWords(response.data.amount)})` : 'One Hundred Five Thousand Eight Hundred and Eighty-One'}
+                                        <span className="font-semibold">AMOUNT: U.S DOLLARS</span>
+                                        <input
+                                            type="number"
+                                            className="border ml-1"
+                                            name="amount"
+                                            defaultValue={shipment.amount || ''}
+                                        />
+                                        {shipment.amount && <span> ({numberToWords(shipment.amount)})</span>}
                                     </p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="font-bold">{response.data.amount ? response.data.amount.toLocaleString() : '105,821'}</p>
                                 </div>
                                 <div>
                                     <p className="font-semibold">AUTHORISED SIGNATURE</p>
                                     <p className="mb-4">RWACOF</p>
                                 </div>
-
                             </div>
                         ),
                         filename: 'invoice.pdf'
@@ -219,184 +266,178 @@ function ShipmentInfo() {
                         title: "VGM",
                         content: (
                             <div className="border border-gray-300 p-4 rounded-lg m-4">
-                                <form onSubmit={handleSubmit}>
+                                <form>
                                     <h3 className="text-lg font-bold text-center mb-4 underline">VERIFIED GROSS MASS (VGM)</h3>
 
-                                    <table className="w-full border-collapse mb-4">
-                                        <thead>
-                                            <tr className="bg-yellow-400">
-                                                <th className="border border-black p-1 text-left">Shipper Name</th>
-                                                <th className="border border-black p-1 text-left">Booking or B/L Number</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td className="border border-black p-1" colSpan="2">
-                                                    <input
-                                                        type="text"
-                                                        className="border w-full"
-                                                        name="bookingBlNumber"
-                                                        onChange={handleInputChange}
-                                                        defaultValue="RWACOF EXPORTS LIMITED"
-                                                    />
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <table className="w-full border-collapse mb-4">
-                                        <thead>
-                                            <tr className="bg-yellow-400">
-                                                <th className="border border-black p-1">Container number</th>
-                                                <th className="border border-black p-1">Container type/size</th>
-                                                <th className="border border-black p-1">VGM (KGS)</th>
-                                                <th className="border border-black p-1">Cargo G.W. (KGS)</th>
-                                                <th className="border border-black p-1">Method (I or II)</th>
-                                                <th className="border border-black p-1">Remarks</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td className="border border-black p-1">
-                                                    <input
-                                                        type="text"
-                                                        className="border w-full"
-                                                        name="containerNumber"
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input
-                                                        type="text"
-                                                        className="border w-full"
-                                                        name="containerTypeSize"
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input
-                                                        type="text"
-                                                        className="border w-full"
-                                                        name="vgmKgs"
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input
-                                                        type="text"
-                                                        className="border w-full"
-                                                        name="cargoGwKgs"
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input
-                                                        type="text"
-                                                        className="border w-full"
-                                                        name="method"
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input
-                                                        type="text"
-                                                        className="border w-full"
-                                                        name="remarks"
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                        <div className="border border-black p-1">
-                                            <p className="font-bold">Vessel Name</p>
+                                    <div className="grid grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label className="block mb-1">Shipper Name</label>
                                             <input
                                                 type="text"
-                                                className="border w-full"
-                                                name="vesselName"
-                                                onChange={handleInputChange}
+                                                className="border w-full p-1"
+                                                name="shipperName"
+                                                defaultValue="RWACOF EXPORTS LIMITED"
+                                                readOnly
                                             />
                                         </div>
-                                        <div className="border border-black p-1">
-                                            <p className="font-bold">Voyage Number</p>
+                                        <div>
+                                            <label className="block mb-1">Booking or B/L Number</label>
                                             <input
                                                 type="text"
-                                                className="border w-full"
-                                                name="voyageNumber"
-                                                onChange={handleInputChange}
+                                                className="border w-full p-1"
+                                                name="bookingBlNumber"
                                             />
                                         </div>
                                     </div>
 
-                                    <table className="w-full border-collapse mb-4">
-                                        <tbody>
-                                            <tr>
-                                                <th className="border border-black p-1">Full Name of Authorized Person (in CAPITAL letters)</th>
-                                                <th className="border border-black p-1">Position</th>
-                                                <th className="border border-black p-1">Contact Number</th>
-                                            </tr>
-                                            <tr>
-                                                <td className="border border-black p-1">
-                                                    <input
-                                                        type="text"
-                                                        className="border w-full"
-                                                        name="authorizedPerson"
-                                                        onChange={handleInputChange}
-                                                        defaultValue="Berthe MUKANOHERI"
-                                                    />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input
-                                                        type="text"
-                                                        className="border w-full"
-                                                        name="position"
-                                                        onChange={handleInputChange}
-                                                        defaultValue="LOGISTICS MANAGER"
-                                                    />
-                                                </td>
-                                                <td className="border border-black p-1">
-                                                    <input
-                                                        type="text"
-                                                        className="border w-full"
-                                                        name="contactNumber"
-                                                        onChange={handleInputChange}
-                                                        defaultValue="250.788.249.673"
-                                                    />
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    {[...Array(containerCount)].map((_, index) => (
+                                        <div key={index} className="container-row mb-4">
+                                            <h4 className="font-bold mb-2">Container {index + 1}</h4>
+                                            <table className="w-full border-collapse mb-2">
+                                                <thead>
+                                                    <tr className="bg-yellow-400">
+                                                        <th className="border border-black p-1">Container number</th>
+                                                        <th className="border border-black p-1">Container type/size</th>
+                                                        <th className="border border-black p-1">VGM (KGS)</th>
+                                                        <th className="border border-black p-1">Cargo G.W. (KGS)</th>
+                                                        <th className="border border-black p-1">Method (I or II)</th>
+                                                        <th className="border border-black p-1">Remarks</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td className="border border-black p-1">
+                                                            <input
+                                                                type="text"
+                                                                className="border w-full"
+                                                                name="containerNumber"
+                                                                defaultValue={response.data.vgm?.containerNumber}
+                                                            />
+                                                        </td>
+                                                        <td className="border border-black p-1">
+                                                            <input
+                                                                type="text"
+                                                                className="border w-full"
+                                                                name="containerTypeSize"
+                                                                defaultValue={response.data.vgm?.containerTypeSize}
+                                                            />
+                                                        </td>
+                                                        <td className="border border-black p-1">
+                                                            <input
+                                                                type="number"
+                                                                className="border w-full"
+                                                                name="vgmKgs"
+                                                                defaultValue={response.data.vgm?.vgmKgs}
+                                                            />
+                                                        </td>
+                                                        <td className="border border-black p-1">
+                                                            <input
+                                                                type="number"
+                                                                className="border w-full"
+                                                                name="cargoGwKgs"
+                                                                value={response.data.vgm?.cargoGwKgs}
+                                                            />
+                                                        </td>
+                                                        <td className="border border-black p-1">
+                                                            <input
+                                                                type="text"
+                                                                className="border w-full"
+                                                                name="method"
+                                                                value={response.data?.vgm?.method}
+                                                            />
+                                                        </td>
+                                                        <td className="border border-black p-1">
+                                                            <input
+                                                                type="text"
+                                                                className="border w-full"
+                                                                name="remarks"
+                                                                defaultValue={response.data?.vgm?.remarks || ""}
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    ))}
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Button
+                                        type="button"
+                                        onClick={() => setContainerCount(prev => prev + 1)}
+                                        className="mb-4"
+                                    >
+                                        Add Container
+                                    </Button>
+
+                                    <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div>
-                                            <p className="font-bold mb-2">Authorized Signature</p>
-                                            <div className="border border-black h-12"></div>
+                                            <label className="block mb-1">Vessel Name</label>
+                                            <input
+                                                type="text"
+                                                className="border w-full p-1"
+                                                name="vesselName"
+                                                value={response.data?.vgm?.vesselName || ""}
+                                            />
                                         </div>
                                         <div>
-                                            <p className="font-bold mb-2">Date (dd/mm/yy)</p>
+                                            <label className="block mb-1">Voyage Number</label>
+                                            <input
+                                                type="text"
+                                                className="border w-full p-1"
+                                                name="voyageNumber"
+                                                value={response.data?.vgm?.voyageNumber || ""}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-4 mb-4">
+                                        <div>
+                                            <label className="block mb-1">Authorized Person</label>
+                                            <input
+                                                type="text"
+                                                className="border w-full p-1"
+                                                name="authorizedPerson"
+                                                defaultValue="Berthe MUKANOHERI"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block mb-1">Position</label>
+                                            <input
+                                                type="text"
+                                                className="border w-full p-1"
+                                                name="position"
+                                                defaultValue="LOGISTICS MANAGER"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block mb-1">Contact Number</label>
+                                            <input
+                                                type="text"
+                                                className="border w-full p-1"
+                                                name="contactNumber"
+                                                defaultValue="250788249673"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label className="block mb-1">Signature Date</label>
                                             <input
                                                 type="date"
-                                                className="border w-full"
+                                                className="border w-full p-1"
                                                 name="signatureDate"
-                                                onChange={handleInputChange}
                                                 defaultValue="2024-07-26"
                                             />
                                         </div>
+                                        <div>
+                                            <label className="block mb-1">KMA Approval no. (Method 2) or Equipment certificate no. (Method 1)</label>
+                                            <input
+                                                type="text"
+                                                className="border w-full p-1"
+                                                name="kmaApprovalNo"
+                                            />
+                                        </div>
                                     </div>
-
-                                    <div className="mt-4">
-                                        <p className="font-bold text-blue-600">KMA Approval no. (Method 2) or Equipment certificate no. (Method 1)</p>
-                                        <input
-                                            type="text"
-                                            className="border w-full h-8"
-                                            name="kmaApprovalNo"
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-
-                                    {/* <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded">Update VGM</button> */}
                                 </form>
                             </div>
                         ),
@@ -541,7 +582,7 @@ function ShipmentInfo() {
             console.log(shipment);
             console.log("shipment id");
             // console.log(`${shipment.loadingTallySheet.id}`);
-            switch (documentType) {
+            switch (documentType.toLowerCase()) {
                 case 'loadingtallysheet':
                     response = await axios.post(`${API_URL}/api/loading-tally-sheets`, updatedData);
                     break;

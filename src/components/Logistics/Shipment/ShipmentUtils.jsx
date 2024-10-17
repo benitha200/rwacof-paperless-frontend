@@ -1,37 +1,6 @@
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
-// export const handleDownload = async (filename, title, data) => {
-//     console.log(`Generating ${filename}`);
-
-//     const doc = new jsPDF();
-
-//     doc.setFontSize(18);
-//     doc.text(`RWACOF EXPORTS LTD - ${title.toUpperCase()}`, 20, 20);
-
-//     doc.setFontSize(12);
-//     doc.text(`Shipment ID: ${data.id}`, 20, 30);
-//     doc.text(`Generated on: ${new Date().toLocaleString()}`, 20, 40);
-
-//     switch (title.toLowerCase()) {
-//         case 'invoice':
-//             generateInvoice(doc, data);
-//             break;
-//         case 'loading tally sheet':
-//             generateTallySheet(doc, data);
-//             break;
-//         case 'vgm':
-//             generateVGM(doc, data);
-//             break;
-//         case 'stuffing report':
-//             generateStuffingReport(doc, data);
-//             break;
-//         default:
-//             doc.text('No specific content available for this document type.', 20, 50);
-//     }
-
-//     doc.save(filename);
-// };
 
 export const handleDownload = async (filename, title, data) => {
     console.log(`Generating ${filename}`);
@@ -42,7 +11,7 @@ export const handleDownload = async (filename, title, data) => {
         case 'invoice':
             generateInvoice(doc, data);
             break;
-        case 'loading tally sheet':
+        case 'loadingtallysheet':
             generateTallySheet(doc, data);
             break;
         case 'vgm':
@@ -74,29 +43,6 @@ const updateSpecificSection = (section, sectionData, updateFunction) => {
     updateFunction({ [section]: sectionData });
 };
 
-// export const generateInvoice = (doc, data) => {
-//     doc.text('INVOICE', 20, 60);
-
-//     doc.autoTable({
-//         startY: 70,
-//         head: [['Description', 'Value']],
-//         body: [
-//             ['SELLER', 'RWACOF EXPORTS LTD\nBP 6934 KIGALI\nRWANDA'],
-//             ['CONSIGNEE', `${data.consignee}\n1PLACE ST GERVAIS, SWITZERLAND\n${data.date}\nSSRW-90706`],
-//             ['TRUCK NO', data.truckNo],
-//             ['CONTAINER No', data.containerNo],
-//             ['LOT No', data.lotNo],
-//             ['DESCRIPTION', data.description],
-//             ['IN BIG BAGS', data.quantity],
-//             ['NET WEIGHT', data.netWeight],
-//             ['AMOUNT: U.S DOLLARS', `${data.amount} (${numberToWords(data.amount)})`],
-//         ],
-//     });
-
-//     const finalY = doc.lastAutoTable.finalY || 200;
-//     doc.text('AUTHORISED SIGNATURE', 20, finalY + 10);
-//     doc.text('RWACOF', 20, finalY + 20);
-// };
 
 export const generateInvoice = (doc, data) => {
     // Set font size and style
@@ -158,58 +104,16 @@ export const generateTallySheet = (doc, data) => {
 
     doc.autoTable({
         startY: 70,
-        head: [['LOT', 'Loading Day', 'SL/Forwarder', 'RSS / SSRW/SPRW', 'PLAQUE', 'CONTAINER', 'TARE']],
+        head: [['LOT', 'Loading Day', 'SL','Forwarder', 'RSS / SSRW/SPRW', 'PLAQUE', 'CONTAINER', 'TARE']],
         body: [
-            [data.lotNo, data.loadingDay, 'PIC/MSK', data.description, data.truckNo, data.containerNo, data.netWeight]
+            [data.lotNo, data.loadingDay, data?.loadingTallySheet?.sl,data?.loadingTallySheet?.forwarder, data.description, data.truckNo, data.containerNo, data.netWeight]
         ],
+        theme:'grid',
+        headStyles: { fillColor: [255, 193, 7], textColor: 0, fontStyle: 'bold' },
+        styles: { fontSize: 10 },
     });
 };
 
-// export const generateVGM = (doc, data) => {
-//     // Add RWACOF logo (you'll need to replace this with actual logo addition code)
-//     // doc.addImage(logoData, 'PNG', 20, 50, 30, 30);
-
-//     doc.setFontSize(16);
-//     doc.text('RWACOF EXPORTS LTD', 60, 60);
-//     doc.setFontSize(12);
-//     doc.text('GIKONDO-KIGALI', 60, 70);
-
-//     doc.setFontSize(14);
-//     doc.text('VERIFIED GROSS MASS (VGM)', 20, 90);
-
-//     doc.autoTable({
-//         startY: 100,
-//         head: [['Shipper Name', 'Booking or B/L Number']],
-//         body: [
-//             ['RWACOF EXPORTS LIMITED', '']
-//         ],
-//     });
-
-//     doc.autoTable({
-//         startY: doc.lastAutoTable.finalY + 10,
-//         head: [['Container number', 'Container type/size', 'VGM (KGS)', 'Cargo G.W. (KGS)', 'Method (I or II)', 'Remarks']],
-//         body: [
-//             ['MRKU7019589', '20/DV', '40,320.00 KGS', '21,620.00 KGS', '1', 'XXXX'],
-//             ['SUDU7675134', '20/DV', '39,100.00 KGS', '21,620.00 KGS', '1', 'XXXX']
-//         ],
-//     });
-
-//     const finalY = doc.lastAutoTable.finalY + 10;
-
-//     doc.text(`Vessel Name: ${data.vesselName}`, 20, finalY);
-//     doc.text(`Voyage Number: ${data.voyageNumber}`, 120, finalY);
-
-//     doc.autoTable({
-//         startY: finalY + 10,
-//         head: [['Full Name of Authorized Person (in CAPITAL letters)', 'Position', 'Contact Number']],
-//         body: [
-//             ['Berthe MUKANOHERI', 'LOGISTICS MANAGER', '250.788.249.673']
-//         ],
-//     });
-
-//     doc.text('Authorized Signature', 20, doc.lastAutoTable.finalY + 20);
-//     doc.text('Date (dd/mm/yy)', 120, doc.lastAutoTable.finalY + 20);
-// };
 
 export const generateVGM = (doc, data) => {
     // Set page size to A4
@@ -239,7 +143,7 @@ export const generateVGM = (doc, data) => {
     doc.autoTable({
         startY: 80,
         head: [['Shipper Name', 'Booking or B/L Number']],
-        body: [['RWACOF EXPORTS LIMITED', data.bookingNumber || '']],
+        body: [['RWACOF EXPORTS LIMITED', data?.vgm?.bookingBlNumber || '']],
         theme: 'grid',
         headStyles: { fillColor: [255, 193, 7], textColor: 0, fontStyle: 'bold' },
         styles: { fontSize: 10 },
@@ -263,8 +167,8 @@ export const generateVGM = (doc, data) => {
     doc.autoTable({
         startY: vesselY,
         body: [
-            ['Vessel Name', data.vesselName || 'Your Vessel Name'],
-            ['Voyage Number', data.voyageNumber || 'Your Voyage Number']
+            ['Vessel Name', data?.vgm?.vesselName || ''],
+            ['Voyage Number', data.vgm?.voyageNumber || 'Your Voyage Number']
         ],
         theme: 'plain',
         styles: { fontSize: 10 },
@@ -275,10 +179,10 @@ export const generateVGM = (doc, data) => {
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + 10,
         head: [['Full Name of Authorized Person (in CAPITAL letters)', 'Position', 'Contact Number']],
-        body: [['Berthe MUKANOHERI', 'LOGISTICS MANAGER', '250.788.249.673']],
+        body: [[data?.vgm?.authorizedPerson, data?.vgm?.position, data?.vgm?.contactNumber]],
         theme: 'grid',
         headStyles: { fillColor: [255, 255, 255], textColor: 0, fontStyle: 'bold' },
-        styles: { fontSize: 10 },
+        styles: { fontSize: 10,margin:5 },
     });
 
     // Authorized Signature and Date
@@ -287,7 +191,7 @@ export const generateVGM = (doc, data) => {
         startY: signatureY,
         body: [
             ['Authorized Signature', 'Date (dd/mm/yy)'],
-            ['', data.signatureDate || '26/Jul/2024']
+            ['Digitally Signed', data?.vgm?.signatureDate.date || '29/Jul/2024']
         ],
         theme: 'plain',
         styles: { fontSize: 10 },

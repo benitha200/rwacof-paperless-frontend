@@ -7,6 +7,7 @@ import { Button } from '../../ui/button';
 import { CheckCircle2, Circle } from "lucide-react";
 import { handleDownload, handleUpdate, formatDate, numberToWords } from './ShipmentUtils';
 import ShipmentDetails from './ShipmentDetails';
+import { useToast } from '@chakra-ui/react';
 
 function ShipmentInfo() {
     const { id } = useParams();
@@ -15,6 +16,7 @@ function ShipmentInfo() {
     const navigate = useNavigate();
     const [steps, setSteps] = useState([]);
     const [containerCount, setContainerCount] = useState(1);
+    const toast=useToast(true);
 
     useEffect(() => {
         fetchShipment();
@@ -195,7 +197,7 @@ function ShipmentInfo() {
                                             type="text"
                                             className="border ml-1"
                                             name="truckNo"
-                                            defaultValue={shipment.truckNo || 'RAE2611/RL2728'}
+                                            defaultValue={response.data.truckNo || 'RAE2611/RL2728'}
                                         />
                                     </p>
                                     <p className="mb-4">
@@ -204,7 +206,7 @@ function ShipmentInfo() {
                                             type="text"
                                             className="border ml-1"
                                             name="containerNo"
-                                            defaultValue={shipment.containerNo || 'MSMU5188197'}
+                                            defaultValue={response.data.containerNo || 'MSMU5188197'}
                                         />
                                     </p>
                                     <p className="mb-4">
@@ -213,7 +215,7 @@ function ShipmentInfo() {
                                             type="text"
                                             className="border ml-1"
                                             name="lotNo"
-                                            defaultValue={shipment.lotNo || ''}
+                                            defaultValue={response.data.lotNo || ''}
                                         />
                                     </p>
                                     <p className="mb-4">
@@ -222,7 +224,7 @@ function ShipmentInfo() {
                                             type="text"
                                             className="border ml-1"
                                             name="description"
-                                            defaultValue={shipment.description || ''}
+                                            defaultValue={response.data.description || ''}
                                         />
                                     </p>
                                     <p className="mb-4">
@@ -231,7 +233,7 @@ function ShipmentInfo() {
                                             type="number"
                                             className="border ml-1"
                                             name="quantity"
-                                            defaultValue={shipment.quantity || ''}
+                                            defaultValue={response.data.quantity || ''}
                                         />
                                     </p>
                                     <p className="mb-4">
@@ -240,7 +242,7 @@ function ShipmentInfo() {
                                             type="number"
                                             className="border ml-1"
                                             name="netWeight"
-                                            defaultValue={shipment.netWeight || ''}
+                                            defaultValue={response.data.netWeight || ''}
                                         />
                                     </p>
                                     <p className="mb-4">
@@ -249,9 +251,9 @@ function ShipmentInfo() {
                                             type="number"
                                             className="border ml-1"
                                             name="amount"
-                                            defaultValue={shipment.amount || ''}
+                                            defaultValue={response.data.amount || ''}
                                         />
-                                        {shipment.amount && <span> ({numberToWords(shipment.amount)})</span>}
+                                        {response.data.amount && <span> ({numberToWords(response.data.amount)})</span>}
                                     </p>
                                 </div>
                                 <div>
@@ -599,6 +601,15 @@ function ShipmentInfo() {
                     response = await axios.post(`${API_URL}/api/shipments`, updatedData);
             }
             console.log(`Updated ${documentType}:`, response.data);
+            toast({
+                title: `${documentType} updated successfully`,
+                // description: `Welcome back, ${firstName}!`,
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+              });
+            
+            
             fetchShipment();
         } catch (error) {
             console.error(`Error updating ${documentType}:`, error);

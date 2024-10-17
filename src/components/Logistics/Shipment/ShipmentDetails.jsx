@@ -422,7 +422,7 @@ function ShipmentDetails({ steps, activeStep, setActiveStep, shipment, updateShi
                             <AccordionTrigger onClick={() => setActiveStep(index)}>{step.title}</AccordionTrigger>
                             <AccordionContent>
                                 <div className="step-content">{step.content}</div>
-                                <div className="actions mt-4 space-x-4">
+                                <div className="actions mt-4 space-x-4 m-4">
                                     <Button variant="outline" onClick={() => handleDownload(step.filename, step.title, shipment)}>
                                         Download {step.title}
                                     </Button>

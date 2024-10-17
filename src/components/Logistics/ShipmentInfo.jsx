@@ -9,6 +9,7 @@ import logo from './../../assets/img/logo.png';
 import maersklogo from './../../assets/img/maersklogo.jpg';
 import 'jspdf-autotable'
 import API_URL from '../../constants/Constants';
+import { useToast } from '@chakra-ui/react';
 
 function ShipmentInfo() {
     const { id } = useParams();
@@ -16,6 +17,7 @@ function ShipmentInfo() {
     const [shipment, setShipment] = useState({});
     const navigate=useNavigate();
     const [steps, setSteps] = useState([]);
+    const toast = useToast();
 
     useEffect(() => {
         axios.get(`${API_URL}/api/shipments/${id}`)
@@ -431,6 +433,13 @@ function ShipmentInfo() {
         try {
             const response = await axios.put(`${API_URL}/api/shipments/${id}`, updatedData);
             console.log('Updated shipment:', response.data);
+            toast({
+                title: "You have successfully updated shipment",
+                description: `Welcome back, ${firstName}!`,
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+              });
             setShipment(response.data);
         } catch (error) {
             console.error('Error updating shipment:', error);
@@ -453,6 +462,13 @@ function ShipmentInfo() {
         try {
             const response = await axios.post(`${API_URL}/api/${endpoint}`, updatedData);
             console.log(`Updated ${section}:`, response.data);
+            toast({
+                title: "Shipment updated successfully",
+                // description: `Welcome back, ${firstName}!`,
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+              });
             fetchShipment(); // Refresh the shipment data
         } catch (error) {
             console.error(`Error updating ${section}:`, error);

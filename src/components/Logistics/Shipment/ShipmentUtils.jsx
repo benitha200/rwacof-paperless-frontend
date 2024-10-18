@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import logo from './../../../../assets/img/logo.png'
 
 
 export const handleDownload = async (filename, title, data) => {
@@ -17,7 +18,7 @@ export const handleDownload = async (filename, title, data) => {
         case 'vgm':
             generateVGM(doc, data);
             break;
-        case 'stuffing report':
+        case 'stuffingreport':
             generateStuffingReport(doc, data);
             break;
         default:
@@ -204,89 +205,266 @@ export const generateVGM = (doc, data) => {
     doc.line(20, doc.lastAutoTable.finalY + 25, 190, doc.lastAutoTable.finalY + 25);
 };
 
-export const generateStuffingReport = (data) => {
-    const doc = new jsPDF();
+// export const generateStuffingReport = (doc, data) => {
+//     // Add RWACOF logo
+//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
+
+//     // Title
+//     doc.setFontSize(16);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('STUFFING SUPERVISION REPORT', doc.internal.pageSize.width / 2, 60, { align: 'center' });
+
+//     // Client information table
+//     doc.autoTable({
+//         startY: 70,
+//         head: [['', '']],
+//         body: [
+//             ['Client', 'ILLYCAFFE S.P.A.\nVIA FLAVIA 110, 34147, TRIESTE, Italy\nE-Mail: stefano.scanferla@illy.com'],
+//             ['Mandate', 'Stuffing Supervision of 320 JUTE BAGS\nContaining RWANDA ARABICA COFFEE into 1\nexport container'],
+//             ['Product', data?.stuffingReport?.product],
+//             ['Packing', data?.stuffingReport?.packing],
+//             ['Vessel name', data?.stuffingReport?.vesselName],
+//             ['Bill of Lading No.', data?.stuffingReport?.billOfLadingNo],
+//             ['Place', data?.stuffingReport?.place],
+//             ['Export Container stuffed', data?.stuffingReport?.container],
+//             ['Commenced Stuffing /loading', '2nd June 2023 at 10:30hrs'],
+//             ['Completed Stuffing/loading', '2nd June 2023 at 11:15hrs'],
+//             ['temporally seal', '2nd June 2023 at 14:10hrs'],
+//             ['Container sealing/Shipping line seal', '2nd June 2023 at 15:00hrs']
+//         ],
+//         theme: 'grid',
+//         styles: { fontSize: 10, cellPadding: 2 },
+//         columnStyles: { 0: { fontStyle: 'bold', cellWidth: 80 } },
+//         headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
+//     });
+
+//     // Add new page
+//     doc.addPage();
+
+//     // Add RWACOF logo to the second page
+//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
+
+//     // STUFFING REPORT title
+//     doc.setFontSize(16);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('STUFFING REPORT', doc.internal.pageSize.width / 2, 60, { align: 'center' });
+
+//     // Container Particulars & Condition
+//     doc.setFontSize(12);
+//     doc.text('1.0 CONTAINER PARTICULARS & CONDITION', 20, 80);
+//     doc.setFont(undefined, 'normal');
+//     doc.setFontSize(10);
+//     doc.text('1.1 MSKU7356560 (20ft Container)', 20, 90);
+//     doc.text('Container Condition: found to be good, clean, and free from Any spillage and stains.', 20, 100);
+
+//     // Descriptions of Goods
+//     doc.setFontSize(12);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('1.1.1 DESCRIPTIONS OF GOODS:', 20, 120);
+//     doc.setFont(undefined, 'normal');
+//     doc.setFontSize(10);
+//     doc.text('PRODUCT: RWANDA ARABICA COFFEE', 20, 130);
+//     doc.text('Number of Bags: 320 BAGS', 20, 140);
+//     doc.text('LOTS:', 20, 150);
+//     doc.text('28/002/22018', 20, 160);
+//     doc.text('ILLY ID: 340350032', 20, 170);
+
+//     // Findings
+//     doc.setFontSize(12);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('2.0 FINDINGS', 20, 190);
+//     doc.setFont(undefined, 'normal');
+//     doc.setFontSize(10);
+//     doc.text('Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.', 20, 200);
+//     doc.text('We conducted the Stuffing Supervision of', 20, 210);
+//     doc.text('RWANDA ARABICA COFFEE into the export container at RWACOF', 20, 220);
+//     doc.text('EXPORTS LTD YARD and report as follows:', 20, 230);
+
+//     // Stuffing
+//     doc.setFontSize(12);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('2.1 STUFFING', 20, 250);
+//     doc.setFont(undefined, 'normal');
+//     doc.setFontSize(10);
+//     doc.text('Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on 2nd June 2023 at', 20, 260);
+//     doc.text('10:30hrs and was completed on the same date 2nd June 2023 at 11:10hrs', 20, 270);
+//     doc.text('320 Bags of coffee packed in Jute bags were stuffed into the container.', 20, 280);
+
+//     // Container Sealing
+//     doc.setFontSize(12);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('2.2 CONTAINER SEALING AFTER STUFFING', 20, 300);
+//     doc.setFont(undefined, 'normal');
+//     doc.setFontSize(10);
+//     doc.text('After stuffing the 320 JUTE BAGS into the container was completed', 20, 310);
+//     doc.text('and the export container was closed and secured by Shipping', 20, 320);
+//     doc.text('line seal and RRA seals on 2nd June 2023 at 15:00hrs', 20, 330);
+//     doc.text('Herewith below are the details:', 20, 340);
+//     doc.text('- MSKU7356560 (1*20FT)', 30, 350);
+//     doc.text('- Number of bags: 320 bags (JUTE BAGS)', 30, 360);
+
+//     // Add Rwacof Exports Ltd. details
+//     doc.setFontSize(8);
+//     doc.text('Rwacof Exports Ltd, K425 Street Kanzenze,Gikondo,Kigali,Rwanda', 20, 380);
+//     doc.text('Tel +250 252 575872 E-mail admin@rwacof.com Web www.rwacof.com', 20, 388);
+
+//     // Add new page
+//     doc.addPage();
+
+//     // Add RWACOF logo to the third page
+//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
+
+//     // Footer
+//     doc.setFontSize(10);
+//     doc.setTextColor(255, 0, 0);  // Set text color to red
+//     doc.text('NB: all Photos are enclosed at the end of this report', 20, 60);
+//     doc.setTextColor(0, 0, 0);  // Reset text color to black
+//     doc.text('This report reflects our findings determined at the time and place of our intervention', 20, 80);
+//     doc.text('only and does not relieve the parties from their contractual responsibilities.', 20, 90);
+
+//     doc.text('GIVEN AT RWACOF EXPORTS LTD ON 14 June 2023', 20, 120);
+
+
+
+//     doc.text('Digitally Signed', 20, 160);
+
+//     doc.text('Berthe Mukanoheri', 20, 190);
+//     doc.text('Operations', 20, 200);
+
+//     // Save the PDF
+//     doc.save('stuffing-report.pdf');
+// };
+
+
+export const generateStuffingReport = (doc, data) => {
+    // Add RWACOF logo
+    doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
 
     // Title
     doc.setFontSize(16);
-    doc.text('STUFFING SUPERVISION REPORT', 20, 20);
+    doc.setFont(undefined, 'bold');
+    doc.text('STUFFING SUPERVISION REPORT', doc.internal.pageSize.width / 2, 60, { align: 'center' });
 
     // Client information table
     doc.autoTable({
-        startY: 30,
+        startY: 70,
+        head: [['', '']],
         body: [
-            ['Client', 'ILLYCAFFE S.P.A.\nVIA FLAVIA 110, 34147, TRIESTE, Italy\nstefano.scanferla@illy.com'],
-            ['Mandate', 'Stuffing Supervision of 320 JUTE BAGS Containing RWANDA ARABICA COFFEE into 1 export container'],
-            ['Product', 'RWANDA ARABICA COFFEE'],
-            ['Packing', 'JUTE BAGS'],
-            ['Vessel name', 'LANA'],
-            ['Bill of Lading No.', '227771442'],
-            ['Place', 'RWACOF EXPORTS LTD YARD'],
-            ['Export Container stuffed', data.containerNo],
-            ['Commenced Stuffing /loading', '2nd June 2023 at 10:30hrs'],
-            ['Completed Stuffing/loading', '2nd June 2023 at 11:15hrs'],
-            ['Temporally seal', '2nd June 2023 at 14:10hrs'],
-            ['Container sealing/Shipping line seal', '2nd June 2023 at 15:00hrs']
+            ['Client', data.stuffingReport.client],
+            ['Mandate', data.stuffingReport.mandate],
+            ['Product', data.stuffingReport.product],
+            ['Packing', data.stuffingReport.packing],
+            ['Vessel name', data.stuffingReport.vesselName],
+            ['Bill of Lading No.', data.stuffingReport.billOfLadingNo],
+            ['Place', data.stuffingReport.place],
+            ['Export Container stuffed', data.stuffingReport.container],
+            ['Commenced Stuffing /loading', new Date(data.stuffingReport.stuffingStart).toLocaleString()],
+            ['Completed Stuffing/loading', new Date(data.stuffingReport.stuffingEnd).toLocaleString()],
+            ['temporally seal', new Date(data.stuffingReport.tempSealTime).toLocaleString()],
+            ['Container sealing/Shipping line seal', new Date(data.stuffingReport.finalSealTime).toLocaleString()]
         ],
+        theme: 'grid',
+        styles: { fontSize: 10, cellPadding: 2 },
+        columnStyles: { 0: { fontStyle: 'bold', cellWidth: 80 } },
+        headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
     });
 
-    // Stuffing Report
-    doc.setFontSize(14);
-    doc.text('STUFFING REPORT', 20, doc.lastAutoTable.finalY + 10);
+    // Add new page
+    doc.addPage();
+
+    // Add RWACOF logo to the second page
+    doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
+
+    // STUFFING REPORT title
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text('STUFFING REPORT', doc.internal.pageSize.width / 2, 60, { align: 'center' });
 
     // Container Particulars & Condition
     doc.setFontSize(12);
-    doc.text('1.0 CONTAINER PARTICULARS & CONDITION', 20, doc.lastAutoTable.finalY + 20);
-    doc.text('1.1 MSKU7356560 (20ft Container)', 20, doc.lastAutoTable.finalY + 30);
-    doc.text('Container Condition: found to be good, clean, and free from Any spillage and stains.', 20, doc.lastAutoTable.finalY + 40);
+    doc.text('1.0 CONTAINER PARTICULARS & CONDITION', 20, 80);
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(10);
+    doc.text(`1.1 ${data.containerNo} (20ft Container)`, 20, 90);
+    doc.text(`Container Condition: ${data.stuffingReport.containerCondition}`, 20, 100);
 
     // Descriptions of Goods
-    doc.text('1.1.1 DESCRIPTIONS OF GOODS:', 20, doc.lastAutoTable.finalY + 50);
-    doc.text('PRODUCT: RWANDA ARABICA COFFEE', 30, doc.lastAutoTable.finalY + 60);
-    doc.text('Number of Bags: 320', 30, doc.lastAutoTable.finalY + 70);
-    doc.text('LOTS: 28/002/22018', 30, doc.lastAutoTable.finalY + 80);
-    doc.text('ILLY ID: 340350032', 30, doc.lastAutoTable.finalY + 90);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('1.1.1 DESCRIPTIONS OF GOODS:', 20, 120);
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(10);
+    doc.text(`PRODUCT: ${data.stuffingReport.product}`, 20, 130);
+    doc.text(`Number of Bags: ${data.stuffingReport.numberOfBags} BAGS`, 20, 140);
+    doc.text('LOTS:', 20, 150);
+    doc.text(data.stuffingReport.lots, 20, 160);
+    doc.text(`ILLY ID: ${data.stuffingReport.illyId}`, 20, 170);
 
     // Findings
-    doc.text('2.0 FINDINGS', 20, doc.lastAutoTable.finalY + 100);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('2.0 FINDINGS', 20, 190);
+    doc.setFont(undefined, 'normal');
     doc.setFontSize(10);
-    doc.text('Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.', 20, doc.lastAutoTable.finalY + 110);
-    doc.text('We conducted the Stuffing Supervision of RWANDA ARABICA COFFEE into the export container', 20, doc.lastAutoTable.finalY + 120);
-    doc.text('at RWACOF EXPORTS LTD YARD and report as follows:', 20, doc.lastAutoTable.finalY + 130);
+    doc.text('Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.', 20, 200);
+    doc.text('We conducted the Stuffing Supervision of', 20, 210);
+    doc.text(`${data.stuffingReport.product} into the export container at ${data.stuffingReport.place}`, 20, 220);
+    doc.text('and report as follows:', 20, 230);
 
     // Stuffing
     doc.setFontSize(12);
-    doc.text('2.1 STUFFING', 20, doc.lastAutoTable.finalY + 140);
+    doc.setFont(undefined, 'bold');
+    doc.text('2.1 STUFFING', 20, 250);
+    doc.setFont(undefined, 'normal');
     doc.setFontSize(10);
-    doc.text('Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on 2nd June 2023 at 10:30hrs', 20, doc.lastAutoTable.finalY + 150);
-    doc.text('and was completed on the same date 2nd June 2023 at 11:10hrs', 20, doc.lastAutoTable.finalY + 160);
-    doc.text('320 Bags of coffee packed in Jute bags were stuffed into the container.', 20, doc.lastAutoTable.finalY + 170);
+    doc.text(`Stuffing of the container at ${data.stuffingReport.place} commenced on ${new Date(data.stuffingReport.stuffingStart).toLocaleDateString()} at`, 20, 260);
+    doc.text(`${new Date(data.stuffingReport.stuffingStart).toLocaleTimeString()} and was completed on ${new Date(data.stuffingReport.stuffingEnd).toLocaleDateString()} at ${new Date(data.stuffingReport.stuffingEnd).toLocaleTimeString()}`, 20, 270);
+    doc.text(`${data.stuffingReport.numberOfBags} Bags of coffee packed in ${data.stuffingReport.packing} were stuffed into the container.`, 20, 280);
 
     // Container Sealing
     doc.setFontSize(12);
-    doc.text('2.2 CONTAINER SEALING AFTER STUFFING', 20, doc.lastAutoTable.finalY + 180);
+    doc.setFont(undefined, 'bold');
+    doc.text('2.2 CONTAINER SEALING AFTER STUFFING', 20, 300);
+    doc.setFont(undefined, 'normal');
     doc.setFontSize(10);
-    doc.text('After stuffing the 320 JUTE BAGS into the container was completed and the export container', 20, doc.lastAutoTable.finalY + 190);
-    doc.text('was closed and secured by Shipping line seal and RRA seals on 2nd June 2023 at 15:00hrs', 20, doc.lastAutoTable.finalY + 200);
-    doc.text('Herewith below are the details:', 20, doc.lastAutoTable.finalY + 210);
-    doc.text('• MSKU7356560 (1*20FT)', 30, doc.lastAutoTable.finalY + 220);
-    doc.text('• Number of bags: 320 bags (JUTE BAGS)', 30, doc.lastAutoTable.finalY + 230);
+    doc.text(`After stuffing the ${data.stuffingReport.numberOfBags} ${data.stuffingReport.packing} into the container was completed`, 20, 310);
+    doc.text('and the export container was closed and secured by Shipping', 20, 320);
+    doc.text(`line seal and RRA seals on ${new Date(data.stuffingReport.finalSealTime).toLocaleString()}`, 20, 330);
+    doc.text('Herewith below are the details:', 20, 340);
+    doc.text(`- ${data.containerNo} (1*20FT)`, 30, 350);
+    doc.text(`- Number of bags: ${data.stuffingReport.numberOfBags} bags (${data.stuffingReport.packing})`, 30, 360);
+
+    // Add Rwacof Exports Ltd. details
+    doc.setFontSize(8);
+    doc.text('Rwacof Exports Ltd, K425 Street Kanzenze,Gikondo,Kigali,Rwanda', 20, 380);
+    doc.text('Tel +250 252 575872 E-mail admin@rwacof.com Web www.rwacof.com', 20, 388);
+
+    // Add new page
+    doc.addPage();
+
+    // Add RWACOF logo to the third page
+    doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
 
     // Footer
     doc.setFontSize(10);
-    doc.text('NB: all Photos are enclosed at the end of this report', 20, doc.lastAutoTable.finalY + 240);
-    doc.text('This report reflects our findings determined at the time and place of our intervention only', 20, doc.lastAutoTable.finalY + 250);
-    doc.text('and does not relieve the parties from their contractual responsibilities.', 20, doc.lastAutoTable.finalY + 260);
-    doc.text('GIVEN AT RWACOF EXPORTS LTD ON 14 June 2023', 20, doc.lastAutoTable.finalY + 270);
-    doc.text('SIGNED: [Signature and Stamp]', 20, doc.lastAutoTable.finalY + 280);
-    doc.text('Berthe Mukanoheri', 20, doc.lastAutoTable.finalY + 290);
-    doc.text('Operations', 20, doc.lastAutoTable.finalY + 300);
+    doc.setTextColor(255, 0, 0);  // Set text color to red
+    doc.text('NB: all Photos are enclosed at the end of this report', 20, 60);
+    doc.setTextColor(0, 0, 0);  // Reset text color to black
+    doc.text('This report reflects our findings determined at the time and place of our intervention', 20, 80);
+    doc.text('only and does not relieve the parties from their contractual responsibilities.', 20, 90);
+
+    doc.text(`GIVEN AT ${data.stuffingReport.place} ON ${new Date(data.stuffingReport.signatureDate).toLocaleDateString()}`, 20, 120);
+
+    doc.text('Digitally Signed', 20, 160);
+
+    doc.text(data.stuffingReport.authorizedPerson, 20, 190);
+    doc.text('Operations', 20, 200);
 
     // Save the PDF
     doc.save('stuffing-report.pdf');
 };
 
-// You may want to move these utility functions to a separate file
+
 export function formatDate(dateString) {
     if (!dateString) return '';
     const date = new Date(dateString);

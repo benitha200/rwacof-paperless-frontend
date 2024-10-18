@@ -8,6 +8,7 @@ import { CheckCircle2, Circle } from "lucide-react";
 import { handleDownload, handleUpdate, formatDate, numberToWords } from './ShipmentUtils';
 import ShipmentDetails from './ShipmentDetails';
 import { useToast } from '@chakra-ui/react';
+import { Input } from '@chakra-ui/react';
 
 function ShipmentInfo() {
     const { id } = useParams();
@@ -16,7 +17,9 @@ function ShipmentInfo() {
     const navigate = useNavigate();
     const [steps, setSteps] = useState([]);
     const [containerCount, setContainerCount] = useState(1);
-    const toast=useToast(true);
+    const [images, setImages] = useState([]);
+    const toast = useToast(true);
+    const [selectedImages, setSelectedImages] = useState([]);
 
     useEffect(() => {
         fetchShipment();
@@ -37,9 +40,24 @@ function ShipmentInfo() {
     };
 
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onUpdate(formData);
+    const handleImageUpload = (event) => {
+        const newImages = Array.from(event.target.files);
+        setImages(prevImages => [...prevImages, ...newImages].slice(0, 8));
+    };
+    
+    const handleFileChange = (event) => {
+        const files = Array.from(event.target.files);
+        setSelectedImages(files);
+        handleImageUpload(event);  // Pass the event directly
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        images.forEach((image, index) => {
+            formData.append(`image${index + 1}`, image);
+        });
+        onSubmit(formData);
     };
 
     const fetchShipment = () => {
@@ -446,7 +464,7 @@ function ShipmentInfo() {
                         filename: 'vgm.pdf',
                     },
                     {
-                        title: "STUFFING REPORT",
+                        title: "StuffingReport",
                         content: (
                             <div className="border border-gray-300 p-4 rounded-lg m-4">
                                 <h2 className="text-xl font-bold mb-4">STUFFING SUPERVISION REPORT</h2>
@@ -455,45 +473,45 @@ function ShipmentInfo() {
                                         <tr>
                                             <td className="font-semibold">Client</td>
                                             <td>
-                                                <input type="text" defaultValue="ILLYCAFFE S.P.A." className="border border-gray-300 p-1 w-full" />
-                                                <input type="text" defaultValue="VIA FLAVIA 110, 34147, TRIESTE, Italy" className="border border-gray-300 p-1 w-full" />
-                                                <input type="email" defaultValue="stefano.scanferla@illy.com" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" name='client_name' defaultValue="ILLYCAFFE S.P.A." className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" name='client_address' defaultValue="VIA FLAVIA 110, 34147, TRIESTE, Italy" className="border border-gray-300 p-1 w-full" />
+                                                <input type="email" name='client_email' defaultValue="stefano.scanferla@illy.com" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Mandate</td>
                                             <td>
-                                                <input type="text" defaultValue="Stuffing Supervision of 320 JUTE BAGS Containing RWANDA ARABICA COFFEE into 1 export container" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" name='mandate' defaultValue="Stuffing Supervision of 320 JUTE BAGS Containing RWANDA ARABICA COFFEE into 1 export container" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Product</td>
                                             <td>
-                                                <input type="text" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" name='product' value="RWANDA ARABICA COFFEE" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Packing</td>
                                             <td>
-                                                <input type="text" defaultValue="JUTE BAGS" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" value={response?.data?.stuffingReport?.packing || ''} name='packing' defaultValue="JUTE BAGS" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Vessel name</td>
                                             <td>
-                                                <input type="text" defaultValue="LANA" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" value={response?.data?.stuffingReport?.vesselName || ''} name='vesselName' defaultValue="" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Bill of Lading No.</td>
                                             <td>
-                                                <input type="text" defaultValue="227771442" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" value={response?.data?.stuffingReport?.billOfLadingNo || ''} name='billOfLadingNo' defaultValue="227771442" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Place</td>
                                             <td>
-                                                <input type="text" defaultValue="RWACOF EXPORTS LTD YARD" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" name='place' value={response?.data?.stuffingReport?.place || ''} defaultValue="RWACOF EXPORTS LTD YARD" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -505,25 +523,42 @@ function ShipmentInfo() {
                                         <tr>
                                             <td className="font-semibold">Commenced Stuffing /loading</td>
                                             <td>
-                                                <input type="text" defaultValue="2nd June 2023 at 10:30hrs" className="border border-gray-300 p-1 w-full" />
+                                                <input
+                                                    type="datetime-local"
+                                                    name="stuffingStart"
+                                                    // value={response?.data?.stuffingReport?.stuffingStart || ''}
+                                                    className="border border-gray-300 p-1 w-full"
+                                                />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Completed Stuffing/loading</td>
                                             <td>
-                                                <input type="text" defaultValue="2nd June 2023 at 11:15hrs" className="border border-gray-300 p-1 w-full" />
+                                                <input
+                                                    type="datetime-local"
+                                                    name="stuffingEnd"
+                                                    className="border border-gray-300 p-1 w-full"
+                                                />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Temporally seal</td>
                                             <td>
-                                                <input type="text" defaultValue="2nd June 2023 at 14:10hrs" className="border border-gray-300 p-1 w-full" />
+                                                <input
+                                                    type="datetime-local"
+                                                    name="tempSealTime"
+                                                    className="border border-gray-300 p-1 w-full"
+                                                />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Container sealing/Shipping line seal</td>
                                             <td>
-                                                <input type="text" defaultValue="2nd June 2023 at 15:00hrs" className="border border-gray-300 p-1 w-full" />
+                                                <input
+                                                    type="datetime-local"
+                                                    name="finalSealTime"
+                                                    className="border border-gray-300 p-1 w-full"
+                                                />
                                             </td>
                                         </tr>
                                     </tbody>
@@ -531,14 +566,14 @@ function ShipmentInfo() {
 
                                 <h3 className="text-lg font-semibold mb-2">STUFFING REPORT</h3>
                                 <h4 className="font-semibold">1.0 CONTAINER PARTICULARS & CONDITION</h4>
-                                <p>1.1 <input type="text" defaultValue="MSKU7356560 (20ft Container)" className="border border-gray-300 p-1 w-full" /></p>
-                                <p>Container Condition: <input type="text" defaultValue="found to be good, clean, and free from Any spillage and stains." className="border border-gray-300 p-1 w-full" /></p>
+                                <p>1.1 <input type="text" name='container' value={response.data.containerNo} defaultValue="MSKU7356560 " className="border border-gray-300 p-1 w-full" />(20ft Container)</p>
+                                <p>Container Condition: <input type="text" name='containerCondition' defaultValue="found to be good, clean, and free from Any spillage and stains." className="border border-gray-300 p-1 w-full" /></p>
 
                                 <h4 className="font-semibold mt-2">1.1.1 DESCRIPTIONS OF GOODS:</h4>
-                                <p>PRODUCT: <input type="text" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" /></p>
-                                <p>Number of Bags: <input type="number" defaultValue="320" className="border border-gray-300 p-1 w-full" /></p>
-                                <p>LOTS: <input type="text" defaultValue="28/002/22018" className="border border-gray-300 p-1 w-full" /></p>
-                                <p>ILLY ID: <input type="text" defaultValue="340350032" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>PRODUCT: <input type="text" value="RWANDA ARABICA COFFEE" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>Number of Bags: <input type="number" name='numberOfBags' value={response.data.quantity || ''} defaultValue="320" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>LOTS: <input type="text" name='lots' value={response.data.lotNo} defaultValue="28/002/22018" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>ILLY ID: <input type="text" name='illyId' defaultValue="340350032" className="border border-gray-300 p-1 w-full" /></p>
 
                                 <h4 className="font-semibold mt-2">2.0 FINDINGS</h4>
                                 <p>Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.</p>
@@ -552,19 +587,43 @@ function ShipmentInfo() {
                                 <p>After stuffing the 320 JUTE BAGS into the container was completed and the export container was closed and secured by Shipping line seal and RRA seals on <input type="text" defaultValue="2nd June 2023 at 15:00hrs" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>Herewith below are the details:</p>
                                 <ul className="list-disc list-inside">
-                                    <li>MSKU7356560 (1*20FT)</li>
-                                    <li>Number of bags: <input type="number" defaultValue="320" className="border border-gray-300 p-1 w-full" /> bags (JUTE BAGS)</li>
+                                    <li>{response.data.containerNo} (1*20FT)</li>
+                                    <li>Number of bags: <input type="number" value={response.data.quantity} defaultValue="320" className="border border-gray-300 p-1 w-full" /> bags (JUTE BAGS)</li>
                                 </ul>
 
                                 <div className="mt-4">
                                     <p>NB: all Photos are enclosed at the end of this report</p>
                                     <p>This report reflects our findings determined at the time and place of our intervention only and does not relieve the parties from their contractual responsibilities.</p>
-                                    <p className="mt-2">GIVEN AT RWACOF EXPORTS LTD ON <input type="text" defaultValue="14 June 2023" className="border border-gray-300 p-1 w-full" /></p>
-                                    <p className="mt-2">SIGNED: [Signature and Stamp]</p>
-                                    <p>Berthe Mukanoheri</p>
+                                    <p className="mt-2">GIVEN AT RWACOF EXPORTS LTD ON <input type='date' name='signatureDate' defaultValue='2024-10-10' className="border border-gray-300 p-1 w-full" /></p>
+                                    <p className="mt-2">SIGNED: Digitally Signed</p>
+                                    <p><input type="number" name='authorizedPerson' value={response.data.authorizedPerson} defaultValue="320" className="border border-gray-300 p-1 w-full" /></p>
                                     <p>Operations</p>
                                 </div>
 
+                                <div className="mt-4">
+                                    <h4 className="font-semibold">Upload Images (up to 8):</h4>
+                                    <input
+                                        type="file"
+                                        multiple
+                                        onChange={handleFileChange}
+                                        accept="image/*"
+                                        className="border border-gray-300 p-2 w-full"
+                                    />
+                                    {selectedImages.length > 0 && (
+                                        <div className="mt-2">
+                                            <p>Selected Images:</p>
+                                            <ul>
+                                                {selectedImages.map((file, index) => (
+                                                    <li key={index}>{file.name}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                                {/* <div className="mt-4">
+                                    <h4 className="font-semibold">Upload Images (up to 8):</h4>
+                                    <input type="file" multiple onChange={handleImageUpload} accept="image/*" />
+                                </div> */}
                             </div>
                         ),
                         filename: 'stuffing-report.pdf'
@@ -576,14 +635,53 @@ function ShipmentInfo() {
             });
     };
 
+    // const updateShipment = async (updatedData, documentType) => {
+    //     try {
+    //         let response;
+    //         console.log(response);
+    //         console.log(documentType);
+    //         console.log(shipment);
+    //         console.log("shipment id");
+    //         // console.log(`${shipment.loadingTallySheet.id}`);
+    //         switch (documentType.toLowerCase()) {
+    //             case 'loadingtallysheet':
+    //                 response = await axios.post(`${API_URL}/api/loading-tally-sheets`, updatedData);
+    //                 break;
+    //             case 'vgm':
+    //                 response = await axios.post(`${API_URL}/api/vgms`, updatedData);
+    //                 break;
+    //             case 'invoice':
+    //                 response = await axios.post(`${API_URL}/api/invoices`, updatedData);
+    //                 break;
+    //             case 'stuffingreport':
+    //                 response = await axios.post(`${API_URL}/api/stuffing-reports`, updatedData);
+    //                 break;
+    //             default:
+    //                 response = await axios.post(`${API_URL}/api/shipments`, updatedData);
+    //         }
+    //         console.log(`Updated ${documentType}:`, response.data);
+    //         toast({
+    //             title: `${documentType} updated successfully`,
+    //             // description: `Welcome back, ${firstName}!`,
+    //             status: "success",
+    //             duration: 3000,
+    //             isClosable: true,
+    //         });
+
+
+    //         fetchShipment();
+    //     } catch (error) {
+    //         console.error(`Error updating ${documentType}:`, error);
+    //     }
+    // };
+
     const updateShipment = async (updatedData, documentType) => {
         try {
             let response;
-            console.log(response);
             console.log(documentType);
             console.log(shipment);
             console.log("shipment id");
-            // console.log(`${shipment.loadingTallySheet.id}`);
+
             switch (documentType.toLowerCase()) {
                 case 'loadingtallysheet':
                     response = await axios.post(`${API_URL}/api/loading-tally-sheets`, updatedData);
@@ -595,24 +693,34 @@ function ShipmentInfo() {
                     response = await axios.post(`${API_URL}/api/invoices`, updatedData);
                     break;
                 case 'stuffingreport':
-                    response = await axios.post(`${API_URL}/api/stuffing-reports`, updatedData);
+                    response = await axios.post(`${API_URL}/api/stuffing-reports`, updatedData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
                     break;
                 default:
                     response = await axios.post(`${API_URL}/api/shipments`, updatedData);
             }
+
             console.log(`Updated ${documentType}:`, response.data);
             toast({
                 title: `${documentType} updated successfully`,
-                // description: `Welcome back, ${firstName}!`,
                 status: "success",
                 duration: 3000,
                 isClosable: true,
-              });
-            
-            
+            });
+
             fetchShipment();
         } catch (error) {
             console.error(`Error updating ${documentType}:`, error);
+            toast({
+                title: `Error updating ${documentType}`,
+                description: error.message,
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
     };
 
@@ -660,6 +768,8 @@ function ShipmentInfo() {
                         activeStep={activeStep}
                         setActiveStep={setActiveStep}
                         shipment={shipment}
+                        images={images}
+                        selectedImages={selectedImages}
                         updateShipment={updateShipment}
                     />
                 </div>

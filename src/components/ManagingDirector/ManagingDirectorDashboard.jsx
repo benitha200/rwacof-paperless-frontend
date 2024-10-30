@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Grid, Heading, Text, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, SimpleGrid, Card, CardHeader, CardBody } from "@chakra-ui/react";
-import { TrendingUp, DollarSign, Package, Users } from 'lucide-react';
+import { Box, Grid, Heading, Text, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, Card, CardHeader, CardBody } from "@chakra-ui/react";
+
 
 const StatCard = ({ title, value, icon, trend }) => (
   <Card>

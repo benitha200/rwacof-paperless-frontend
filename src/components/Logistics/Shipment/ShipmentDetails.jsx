@@ -3,9 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from '@/components/ui/button';
 import { handleDownload, handleUpdate, formatDate, numberToWords } from './ShipmentUtils';
+import { Divider, StepSeparator } from '@chakra-ui/react';
+import { ChevronRight, Clock, Download, Package, Save } from 'lucide-react';
 
-function ShipmentDetails({ steps, activeStep, setActiveStep, shipment, updateShipment,images  }) {
-    const handleUpdate = (documentType ) => {
+function ShipmentDetails({ steps, activeStep, setActiveStep, shipment, updateShipment, images }) {
+    const handleUpdate = (documentType) => {
         let updatedData = {};
 
         switch (documentType.toLowerCase()) {
@@ -63,106 +65,59 @@ function ShipmentDetails({ steps, activeStep, setActiveStep, shipment, updateShi
                     containers: containers
                 };
                 break;
-                // case 'stuffingreport':
-                // const formData = new FormData();
-                // const clientInfo = {
-                //     name: document.querySelector('input[name="client_name"]')?.value || "ILLYCAFFE S.P.A.",
-                //     address: document.querySelector('input[name="client_address"]')?.value || "VIA FLAVIA 110, 34147, TRIESTE, Italy",
-                //     email: document.querySelector('input[name="client_email"]')?.value || "stefano.scanferla@illy.com"
-                // };
+            case 'stuffingreport':
+                const clientInfo = {
+                    name: document.querySelector('input[name="client_name"]')?.value || "ILLYCAFFE S.P.A.",
+                    address: document.querySelector('input[name="client_address"]')?.value || "VIA FLAVIA 110, 34147, TRIESTE, Italy",
+                    email: document.querySelector('input[name="client_email"]')?.value || "stefano.scanferla@illy.com"
+                };
 
-                // // Concatenate client information with proper formatting
-                // const client = `${clientInfo.name}\n${clientInfo.address}\n${clientInfo.email}`;
+                // Concatenate client information with proper formatting
+                const client = `${clientInfo.name}\n${clientInfo.address}\n${clientInfo.email}`;
 
-                // // Append form data
-                // formData.append('client', client);
-                // formData.append('mandate', document.querySelector('input[name="mandate"]')?.value || '');
-                // formData.append('product', document.querySelector('input[name="product"]')?.value || '');
-                // formData.append('packing', document.querySelector('input[name="packing"]')?.value || '');
-                // formData.append('vesselName', document.querySelector('input[name="vesselName"]')?.value || '');
-                // formData.append('billOfLadingNo', document.querySelector('input[name="billOfLadingNo"]')?.value || '');
-                // formData.append('place', document.querySelector('input[name="place"]')?.value || '');
-                // formData.append('stuffingStart', document.querySelector('input[name="stuffingStart"]')?.value || '');
-                // formData.append('stuffingEnd', document.querySelector('input[name="stuffingEnd"]')?.value || '');
-                // formData.append('tempSealTime', document.querySelector('input[name="tempSealTime"]')?.value || '');
-                // formData.append('finalSealTime', document.querySelector('input[name="finalSealTime"]')?.value || '');
-                // formData.append('containerCondition', document.querySelector('input[name="containerCondition"]')?.value || '');
-                // formData.append('container', document.querySelector('input[name="container"]')?.value || '');
-                // formData.append('numberOfBags', document.querySelector('input[name="numberOfBags"]')?.value || '');
-                // formData.append('lots', document.querySelector('input[name="lots"]')?.value || '');
-                // formData.append('illyId', document.querySelector('input[name="illyId"]')?.value || '');
-                // formData.append('authorizedPerson', document.querySelector('input[name="authorizedPerson"]')?.value || '');
+                const updatedData1 = {
+                    shipmentId: shipment.id,
+                    client: client,
+                    mandate: document.querySelector('input[name="mandate"]')?.value,
+                    product: document.querySelector('input[name="product"]')?.value,
+                    packing: document.querySelector('input[name="packing"]')?.value,
+                    vesselName: document.querySelector('input[name="vesselName"]')?.value,
+                    billOfLadingNo: document.querySelector('input[name="billOfLadingNo"]')?.value,
+                    place: document.querySelector('input[name="place"]')?.value,
+                    stuffingStart: document.querySelector('input[name="stuffingStart"]')?.value,
+                    stuffingEnd: document.querySelector('input[name="stuffingEnd"]')?.value,
+                    tempSealTime: document.querySelector('input[name="tempSealTime"]')?.value,
+                    finalSealTime: document.querySelector('input[name="finalSealTime"]')?.value,
+                    containerCondition: document.querySelector('input[name="containerCondition"]')?.value,
+                    container: document.querySelector('input[name="container"]')?.value,
+                    numberOfBags: document.querySelector('input[name="numberOfBags"]')?.value,
+                    lots: document.querySelector('input[name="lots"]')?.value,
+                    illyId: document.querySelector('input[name="illyId"]')?.value,
+                    authorizedPerson: document.querySelector('input[name="authorizedPerson"]')?.value,
+                    signatureDate: document.querySelector('input[name="signatureDate"]')?.value
+                };
 
-                // const signatureDate = document.querySelector('input[name="signatureDate"]')?.value;
-                // if (signatureDate) {
-                //     formData.append('signatureDate', new Date(signatureDate + 'T00:00:00Z').toISOString());
-                // }
+                // Create a FormData object
+                const formData = new FormData();
 
-                // formData.append('shipmentId', shipment.id);
+                // Append all the updatedData fields to formData
+                Object.keys(updatedData1).forEach(key => {
+                    formData.append(key, updatedData1[key]);
+                });
 
-                // // Append images
-                // if (images && Array.isArray(images)) {
-                //     images.forEach((image, index) => {
-                //         formData.append(`image${index + 1}`, image);
-                //     });
-                // }
+                // Append images to formData
+                try {
+                    images.forEach((image, index) => {
+                        formData.append(`image${index + 1}`, image);
+                    });
+                } catch (error) {
+                    console.error("Error while appending images to form data", error);
+                }
+                updatedData = formData;
 
-                // updatedData = formData;
-                // break;
+                break;
 
-                case 'stuffingreport':
-                        const clientInfo = {
-                            name: document.querySelector('input[name="client_name"]')?.value || "ILLYCAFFE S.P.A.",
-                            address: document.querySelector('input[name="client_address"]')?.value || "VIA FLAVIA 110, 34147, TRIESTE, Italy",
-                            email: document.querySelector('input[name="client_email"]')?.value || "stefano.scanferla@illy.com"
-                        };
-                    
-                        // Concatenate client information with proper formatting
-                        const client = `${clientInfo.name}\n${clientInfo.address}\n${clientInfo.email}`;
-                    
-                        const updatedData1 = {
-                            shipmentId: shipment.id,
-                            client: client,
-                            mandate: document.querySelector('input[name="mandate"]')?.value,
-                            product: document.querySelector('input[name="product"]')?.value,
-                            packing: document.querySelector('input[name="packing"]')?.value,
-                            vesselName: document.querySelector('input[name="vesselName"]')?.value,
-                            billOfLadingNo: document.querySelector('input[name="billOfLadingNo"]')?.value,
-                            place: document.querySelector('input[name="place"]')?.value,
-                            stuffingStart: document.querySelector('input[name="stuffingStart"]')?.value,
-                            stuffingEnd: document.querySelector('input[name="stuffingEnd"]')?.value,
-                            tempSealTime: document.querySelector('input[name="tempSealTime"]')?.value,
-                            finalSealTime: document.querySelector('input[name="finalSealTime"]')?.value,
-                            containerCondition: document.querySelector('input[name="containerCondition"]')?.value,
-                            container: document.querySelector('input[name="container"]')?.value,
-                            numberOfBags: document.querySelector('input[name="numberOfBags"]')?.value,
-                            lots: document.querySelector('input[name="lots"]')?.value,
-                            illyId: document.querySelector('input[name="illyId"]')?.value,
-                            authorizedPerson: document.querySelector('input[name="authorizedPerson"]')?.value,
-                            signatureDate: document.querySelector('input[name="signatureDate"]')?.value
-                        };
-                    
-                        // Create a FormData object
-                        const formData = new FormData();
-                    
-                        // Append all the updatedData fields to formData
-                        Object.keys(updatedData1).forEach(key => {
-                            formData.append(key, updatedData1[key]);
-                        });
-                    
-                        // Append images to formData
-                        try {
-                            images.forEach((image, index) => {
-                                formData.append(`image${index + 1}`, image);
-                            });
-                        } catch(error) {
-                            console.error("Error while appending images to form data", error);
-                        }
-                        updatedData=formData;
-                
-                    break;
-            
-                    default:
+            default:
                 console.error('Unknown document type:', documentType);
                 return;
         }
@@ -171,31 +126,63 @@ function ShipmentDetails({ steps, activeStep, setActiveStep, shipment, updateShi
     };
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Shipment Details</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Accordion type="single" collapsible>
-                    {steps.map((step, index) => (
-                        <AccordionItem key={index} value={`step-${index}`}>
-                            <AccordionTrigger onClick={() => setActiveStep(index)}>{step.title}</AccordionTrigger>
-                            <AccordionContent>
-                                <div className="step-content">{step.content}</div>
-                                <div className="actions mt-4 space-x-4 m-4">
-                                    <Button variant="outline" onClick={() => handleDownload(step.filename, step.title, shipment)}>
-                                        Download {step.title}
-                                    </Button>
-                                    <Button onClick={() => handleUpdate(step.title)}>
-                                        Save {step.title}
-                                    </Button>
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                    ))}
-                </Accordion>
-            </CardContent>
-        </Card>
+        <Card className="max-w-full mx-auto shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-teal-50 to-teal-100">
+          <CardTitle className="text-xl font-semibold text-teal-900 flex items-center gap-2">
+            <Package className="h-6 w-6" />
+            Shipment Details
+          </CardTitle>
+        </CardHeader>
+        
+        <CardContent className="p-6">
+          <Accordion type="single" collapsible className="space-y-4">
+            {steps.map((step, index) => (
+              <AccordionItem 
+                key={index} 
+                value={`step-${index}`}
+                className="border rounded-lg hover:shadow-md transition-shadow duration-200"
+              >
+                <AccordionTrigger 
+                  onClick={() => setActiveStep(index)}
+                  className="px-4 py-3 text-lg font-medium hover:bg-gray-50 rounded-t-lg"
+                >
+                  <div className="flex items-center gap-2">
+                    <ChevronRight className="h-5 w-5 text-teal-600" />
+                    <span className="text-gray-700">{step.title}</span>
+                  </div>
+                </AccordionTrigger>
+                
+                <Divider className="mx-4" />
+                
+                <AccordionContent className="px-4 py-4">
+                  <div className="step-content prose max-w-none text-gray-600">
+                    {step.content}
+                  </div>
+                  
+                  <div className="flex items-center gap-4 mt-6">
+                    <Button 
+                      variant="outline"
+                      onClick={() => handleDownload(step.filename, step.title, shipment)}
+                      className="flex items-center gap-2 hover:bg-teal-50"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download {step.title}
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => handleUpdate(step.title)}
+                      className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700"
+                    >
+                      <Save className="h-4 w-4" />
+                      Save {step.title}
+                    </Button>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </CardContent>
+      </Card>
     );
 }
 

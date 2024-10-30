@@ -47,11 +47,11 @@ const updateSpecificSection = (section, sectionData, updateFunction) => {
 
 export const generateInvoice = (doc, data) => {
     // Set font size and style
-    doc.setFontSize(18);
+    doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
     doc.text('RWACOF EXPORTS LTD', 20, 20);
 
-    doc.setFontSize(16);
+    doc.setFontSize(13);
     doc.text('INVOICE', 20, 30);
 
     doc.setFontSize(12);
@@ -74,7 +74,7 @@ export const generateInvoice = (doc, data) => {
     const startY = 95;
     doc.autoTable({
         startY: startY,
-        head: [['Description', 'Value']],
+        head: [['Description', '']],
         body: [
             ['TRUCK NO:', data.truckNo || 'RAF239R/RL3581'],
             ['CONTAINER No:', data.containerNo || 'MSKU2706542'],
@@ -82,9 +82,9 @@ export const generateInvoice = (doc, data) => {
             ['DESCRIPTION:', data.description || 'RWANDA ARABIC COFFEE'],
             ['IN BIG BAGS:', data.quantity || '80'],
             ['NET WEIGHT:', data.netWeight || '78'],
-            ['AMOUNT: U.S DOLLARS', `${data.amount || '15476.29'} (${numberToWords(data.amount || 15476.29)})`],
+            ['AMOUNT (U.S DOLLARS)', `${data.amount || '15476.29'} (${numberToWords(data.amount || 15476.29)})`],
         ],
-        theme: 'plain',
+        theme: 'grid',
         styles: { fontSize: 12, cellPadding: 5 },
         columnStyles: { 0: { cellWidth: 80 }, 1: { cellWidth: 110 } },
     });
@@ -121,10 +121,8 @@ export const generateVGM = (doc, data) => {
     // doc.setPageSize('a4');
 
     // Add RWACOF logo (you'll need to replace this with actual logo addition code)
-    // doc.addImage(logoData, 'PNG', 20, 15, 30, 30);
+    doc.addImage(logo, 'PNG', 20, 15, 30, 30);
 
-    // Add Maersk logo (you'll need to replace this with actual logo addition code)
-    // doc.addImage(maerskLogo, 'PNG', 170, 15, 30, 30);
 
     // RWACOF EXPORTS LTD header
     doc.setFontSize(16);
@@ -155,8 +153,8 @@ export const generateVGM = (doc, data) => {
         startY: doc.lastAutoTable.finalY + 10,
         head: [['Container number', 'Container type/size', 'VGM (KGS)', 'Cargo G.W. (KGS)', 'Method (I or II)', 'Remarks']],
         body: [
-            ['MRKU7019589', '20/DV', '40,320.00 KGS', '21,620.00 KGS', '1', 'XXXX'],
-            ['SUDU7675134', '20/DV', '39,100.00 KGS', '21,620.00 KGS', '1', 'XXXX']
+            [data?.vmg?.containerNumber, data?.vgm?.containerTypeSize, data?.vgm?.vgmKgs, data?.vgm?.cargoGwKgs, data?.vgm?.method, data?.vgm?.remarks || 'XXX'],
+            // ['SUDU7675134', '20/DV', '39,100.00 KGS', '21,620.00 KGS', '1', 'XXXX']
         ],
         theme: 'grid',
         headStyles: { fillColor: [255, 193, 7], textColor: 0, fontStyle: 'bold' },
@@ -169,7 +167,7 @@ export const generateVGM = (doc, data) => {
         startY: vesselY,
         body: [
             ['Vessel Name', data?.vgm?.vesselName || ''],
-            ['Voyage Number', data.vgm?.voyageNumber || 'Your Voyage Number']
+            ['Voyage Number', data.vgm?.voyageNumber || '']
         ],
         theme: 'plain',
         styles: { fontSize: 10 },
@@ -205,135 +203,6 @@ export const generateVGM = (doc, data) => {
     doc.line(20, doc.lastAutoTable.finalY + 25, 190, doc.lastAutoTable.finalY + 25);
 };
 
-// export const generateStuffingReport = (doc, data) => {
-//     // Add RWACOF logo
-//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
-
-//     // Title
-//     doc.setFontSize(16);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('STUFFING SUPERVISION REPORT', doc.internal.pageSize.width / 2, 60, { align: 'center' });
-
-//     // Client information table
-//     doc.autoTable({
-//         startY: 70,
-//         head: [['', '']],
-//         body: [
-//             ['Client', 'ILLYCAFFE S.P.A.\nVIA FLAVIA 110, 34147, TRIESTE, Italy\nE-Mail: stefano.scanferla@illy.com'],
-//             ['Mandate', 'Stuffing Supervision of 320 JUTE BAGS\nContaining RWANDA ARABICA COFFEE into 1\nexport container'],
-//             ['Product', data?.stuffingReport?.product],
-//             ['Packing', data?.stuffingReport?.packing],
-//             ['Vessel name', data?.stuffingReport?.vesselName],
-//             ['Bill of Lading No.', data?.stuffingReport?.billOfLadingNo],
-//             ['Place', data?.stuffingReport?.place],
-//             ['Export Container stuffed', data?.stuffingReport?.container],
-//             ['Commenced Stuffing /loading', '2nd June 2023 at 10:30hrs'],
-//             ['Completed Stuffing/loading', '2nd June 2023 at 11:15hrs'],
-//             ['temporally seal', '2nd June 2023 at 14:10hrs'],
-//             ['Container sealing/Shipping line seal', '2nd June 2023 at 15:00hrs']
-//         ],
-//         theme: 'grid',
-//         styles: { fontSize: 10, cellPadding: 2 },
-//         columnStyles: { 0: { fontStyle: 'bold', cellWidth: 80 } },
-//         headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
-//     });
-
-//     // Add new page
-//     doc.addPage();
-
-//     // Add RWACOF logo to the second page
-//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
-
-//     // STUFFING REPORT title
-//     doc.setFontSize(16);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('STUFFING REPORT', doc.internal.pageSize.width / 2, 60, { align: 'center' });
-
-//     // Container Particulars & Condition
-//     doc.setFontSize(12);
-//     doc.text('1.0 CONTAINER PARTICULARS & CONDITION', 20, 80);
-//     doc.setFont(undefined, 'normal');
-//     doc.setFontSize(10);
-//     doc.text('1.1 MSKU7356560 (20ft Container)', 20, 90);
-//     doc.text('Container Condition: found to be good, clean, and free from Any spillage and stains.', 20, 100);
-
-//     // Descriptions of Goods
-//     doc.setFontSize(12);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('1.1.1 DESCRIPTIONS OF GOODS:', 20, 120);
-//     doc.setFont(undefined, 'normal');
-//     doc.setFontSize(10);
-//     doc.text('PRODUCT: RWANDA ARABICA COFFEE', 20, 130);
-//     doc.text('Number of Bags: 320 BAGS', 20, 140);
-//     doc.text('LOTS:', 20, 150);
-//     doc.text('28/002/22018', 20, 160);
-//     doc.text('ILLY ID: 340350032', 20, 170);
-
-//     // Findings
-//     doc.setFontSize(12);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('2.0 FINDINGS', 20, 190);
-//     doc.setFont(undefined, 'normal');
-//     doc.setFontSize(10);
-//     doc.text('Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.', 20, 200);
-//     doc.text('We conducted the Stuffing Supervision of', 20, 210);
-//     doc.text('RWANDA ARABICA COFFEE into the export container at RWACOF', 20, 220);
-//     doc.text('EXPORTS LTD YARD and report as follows:', 20, 230);
-
-//     // Stuffing
-//     doc.setFontSize(12);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('2.1 STUFFING', 20, 250);
-//     doc.setFont(undefined, 'normal');
-//     doc.setFontSize(10);
-//     doc.text('Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on 2nd June 2023 at', 20, 260);
-//     doc.text('10:30hrs and was completed on the same date 2nd June 2023 at 11:10hrs', 20, 270);
-//     doc.text('320 Bags of coffee packed in Jute bags were stuffed into the container.', 20, 280);
-
-//     // Container Sealing
-//     doc.setFontSize(12);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('2.2 CONTAINER SEALING AFTER STUFFING', 20, 300);
-//     doc.setFont(undefined, 'normal');
-//     doc.setFontSize(10);
-//     doc.text('After stuffing the 320 JUTE BAGS into the container was completed', 20, 310);
-//     doc.text('and the export container was closed and secured by Shipping', 20, 320);
-//     doc.text('line seal and RRA seals on 2nd June 2023 at 15:00hrs', 20, 330);
-//     doc.text('Herewith below are the details:', 20, 340);
-//     doc.text('- MSKU7356560 (1*20FT)', 30, 350);
-//     doc.text('- Number of bags: 320 bags (JUTE BAGS)', 30, 360);
-
-//     // Add Rwacof Exports Ltd. details
-//     doc.setFontSize(8);
-//     doc.text('Rwacof Exports Ltd, K425 Street Kanzenze,Gikondo,Kigali,Rwanda', 20, 380);
-//     doc.text('Tel +250 252 575872 E-mail admin@rwacof.com Web www.rwacof.com', 20, 388);
-
-//     // Add new page
-//     doc.addPage();
-
-//     // Add RWACOF logo to the third page
-//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
-
-//     // Footer
-//     doc.setFontSize(10);
-//     doc.setTextColor(255, 0, 0);  // Set text color to red
-//     doc.text('NB: all Photos are enclosed at the end of this report', 20, 60);
-//     doc.setTextColor(0, 0, 0);  // Reset text color to black
-//     doc.text('This report reflects our findings determined at the time and place of our intervention', 20, 80);
-//     doc.text('only and does not relieve the parties from their contractual responsibilities.', 20, 90);
-
-//     doc.text('GIVEN AT RWACOF EXPORTS LTD ON 14 June 2023', 20, 120);
-
-
-
-//     doc.text('Digitally Signed', 20, 160);
-
-//     doc.text('Berthe Mukanoheri', 20, 190);
-//     doc.text('Operations', 20, 200);
-
-//     // Save the PDF
-//     doc.save('stuffing-report.pdf');
-// };
 
 
 export const generateStuffingReport = (doc, data) => {

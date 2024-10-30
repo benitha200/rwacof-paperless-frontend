@@ -23,9 +23,6 @@ const QualityManagerDashboard = () => {
                 <Text>View and manage the latest Goods Received Notes.</Text>
               </CardBody>
               <CardFooter>
-                {/* <Button leftIcon={<Plus />} colorScheme="teal" mr={3} onClick={() => navigate('/grn')}>
-                  Add GRN
-                </Button> */}
                 <Button leftIcon={<Eye />} colorScheme="teal" onClick={() => navigate('/allgrns')}>
                   View GRNs
                 </Button>

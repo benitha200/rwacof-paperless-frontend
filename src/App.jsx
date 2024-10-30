@@ -255,7 +255,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
-import { Home, Package, TrendingUp, Plus, Eye, LogOut, FileText, DollarSign, Users, Truck, Settings, Menu as MenuIcon, Bold } from 'lucide-react';
+import { Home, Package, TrendingUp, Plus, Eye, LogOut, FileText, DollarSign, Users, Truck, Settings, Menu as MenuIcon, Bold, SheetIcon } from 'lucide-react';
 import {
   Box, VStack, HStack, Heading, Text, Button, Image, Icon,
   useColorModeValue, ChakraProvider, Flex, Menu, MenuButton, MenuList, MenuItem,
@@ -284,6 +284,7 @@ import ManagingDirectorDashboard from './components/ManagingDirector/ManagingDir
 import ShipmentDetails from './components/Logistics/Shipment/ShipmentDetails';
 import QualityManagerDashboard from './components/Quality/QualityManagerDashboard';
 import CooDashboard from './components/COO/CooDashboard';
+import LoadingTallySheet from './components/Logistics/LoadingTallySheet/LoadingTallySheet';
 
 // Custom theme
 const theme = extendTheme({
@@ -377,7 +378,7 @@ const App = () => {
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/shipments", icon: Package, text: "Shipments" },
         { to: "/new-shipment", icon: Plus, text: "New Shipment" },
-        { to: "/tracking", icon: Eye, text: "Shipment Tracking" },
+        { to: "/loading-tally-sheet", icon: SheetIcon, text: "Loading Tally Sheet" },
       ],
     };
 
@@ -601,9 +602,14 @@ const App = () => {
                       <ShipmentForm />
                     </ProtectedRoute>
                   } />
-                  <Route path="/tracking" element={
+                  <Route path="/shipments" element={
                     <ProtectedRoute allowedRoles={['LOGISTICS']}>
                       <ShipmentList />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/loading-tally-sheet" element={
+                    <ProtectedRoute allowedRoles={['LOGISTICS']}>
+                      <LoadingTallySheet />
                     </ProtectedRoute>
                   } />
                   <Route path="/shipments/:id" element={

@@ -1,35 +1,3 @@
-// import React from 'react';
-// import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
-// import { CheckCircle2, Circle } from "lucide-react";
-
-// function ProgressCard({ steps, activeStep }) {
-//     return (
-//         <Card>
-//             <CardHeader>
-//                 <CardTitle>Progress</CardTitle>
-//             </CardHeader>
-//             <CardContent>
-//                 <div className="flex flex-col space-y-2">
-//                     {steps.map((step, index) => (
-//                         <div key={index} className="flex items-center">
-//                             {index <= activeStep ? (
-//                                 <CheckCircle2 className="w-6 h-6 text-teal-600 mr-2" />
-//                             ) : (
-//                                 <Circle className="w-6 h-6 text-gray-300 mr-2" />
-//                             )}
-//                             <span className={index <= activeStep ? 'text-teal-600 text-lg' : 'text-gray-600 text-lg'}>
-//                                 {step.title}
-//                             </span>
-//                         </div>
-//                     ))}
-//                 </div>
-//             </CardContent>
-//         </Card>
-//     );
-// }
-
-// export default ProgressCard;
-
 import React from 'react';
 import {
   Box,

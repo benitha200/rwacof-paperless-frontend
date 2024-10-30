@@ -2,9 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { VStack, Heading, Text, SimpleGrid, Grid, GridItem, Button, useColorModeValue } from '@chakra-ui/react';
 import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react';
-import { Stat, StatLabel, StatNumber, StatHelpText, StatArrow } from '@chakra-ui/react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Plus, Eye, FileText, DollarSign } from 'lucide-react';
+import { Plus, Eye, FileText } from 'lucide-react';
 
 const data = [
   { name: 'Jan', amount: 4000 },

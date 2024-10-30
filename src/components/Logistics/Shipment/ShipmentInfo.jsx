@@ -160,7 +160,6 @@ function ShipmentInfo() {
                                                     type="text"
                                                     className="border w-full"
                                                     name="netWeight"
-                                                    value={response.data.netWeight || ''}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
                                                 />
                                             </td>
@@ -596,7 +595,7 @@ function ShipmentInfo() {
                                     <p>This report reflects our findings determined at the time and place of our intervention only and does not relieve the parties from their contractual responsibilities.</p>
                                     <p className="mt-2">GIVEN AT RWACOF EXPORTS LTD ON <input type='date' name='signatureDate' defaultValue='2024-10-10' className="border border-gray-300 p-1 w-full" /></p>
                                     <p className="mt-2">SIGNED: Digitally Signed</p>
-                                    <p><input type="number" name='authorizedPerson' value={response.data.authorizedPerson} defaultValue="320" className="border border-gray-300 p-1 w-full" /></p>
+                                    <p><input type="number" name='authorizedPerson' value={response.data.authorizedPerson} defaultValue="THIERRY PASCAL" className="border border-gray-300 p-1 w-full" /></p>
                                     <p>Operations</p>
                                 </div>
 
@@ -620,10 +619,7 @@ function ShipmentInfo() {
                                         </div>
                                     )}
                                 </div>
-                                {/* <div className="mt-4">
-                                    <h4 className="font-semibold">Upload Images (up to 8):</h4>
-                                    <input type="file" multiple onChange={handleImageUpload} accept="image/*" />
-                                </div> */}
+                                
                             </div>
                         ),
                         filename: 'stuffing-report.pdf'
@@ -634,46 +630,6 @@ function ShipmentInfo() {
                 console.error('Error fetching shipment:', error);
             });
     };
-
-    // const updateShipment = async (updatedData, documentType) => {
-    //     try {
-    //         let response;
-    //         console.log(response);
-    //         console.log(documentType);
-    //         console.log(shipment);
-    //         console.log("shipment id");
-    //         // console.log(`${shipment.loadingTallySheet.id}`);
-    //         switch (documentType.toLowerCase()) {
-    //             case 'loadingtallysheet':
-    //                 response = await axios.post(`${API_URL}/api/loading-tally-sheets`, updatedData);
-    //                 break;
-    //             case 'vgm':
-    //                 response = await axios.post(`${API_URL}/api/vgms`, updatedData);
-    //                 break;
-    //             case 'invoice':
-    //                 response = await axios.post(`${API_URL}/api/invoices`, updatedData);
-    //                 break;
-    //             case 'stuffingreport':
-    //                 response = await axios.post(`${API_URL}/api/stuffing-reports`, updatedData);
-    //                 break;
-    //             default:
-    //                 response = await axios.post(`${API_URL}/api/shipments`, updatedData);
-    //         }
-    //         console.log(`Updated ${documentType}:`, response.data);
-    //         toast({
-    //             title: `${documentType} updated successfully`,
-    //             // description: `Welcome back, ${firstName}!`,
-    //             status: "success",
-    //             duration: 3000,
-    //             isClosable: true,
-    //         });
-
-
-    //         fetchShipment();
-    //     } catch (error) {
-    //         console.error(`Error updating ${documentType}:`, error);
-    //     }
-    // };
 
     const updateShipment = async (updatedData, documentType) => {
         try {

@@ -5,8 +5,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import API_URL from '../../constants/Constants';
 
-const API_URL = 'http://localhost:3001/api/shipments';
 
 const LogisticsDashboard = () => {
   const [shipments, setShipments] = useState([]);
@@ -17,7 +17,7 @@ const LogisticsDashboard = () => {
   useEffect(() => {
     const fetchShipments = async () => {
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(`${API_URL}/api/shipments`);
         if (!response.ok) {
           throw new Error('Failed to fetch shipments');
         }

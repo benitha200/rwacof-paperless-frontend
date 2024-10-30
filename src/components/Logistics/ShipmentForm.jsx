@@ -46,7 +46,9 @@ export default function ShipmentForm() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const quantityUnits = ['Bags', 'Kgs'];
+  const quantityUnits = ['Big Bags','Jute Bags','Jute Bags (Grain Pro) ','Bulk'];
+  const PackagingType = ['Big Bags','Jute Bags','Jute Bags (Grain Pro) ','Bulk'];
+  // const PackagingType = ['Big Bags','Jute Bags','Jute Bags/60kg','Jute Bags/60kg','Bulk', 'Kgs'];
   const weightUnits = ['Kgs', 'Bags'];
 
   useEffect(() => {
@@ -143,18 +145,29 @@ export default function ShipmentForm() {
               </FormControl>
             </SimpleGrid>
 
-            <SimpleGrid columns={3} spacing={4}>
+            <SimpleGrid columns={4} spacing={4}>
               <FormControl isRequired>
                 <FormLabel htmlFor="quantity">Quantity</FormLabel>
                 <InputGroup>
                   <Input id="quantity" name="quantity" type="number" value={shipment.quantity} onChange={handleChange} />
-                  <InputRightElement width="6rem">
+                  {/* <InputRightElement width="7rem">
                     <Select name="quantityUnit" value={shipment.quantityUnit} onChange={handleChange} >
-                      {quantityUnits.map((unit) => (
+                      {PackagingType.map((unit) => (
                         <option key={unit} value={unit}>{unit}</option>
                       ))}
                     </Select>
-                  </InputRightElement>
+                  </InputRightElement> */}
+                </InputGroup>
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel htmlFor="quantity">Packaging Type</FormLabel>
+                <InputGroup>
+                  {/* <Input id="quantity" name="quantity" type="number" value={shipment.quantity} onChange={handleChange} /> */}
+                    <Select name="quantityUnit" value={shipment.quantityUnit} onChange={handleChange} >
+                      {PackagingType.map((unit) => (
+                        <option key={unit} value={unit}>{unit}</option>
+                      ))}
+                    </Select>
                 </InputGroup>
               </FormControl>
               <FormControl isRequired>
@@ -175,7 +188,7 @@ export default function ShipmentForm() {
                 <InputGroup>
                   <Input id="price" name="price" type="number" step="0.01" value={shipment.price} onChange={handleChange} />
                   <InputRightElement width="4.5rem">
-                    <Text fontSize="sm">USD/kg</Text>
+                    <Text fontSize="sm">USC/LB</Text>
                   </InputRightElement>
                 </InputGroup>
               </FormControl>

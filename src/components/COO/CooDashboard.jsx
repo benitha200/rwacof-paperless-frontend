@@ -62,7 +62,7 @@ const CooDashboard = () => {
               title="Goods Received Notes"
               description="View and manage the latest Goods Received Notes."
               icon={FiTruck}
-            //   primaryAction={{ label: "Add GRN", icon: <FiPlus />, onClick: () => navigate('/grn') }}
+            
               secondaryAction={{ label: "View Recent GRNs", icon: <FiEye />, onClick: () => navigate('/allgrns') }}
             />
             <FeatureCard

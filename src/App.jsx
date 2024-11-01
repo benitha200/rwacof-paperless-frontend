@@ -350,7 +350,7 @@ const App = () => {
       ],
       FINANCE: [
         { to: "/", icon: Home, text: "Dashboard" },
-        { to: "/grn", icon: FileText, text: "GRN" },
+        { to: "/allgrns", icon: FileText, text: "GRN" },
         { to: "/payments", icon: DollarSign, text: "Payments" },
         { to: "/financial-reports", icon: FileText, text: "Financial Reports" },
       ],
@@ -522,11 +522,6 @@ const App = () => {
                   } />
 
                   {/* Finance Routes */}
-                  <Route path="/grn" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'WeightBridgeManager', 'COO', 'ManagingDirector']}>
-                      <GRN />
-                    </ProtectedRoute>
-                  } />
                   <Route path="/grn/:id" element={
                     <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'WeightBridgeManager', 'COO', 'ManagingDirector']}>
                       <GrnView />

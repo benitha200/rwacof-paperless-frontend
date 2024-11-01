@@ -1,107 +1,178 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { VStack, Heading, Text, SimpleGrid, Grid, GridItem, Button, useColorModeValue } from '@chakra-ui/react';
-import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react';
-import { Stat, StatLabel, StatNumber, StatHelpText, StatArrow } from '@chakra-ui/react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Plus, Eye, FileText, DollarSign } from 'lucide-react';
-
-const data = [
-  { name: 'Jan', amount: 4000 },
-  { name: 'Feb', amount: 3000 },
-  { name: 'Mar', amount: 5000 },
-  { name: 'Apr', amount: 4500 },
-  { name: 'May', amount: 6000 },
-  { name: 'Jun', amount: 5500 },
-];
+import React, { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { LineChart, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Line } from 'recharts';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { DollarSign, Package, Scale, Droplet, TrendingUp, Clock } from 'lucide-react';
 
 const DashboardFinance = () => {
-  const navigate = useNavigate();
-  const cardBg = useColorModeValue("white", "gray.700");
-  const statCardBg = useColorModeValue("gray.100", "gray.800");
+  const [grnData, setGrnData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchGRNData = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/grn/');
+        const data = await response.json();
+        setGrnData(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchGRNData();
+  }, []);
+
+  if (loading) {
+    return <div className="p-6">Loading dashboard data...</div>;
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>Failed to load GRN data: {error}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  // Calculate total values and averages
+  const totalPaymentAmount = grnData.reduce((sum, grn) => sum + grn.payment_amount, 0);
+  const totalBags = grnData.reduce((sum, grn) => sum + grn.bags, 0);
+  const averageMoisture = grnData.reduce((sum, grn) => sum + grn.moisture, 0) / grnData.length;
+  const totalWeight = grnData.reduce((sum, grn) => sum + grn.netWeightKg, 0);
+
+  // Stats cards data
+  const statsCards = [
+    {
+      title: "Total Payment Amount",
+      value: `$${totalPaymentAmount.toLocaleString()}`,
+      icon: DollarSign,
+      description: "Total payments for all GRNs"
+    },
+    {
+      title: "Total Net Weight",
+      value: `${totalWeight.toLocaleString()} kg`,
+      icon: Scale,
+      description: "Combined processed weight"
+    },
+    {
+      title: "Total Bags",
+      value: totalBags,
+      icon: Package,
+      description: "Total bags received"
+    },
+    {
+      title: "Avg Moisture",
+      value: `${averageMoisture.toFixed(1)}%`,
+      icon: Droplet,
+      description: "Average moisture content"
+    }
+  ];
+
+  // Prepare chart data for quality metrics
+  const qualityData = grnData.map(grn => ({
+    name: grn.supplierName,
+    moisture: grn.moisture,
+    parch: grn.parch,
+    payment: grn.payment_amount / 1000 // Convert to thousands for better visualization
+  }));
+
+  // Recent GRN status summary
+  const latestGRN = grnData[0];
 
   return (
-    <VStack spacing={8} align="stretch" w="full" p={5}>
-      <Heading as="h1" size="2xl" textAlign="center" mb={2}>Finance Dashboard</Heading>
-      <Text fontSize="xl" textAlign="center" color="gray.500" mb={6}>Manage All Financial Documents Here</Text>
+    <div className="p-6 space-y-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Finance Dashboard</h1>
+        <p className="text-gray-500">
+          {grnData.length} GRNs processed - Last updated: {new Date(latestGRN.updatedAt).toLocaleString()}
+        </p>
+      </div>
 
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-        <Stat bg={statCardBg} p={6} borderRadius="lg" boxShadow="md">
-          <StatLabel fontSize="lg">Total GRNs</StatLabel>
-          <StatNumber fontSize="4xl">145</StatNumber>
-          <StatHelpText>
-            <StatArrow type="increase" />
-            23% from last month
-          </StatHelpText>
-        </Stat>
-        <Stat bg={statCardBg} p={6} borderRadius="lg" boxShadow="md">
-          <StatLabel fontSize="lg">Pending Payments</StatLabel>
-          <StatNumber fontSize="4xl">$1.2M</StatNumber>
-          <StatHelpText>
-            <StatArrow type="decrease" />
-            5% from last month
-          </StatHelpText>
-        </Stat>
-        <Stat bg={statCardBg} p={6} borderRadius="lg" boxShadow="md">
-          <StatLabel fontSize="lg">Total Payments</StatLabel>
-          <StatNumber fontSize="4xl">$4.7M</StatNumber>
-          <StatHelpText>Based on current metrics</StatHelpText>
-        </Stat>
-      </SimpleGrid>
-
-      <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={6}>
-        <GridItem colSpan={1}>
-          <Card bg={cardBg} h="full">
-            <CardHeader>
-              <Heading size="md">Monthly Payment</Heading>
-            </CardHeader>
-            <CardBody>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={data}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="amount" fill="#66b2b2" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardBody>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {statsCards.map((card, index) => (
+          <Card key={index}>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-2">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <card.icon className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500">{card.title}</p>
+                  <h2 className="text-2xl font-bold">{card.value}</h2>
+                </div>
+              </div>
+              <p className="mt-2 text-sm text-gray-500">{card.description}</p>
+            </CardContent>
           </Card>
-        </GridItem>
-        <GridItem colSpan={1}>
-          <SimpleGrid columns={1} spacing={6} h="full">
-            <Card bg={cardBg}>
-              <CardHeader>
-                <Heading size="md">Recent GRNs</Heading>
-              </CardHeader>
-              <CardBody>
-                <Text>View and manage the latest Goods Received Notes.</Text>
-              </CardBody>
-              <CardFooter>
-                <Button leftIcon={<Plus />} colorScheme="teal" mr={3} onClick={() => navigate('/grn')}>
-                  Add GRN
-                </Button>
-                <Button leftIcon={<Eye />} colorScheme="blue" onClick={() => navigate('/allgrns')}>
-                  View GRNs
-                </Button>
-              </CardFooter>
-            </Card>
-            <Card bg={cardBg}>
-              <CardHeader>
-                <Heading size="md">Financial Reports</Heading>
-              </CardHeader>
-              <CardBody>
-                <Text>Access and generate comprehensive financial reports.</Text>
-              </CardBody>
-              <CardFooter>
-                <Button leftIcon={<FileText />} colorScheme="blue" onClick={() => navigate('/financial-reports')}>
-                  Generate Reports
-                </Button>
-              </CardFooter>
-            </Card>
-          </SimpleGrid>
-        </GridItem>
-      </Grid>
-    </VStack>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Quality Metrics by Supplier</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] w-full">
+              <BarChart
+                width={500}
+                height={300}
+                data={qualityData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="moisture" fill="#3b82f6" name="Moisture %" />
+                <Bar dataKey="parch" fill="#10b981" name="Parch %" />
+              </BarChart>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent GRN Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Latest Supplier</p>
+                  <p className="text-lg font-semibold">{latestGRN.supplierName}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Coffee Type</p>
+                  <p className="text-lg font-semibold">{latestGRN.coffee_type}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Quality Grade</p>
+                  <p className="text-lg font-semibold">{latestGRN.qualityGrade}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Status</p>
+                  <p className="text-lg font-semibold">{latestGRN.status}</p>
+                </div>
+              </div>
+
+              <Alert className={latestGRN.status === 'Received' ? 'bg-green-50' : 'bg-yellow-50'}>
+                <AlertTitle>Current Status</AlertTitle>
+                <AlertDescription>
+                  {latestGRN.status === 'Received' 
+                    ? `${latestGRN.supplierName} delivery successfully received and processed`
+                    : `${latestGRN.supplierName} delivery is in ${latestGRN.status} status`}
+                </AlertDescription>
+              </Alert>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 };
 

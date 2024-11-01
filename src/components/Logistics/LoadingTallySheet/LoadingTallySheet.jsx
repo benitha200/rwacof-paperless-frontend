@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { format } from 'date-fns';
 import { Loader2, Package, DollarSign, Weight, Hash } from 'lucide-react';
 import axios from 'axios';
+import API_URL from '../../../constants/Constants';
 
 const LoadingTallySheet = () => {
   const [data, setData] = useState([]);
@@ -14,7 +15,7 @@ const LoadingTallySheet = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/loading-tally-sheets');
+        const response = await axios.get(`${API_URL}/api/loading-tally-sheets`);
         setData(response.data);
         setLoading(false);
       } catch (err) {

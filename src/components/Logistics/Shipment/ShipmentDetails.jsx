@@ -155,19 +155,22 @@ function ShipmentDetails({ steps, activeStep, setActiveStep, shipment, updateShi
                 <Divider className="mx-4" />
                 
                 <AccordionContent className="px-4 py-4">
+                <div className="top-4 right-4">
+                <Button 
+                      variant="outline"
+                      onClick={() => handleDownload(step.filename, step.title, shipment)}
+                      className="flex items-right gap-2 hover:bg-teal-50"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download {step.title}
+                    </Button>
+                </div>
                   <div className="step-content prose max-w-none text-gray-600">
                     {step.content}
                   </div>
                   
                   <div className="flex items-center gap-4 mt-6">
-                    <Button 
-                      variant="outline"
-                      onClick={() => handleDownload(step.filename, step.title, shipment)}
-                      className="flex items-center gap-2 hover:bg-teal-50"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download {step.title}
-                    </Button>
+                    
                     
                     <Button 
                       onClick={() => handleUpdate(step.title)}

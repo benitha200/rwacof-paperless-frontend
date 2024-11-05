@@ -44,7 +44,7 @@ function ShipmentInfo() {
         const newImages = Array.from(event.target.files);
         setImages(prevImages => [...prevImages, ...newImages].slice(0, 8));
     };
-    
+
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files);
         setSelectedImages(files);
@@ -207,71 +207,94 @@ function ShipmentInfo() {
                                         {/* <p>SSRW-90706</p> */}
                                     </div>
                                 </div>
-                                <div className="border border-gray-300 p-2 mb-4 gap-2">
-                                    <p className="mb-4">
-                                        <span className="font-semibold">TRUCK NO:</span>
-                                        <input
-                                            type="text"
-                                            className="border ml-1"
-                                            name="truckNo"
-                                            defaultValue={response.data.truckNo || 'RAE2611/RL2728'}
-                                        />
-                                    </p>
-                                    <p className="mb-4">
-                                        <span className="font-semibold">CONTAINER No:</span>
-                                        <input
-                                            type="text"
-                                            className="border ml-1"
-                                            name="containerNo"
-                                            defaultValue={response.data.containerNo || 'MSMU5188197'}
-                                        />
-                                    </p>
-                                    <p className="mb-4">
-                                        <span className="font-semibold">LOT No:</span>
-                                        <input
-                                            type="text"
-                                            className="border ml-1"
-                                            name="lotNo"
-                                            defaultValue={response.data.lotNo || ''}
-                                        />
-                                    </p>
-                                    <p className="mb-4">
-                                        <span className="font-semibold">DESCRIPTION:</span>
-                                        <input
-                                            type="text"
-                                            className="border ml-1"
-                                            name="description"
-                                            defaultValue={response.data.description || ''}
-                                        />
-                                    </p>
-                                    <p className="mb-4">
-                                        <span className="font-semibold">IN BIG BAGS:</span>
-                                        <input
-                                            type="number"
-                                            className="border ml-1"
-                                            name="quantity"
-                                            defaultValue={response.data.quantity || ''}
-                                        />
-                                    </p>
-                                    <p className="mb-4">
-                                        <span className="font-semibold">NET WEIGHT:</span>
-                                        <input
-                                            type="number"
-                                            className="border ml-1"
-                                            name="netWeight"
-                                            defaultValue={response.data.netWeight || ''}
-                                        />
-                                    </p>
-                                    <p className="mb-4">
-                                        <span className="font-semibold">AMOUNT: U.S DOLLARS</span>
-                                        <input
-                                            type="number"
-                                            className="border ml-1"
-                                            name="amount"
-                                            defaultValue={response.data.amount || ''}
-                                        />
-                                        {response.data.amount && <span> ({numberToWords(response.data.amount)})</span>}
-                                    </p>
+                                <div className="border border-gray-300 p-2 mb-4">
+                                    <table className="w-full">
+                                        <tbody>
+                                            <tr className="border-b">
+                                                <td className="font-semibold p-2">TRUCK NO:</td>
+                                                <td className="p-2">
+                                                    <input
+                                                        type="text"
+                                                        className="w-full p-2"
+                                                        name="truckNo"
+                                                        readOnly
+                                                        defaultValue={response.data.truckNo || 'RAE2611/RL2728'}
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr className="border-b">
+                                                <td className="font-semibold p-2">CONTAINER No:</td>
+                                                <td className="p-2">
+                                                    <input
+                                                        type="text"
+                                                        className="p-2 w-full"
+                                                        name="containerNo"
+                                                        defaultValue={response.data.containerNo || 'MSMU5188197'}
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr className="border-b">
+                                                <td className="font-semibold p-2">LOT No:</td>
+                                                <td className="p-2">
+                                                    <input
+                                                        type="text"
+                                                        className="p-2 w-full"
+                                                        name="lotNo"
+                                                        defaultValue={response.data.lotNo || ''}
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr className="border-b">
+                                                <td className="font-semibold p-2">DESCRIPTION:</td>
+                                                <td className="p-2">
+                                                    <input
+                                                        type="text"
+                                                        className="p-2 w-full"
+                                                        name="description"
+                                                        readOnly
+                                                        defaultValue={response.data.description || ''}
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr className="border-b">
+                                                <td className="font-semibold p-2">IN BIG BAGS:</td>
+                                                <td className="p-2">
+                                                    <input
+                                                        type="number"
+                                                        className="p-2 w-full"
+                                                        name="quantity"
+                                                        readOnly
+                                                        defaultValue={response.data.quantity || ''}
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr className="border-b">
+                                                <td className="font-semibold p-2">NET WEIGHT:</td>
+                                                <td className="p-2">
+                                                    <input
+                                                        type="number"
+                                                        className="p-2 w-full"
+                                                        name="netWeight"
+                                                        readOnly
+                                                        defaultValue={response.data.netWeight || ''}
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td className="font-semibold p-2">AMOUNT: U.S DOLLARS</td>
+                                                <td className="p-2">
+                                                    <input
+                                                        type="number"
+                                                        className="p-2 w-full"
+                                                        name="amount"
+                                                        readOnly
+                                                        defaultValue={response.data.amount || ''}
+                                                    />
+                                                    {response.data.amount && <span> ({numberToWords(response.data.amount)})</span>}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div>
                                     <p className="font-semibold">AUTHORISED SIGNATURE</p>
@@ -619,7 +642,7 @@ function ShipmentInfo() {
                                         </div>
                                     )}
                                 </div>
-                                
+
                             </div>
                         ),
                         filename: 'stuffing-report.pdf'
@@ -688,7 +711,7 @@ function ShipmentInfo() {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Shipment Info - ID: {id} Lot No {shipment.lotNo || 'Deserunt aliqua Pro'}</h1>
+            <h1 className="text-2xl font-bold mb-4">Shipment Details - ID: {id} </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-1">

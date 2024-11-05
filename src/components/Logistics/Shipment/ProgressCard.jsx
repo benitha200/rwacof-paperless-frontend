@@ -19,7 +19,7 @@ function ProgressCard({ steps, activeStep }) {
         <Heading size="md">Progress</Heading>
       </CardHeader>
       <CardBody>
-        <VStack align="stretch" spacing={2}>
+        <VStack align="stretch" spacing={1}>
           {steps.map((step, index) => (
             <HStack key={index}>
               <Icon

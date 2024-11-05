@@ -58,25 +58,11 @@ const FinancialReports = () => {
       color: "green"
     },
     {
-      title: "Quality Metrics Report",
-      description: "Analysis of coffee quality grades and moisture levels",
-      icon: Scale,
-      type: "quality-metrics",
-      color: "purple"
-    },
-    {
       title: "Financial Statement",
       description: "Comprehensive financial statement including all transactions",
       icon: FileSpreadsheet,
       type: "financial-statement",
       color: "yellow"
-    },
-    {
-      title: "Price Trend Analysis",
-      description: "Historical price trends and rate analysis by supplier",
-      icon: TrendingDown,
-      type: "price-analysis",
-      color: "red"
     }
   ];
 

@@ -86,14 +86,14 @@ const App = () => {
 
   const MenuContent = () => {
     const menuItems = {
-      ADMIN: [
+      Admin: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/shipments", icon: Package, text: "Shipments" },
         { to: "/containers", icon: Package, text: "Containers" },
         { to: "/users", icon: Users, text: "User Management" },
         { to: "/settings", icon: Settings, text: "System Settings" },
       ],
-      FINANCE: [
+      Finance: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/allgrns", icon: FileText, text: "GRN" },
         { to: "/payments", icon: DollarSign, text: "Payments" },
@@ -119,7 +119,7 @@ const App = () => {
         { to: "/grn", icon: FileText, text: "GRN" },
         { to: "/allgrns", icon: FileText, text: "ALL GRNS" },
       ],
-      LOGISTICS: [
+      Logistics: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/new-shipment", icon: Plus, text: "New Shipment" },
         { to: "/shipments", icon: Package, text: "Shipments" },
@@ -138,11 +138,11 @@ const App = () => {
 
   const Welcome = () => {
     switch (userRole) {
-      case 'FINANCE':
+      case 'Finance':
         return <DashboardFinance />;
-      case 'LOGISTICS':
+      case 'Logistics':
         return <LogisticsDashboard />;
-      case 'ADMIN':
+      case 'Admin':
         return <AdminDashboard />;
       case 'WeightBridgeManager':
         return <WeightBridgeManagerDashboad />
@@ -161,6 +161,19 @@ const App = () => {
     }
   };
 
+  // const ProtectedRoute = ({ children, allowedRoles }) => {
+  //   const token = localStorage.getItem('token');
+  //   const storedUserRole = localStorage.getItem('userRole');
+
+  //   if (!token || !storedUserRole) {
+  //     return <Navigate to="/login" />;
+  //   }
+  //   if (allowedRoles && !allowedRoles.includes(storedUserRole)) {
+  //     return <Navigate to="/" />;
+  //   }
+  //   return children;
+  // };
+
   const ProtectedRoute = ({ children, allowedRoles }) => {
     const token = localStorage.getItem('token');
     const storedUserRole = localStorage.getItem('userRole');
@@ -168,7 +181,9 @@ const App = () => {
     if (!token || !storedUserRole) {
       return <Navigate to="/login" />;
     }
-    if (allowedRoles && !allowedRoles.includes(storedUserRole)) {
+
+    // Convert both stored role and allowed roles to uppercase for consistent comparison
+    if (allowedRoles && !allowedRoles.includes(storedUserRole.toUpperCase())) {
       return <Navigate to="/" />;
     }
     return children;
@@ -232,6 +247,134 @@ const App = () => {
               )}
 
               <Box flex={1} p={8}>
+                {/* <Routes>
+                  <Route path="/login" element={<Login onLogin={handleLogin} />} />
+                  <Route path="/" element={
+                    <ProtectedRoute>
+                      <Welcome />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="*" element={<Navigate to="/" />} />
+
+                 
+                  <Route path="/shipments" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'LOGISTICS']}>
+                      <ShipmentList />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/containers" element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <ContainerList />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/users" element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <UserManagment />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/settings" element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <SystemSettings />
+                    </ProtectedRoute>
+                  } />
+
+                  Finance Routes
+                  <Route path="/grn/:id" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'WeightBridgeManager', 'COO', 'ManagingDirector']}>
+                      <GrnView />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/allgrns" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'WeightBridgeManager', 'COO', 'ManagingDirector']}>
+                      <GrnList />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/payments" element={
+                    <ProtectedRoute allowedRoles={['FINANCE']}>
+                      <Payments />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/financial-reports" element={
+                    <ProtectedRoute allowedRoles={['FINANCE']}>
+                      <FinancialReports />
+                    </ProtectedRoute>
+                  } />
+
+                Weight Bridge Manager Routes 
+                  <Route path="/grn" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
+                      <GRN />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/grn/:id" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
+                      <GrnView />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/allgrns" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
+                      <GrnList />
+                    </ProtectedRoute>
+                  } />
+
+
+                COO Manager Routes 
+                  <Route path="/grn" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
+                      <GRN />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/grn/:id" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
+                      <GrnView />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/allgrns" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
+                      <GrnList />
+                    </ProtectedRoute>
+                  } />
+
+                   ManagingDirector Manager Routes 
+                  <Route path="/grn/:id" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
+                      <GrnView />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/allgrns" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
+                      <GrnList />
+                    </ProtectedRoute>
+                  } />
+
+
+                  Logistics Routes
+                  <Route path="/new-shipment" element={
+                    <ProtectedRoute allowedRoles={['LOGISTICS']}>
+                      <ShipmentForm />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/update-shipment" element={
+                    <ProtectedRoute allowedRoles={['LOGISTICS']}>
+                      <ShipmentUpdate />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/shipments" element={
+                    <ProtectedRoute allowedRoles={['LOGISTICS']}>
+                      <ShipmentList />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/loading-tally-sheet" element={
+                    <ProtectedRoute allowedRoles={['LOGISTICS']}>
+                      <LoadingTallySheet />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/shipments/:id" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'LOGISTICS']}>
+                      <ShipmentInfo />
+                    </ProtectedRoute>
+                  } />
+                </Routes> */}
                 <Routes>
                   <Route path="/login" element={<Login onLogin={handleLogin} />} />
                   <Route path="/" element={
@@ -264,12 +407,12 @@ const App = () => {
 
                   {/* Finance Routes */}
                   <Route path="/grn/:id" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'WeightBridgeManager', 'COO', 'ManagingDirector']}>
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QUALITYMANAGER', 'WEIGHTBRIDGEMANAGER', 'COO', 'MANAGINGDIRECTOR']}>
                       <GrnView />
                     </ProtectedRoute>
                   } />
                   <Route path="/allgrns" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'WeightBridgeManager', 'COO', 'ManagingDirector']}>
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QUALITYMANAGER', 'WEIGHTBRIDGEMANAGER', 'COO', 'MANAGINGDIRECTOR']}>
                       <GrnList />
                     </ProtectedRoute>
                   } />
@@ -284,53 +427,12 @@ const App = () => {
                     </ProtectedRoute>
                   } />
 
-                  {/* Weight Bridge Manager Routes */}
+                  {/* Weight Bridge Manager and Other Routes */}
                   <Route path="/grn" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QUALITYMANAGER', 'WEIGHTBRIDGEMANAGER']}>
                       <GRN />
                     </ProtectedRoute>
                   } />
-                  <Route path="/grn/:id" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GrnView />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/allgrns" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GrnList />
-                    </ProtectedRoute>
-                  } />
-
-
-                  {/* COO Manager Routes */}
-                  <Route path="/grn" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GRN />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/grn/:id" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GrnView />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/allgrns" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GrnList />
-                    </ProtectedRoute>
-                  } />
-
-                  {/* ManagingDirector Manager Routes */}
-                  <Route path="/grn/:id" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
-                      <GrnView />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/allgrns" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
-                      <GrnList />
-                    </ProtectedRoute>
-                  } />
-
 
                   {/* Logistics Routes */}
                   <Route path="/new-shipment" element={
@@ -343,11 +445,6 @@ const App = () => {
                       <ShipmentUpdate />
                     </ProtectedRoute>
                   } />
-                  <Route path="/shipments" element={
-                    <ProtectedRoute allowedRoles={['LOGISTICS']}>
-                      <ShipmentList />
-                    </ProtectedRoute>
-                  } />
                   <Route path="/loading-tally-sheet" element={
                     <ProtectedRoute allowedRoles={['LOGISTICS']}>
                       <LoadingTallySheet />
@@ -358,6 +455,9 @@ const App = () => {
                       <ShipmentInfo />
                     </ProtectedRoute>
                   } />
+
+                  {/* Catch-all route should be last */}
+                  <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </Box>
             </Flex>

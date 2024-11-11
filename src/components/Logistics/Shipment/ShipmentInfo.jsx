@@ -183,24 +183,26 @@ function ShipmentInfo() {
                                         <p>BP 6934 KIGALI</p>
                                         <p>RWANDA</p>
                                     </div>
-                                    <div>
+                                    <div className=''>
                                         <h4 className="font-semibold">CONSIGNEE:</h4>
                                         <input
                                             type="text"
-                                            className="border w-full mb-2"
+                                            className="border w-full m-2"
                                             name="consignee"
+                                            readOnly
                                             defaultValue={shipment.consignee || 'SUCAFINA S.A GENEVA'}
                                         />
-                                        <p>1PLACE ST GERVAIS, SWITZERLAND</p>
+                                        <p className='m-2'>1PLACE ST GERVAIS, SWITZERLAND</p>
                                         <input
                                             type="date"
-                                            className="border w-full"
+                                            className="border w-full m-2"
                                             name="invoiceDate"
+                                            readOnly
                                             defaultValue={shipment.date ? new Date(shipment.date).toISOString().split('T')[0] : '2024-10-10'}
                                         />
                                         <input
                                             type="text"
-                                            className="border w-full"
+                                            className="border w-full m-2"
                                             name="billOfLadingNo"
                                             defaultValue={'SSRW-90706'}
                                         />
@@ -503,13 +505,13 @@ function ShipmentInfo() {
                                         <tr>
                                             <td className="font-semibold">Mandate</td>
                                             <td>
-                                                <input type="text" name='mandate' defaultValue="Stuffing Supervision of 320 JUTE BAGS Containing RWANDA ARABICA COFFEE into 1 export container" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" name='mandate' defaultValue="Stuffing Supervision of 320 JUTE BAGS Containing RWANDA ARABICAA COFFEE into 1 export container" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Product</td>
                                             <td>
-                                                <input type="text" name='product' value="RWANDA ARABICA COFFEE" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" name='product' value="RWANDA ARABICAA COFFEE" defaultValue="RWANDA ARABICAA COFFEE" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -592,14 +594,14 @@ function ShipmentInfo() {
                                 <p>Container Condition: <input type="text" name='containerCondition' defaultValue="found to be good, clean, and free from Any spillage and stains." className="border border-gray-300 p-1 w-full" /></p>
 
                                 <h4 className="font-semibold mt-2">1.1.1 DESCRIPTIONS OF GOODS:</h4>
-                                <p>PRODUCT: <input type="text" value="RWANDA ARABICA COFFEE" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>PRODUCT: <input type="text" value="RWANDA ARABICAA COFFEE" defaultValue="RWANDA ARABICAA COFFEE" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>Number of Bags: <input type="number" name='numberOfBags' value={response.data.quantity || ''} defaultValue="320" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>LOTS: <input type="text" name='lots' value={response.data.lotNo} defaultValue="28/002/22018" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>ILLY ID: <input type="text" name='illyId' defaultValue="340350032" className="border border-gray-300 p-1 w-full" /></p>
 
                                 <h4 className="font-semibold mt-2">2.0 FINDINGS</h4>
                                 <p>Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.</p>
-                                <p>We conducted the Stuffing Supervision of RWANDA ARABICA COFFEE into the export container at RWACOF EXPORTS LTD YARD and report as follows:</p>
+                                <p>We conducted the Stuffing Supervision of RWANDA ARABICAA COFFEE into the export container at RWACOF EXPORTS LTD YARD and report as follows:</p>
 
                                 <h4 className="font-semibold mt-2">2.1 STUFFING</h4>
                                 <p>Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on <input type="text" defaultValue="2nd June 2023 at 10:30hrs" className="border border-gray-300 p-1 w-full" /> and was completed on the same date <input type="text" defaultValue="2nd June 2023 at 11:10hrs" className="border border-gray-300 p-1 w-full" /></p>

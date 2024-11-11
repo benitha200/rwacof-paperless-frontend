@@ -68,7 +68,7 @@ export const generateInvoice = (doc, data) => {
     doc.text(data.consignee || 'Sucafina SA', 120, 55);
     doc.text('1PLACE ST GERVAIS, SWITZERLAND', 120, 65);
     doc.text(formatDate(data.date) || '10/14/2024', 120, 75);
-    doc.text(data.ssrw || 'SSRW-90706', 120, 85);
+    doc.text(data.loadingTallySheet.rssSsrwSprw || 'SSRW-90706', 120, 85);
 
     // Invoice details
     const startY = 95;
@@ -79,10 +79,10 @@ export const generateInvoice = (doc, data) => {
             ['TRUCK NO:', data.truckNo || 'RAF239R/RL3581'],
             ['CONTAINER No:', data.containerNo || 'MSKU2706542'],
             ['LOT No:', data.lotNo || '228'],
-            ['DESCRIPTION:', data.description || 'RWANDA ARABIC COFFEE'],
+            ['DESCRIPTION:', data.description || 'RWANDA ARABICA COFFEE'],
             ['IN BIG BAGS:', data.quantity || '80'],
             ['NET WEIGHT:', data.netWeight || '78'],
-            ['AMOUNT (U.S DOLLARS)', `${data.amount || '15476.29'} (${numberToWords(data.amount || 15476.29)})`],
+            ['AMOUNT (U.S DOLLARS)', `${data.amount || '15476.29'} USD \n\n(${numberToWords(data.amount || 15476.29)})`],
         ],
         theme: 'grid',
         styles: { fontSize: 12, cellPadding: 5 },
@@ -96,12 +96,12 @@ export const generateInvoice = (doc, data) => {
     doc.text('RWACOF', 20, finalY + 30);
 
     // Total amount
-    doc.setFont(undefined, 'bold');
-    doc.text(data.amount || '15476.29', 170, finalY + 30, { align: 'right' });
+    // doc.setFont(undefined, 'bold');
+    // doc.text(data.amount || '15476.29', 170, finalY + 30, { align: 'right' });
 };
 
 export const generateTallySheet = (doc, data) => {
-    doc.text('LOADING TALLY SHEET', 20, 60);
+    doc.text('Loading List', 20, 60);
 
     doc.autoTable({
         startY: 70,

@@ -33,7 +33,7 @@
 //     containerNo: '',
 //     truckNo: '',
 //     lotNo: '',
-//     description: 'RWANDA ARABIC COFFEE',
+//     description: 'RWANDA ARABICA COFFEE',
 //     quantity: '',
 //     quantityUnit: 'bags',
 //     netWeight: '',
@@ -283,7 +283,7 @@ export default function ShipmentForm() {
   const [shipment, setShipment] = useState({
     containerNo: '',
     truckNo: '',
-    description: 'RWANDA ARABIC COFFEE',
+    description: 'RWANDA ARABICA COFFEE',
     date: null
   });
   const navigate = useNavigate();

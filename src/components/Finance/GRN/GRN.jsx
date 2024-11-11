@@ -59,7 +59,7 @@ const GRN = () => {
         wbridgeRef: '',
         moisture: '12.3',
         parch: '14.4',
-        coffee_type: 'ARABICA PARCH FW',
+        coffee_type: 'ARABICAA PARCH FW',
         bags: '100',
         quantity: '6000',
         quantityUnit: 'kgs',
@@ -120,8 +120,8 @@ const GRN = () => {
     };
 
     const coffeeTypeOptions = [
-        'Arabica parch fully',
-        'Arabica green',
+        'ARABICAa parch fully',
+        'ARABICAa green',
 
     ];
 

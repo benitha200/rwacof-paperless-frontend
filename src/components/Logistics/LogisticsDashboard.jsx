@@ -170,7 +170,7 @@ const LogisticsDashboard = () => {
     {
       id: 10,
       containerNo: "Eum sunt itaque aute",
-      description: "RWANDA ARABIC COFFEE",
+      description: "RWANDA ARABICA COFFEE",
       quantity: 320,
       quantityUnit: "bags",
       netWeight: "19200",
@@ -183,7 +183,7 @@ const LogisticsDashboard = () => {
     {
       id: 9,
       containerNo: "Irure repudiandae so",
-      description: "RWANDA ARABICA COFFEE",
+      description: "RWANDA ARABICAA COFFEE",
       quantity: 104,
       quantityUnit: "Bags",
       netWeight: "79",
@@ -367,7 +367,7 @@ const LogisticsDashboard = () => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Main Product:</span>
-                <span className="font-bold">RWANDA ARABIC COFFEE</span>
+                <span className="font-bold">RWANDA ARABICA COFFEE</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Shipping Status:</span>

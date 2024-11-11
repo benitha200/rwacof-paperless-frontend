@@ -27,7 +27,7 @@ function ShipmentInfo() {
 
                 setSteps([
                     {
-                        title: "Loading Tally sheet",
+                        title: "Loading List",
                         content: (
                             <div className="p-2 rounded-lg overflow-auto w-full m-2">
                                 <table className="min-w-full border-collapse">
@@ -313,13 +313,13 @@ function ShipmentInfo() {
                                         <tr>
                                             <td className="font-semibold">Mandate</td>
                                             <td>
-                                                <input type="text" defaultValue="Stuffing Supervision of 320 JUTE BAGS Containing RWANDA ARABICA COFFEE into 1 export container" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" defaultValue="Stuffing Supervision of 320 JUTE BAGS Containing RWANDA ARABICAA COFFEE into 1 export container" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Product</td>
                                             <td>
-                                                <input type="text" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" defaultValue="RWANDA ARABICAA COFFEE" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -385,14 +385,14 @@ function ShipmentInfo() {
                                 <p>Container Condition: <input type="text" defaultValue="found to be good, clean, and free from Any spillage and stains." className="border border-gray-300 p-1 w-full" /></p>
 
                                 <h4 className="font-semibold mt-2">1.1.1 DESCRIPTIONS OF GOODS:</h4>
-                                <p>PRODUCT: <input type="text" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>PRODUCT: <input type="text" defaultValue="RWANDA ARABICAA COFFEE" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>Number of Bags: <input type="number" defaultValue="320" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>LOTS: <input type="text" defaultValue="28/002/22018" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>ILLY ID: <input type="text" defaultValue="340350032" className="border border-gray-300 p-1 w-full" /></p>
 
                                 <h4 className="font-semibold mt-2">2.0 FINDINGS</h4>
                                 <p>Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.</p>
-                                <p>We conducted the Stuffing Supervision of RWANDA ARABICA COFFEE into the export container at RWACOF EXPORTS LTD YARD and report as follows:</p>
+                                <p>We conducted the Stuffing Supervision of RWANDA ARABICAA COFFEE into the export container at RWACOF EXPORTS LTD YARD and report as follows:</p>
 
                                 <h4 className="font-semibold mt-2">2.1 STUFFING</h4>
                                 <p>Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on <input type="text" defaultValue="2nd June 2023 at 10:30hrs" className="border border-gray-300 p-1 w-full" /> and was completed on the same date <input type="text" defaultValue="2nd June 2023 at 11:10hrs" className="border border-gray-300 p-1 w-full" /></p>
@@ -526,7 +526,7 @@ function ShipmentInfo() {
             case 'invoice':
                 generateInvoice(doc, data);
                 break;
-            case 'loading tally sheet':
+            case 'Loading List':
                 generateTallySheet(doc, data);
                 break;
             case 'vgm':
@@ -570,7 +570,7 @@ function ShipmentInfo() {
     };
 
     const generateTallySheet = (doc, data) => {
-        doc.text('LOADING TALLY SHEET', 20, 60);
+        doc.text('Loading List', 20, 60);
 
         doc.autoTable({
             startY: 70,
@@ -635,8 +635,8 @@ function ShipmentInfo() {
             startY: 70,
             body: [
                 ['Client', 'ILLYCAFFE S.P.A.\nVIA FLAVIA 110, 34147, TRIESTE, Italy\nstefano.scanferla@illy.com'],
-                ['Mandate', 'Stuffing Supervision of 320 JUTE BAGS Containing RWANDA ARABICA COFFEE into 1 export container'],
-                ['Product', 'RWANDA ARABICA COFFEE'],
+                ['Mandate', 'Stuffing Supervision of 320 JUTE BAGS Containing RWANDA ARABICAA COFFEE into 1 export container'],
+                ['Product', 'RWANDA ARABICAA COFFEE'],
                 ['Packing', 'JUTE BAGS'],
                 ['Vessel name', 'LANA'],
                 ['Bill of Lading No.', '227771442'],
@@ -660,7 +660,7 @@ function ShipmentInfo() {
         doc.text('found to be good, clean, and free from Any spillage and stains.', 30, doc.lastAutoTable.finalY + 60);
 
         doc.text('1.1.1 DESCRIPTIONS OF GOODS:', 20, doc.lastAutoTable.finalY + 70);
-        doc.text('PRODUCT: RWANDA ARABICA COFFEE', 30, doc.lastAutoTable.finalY + 80);
+        doc.text('PRODUCT: RWANDA ARABICAA COFFEE', 30, doc.lastAutoTable.finalY + 80);
         doc.text('Number of Bags: 320', 30, doc.lastAutoTable.finalY + 90);
         doc.text('LOTS: 28/002/22018', 30, doc.lastAutoTable.finalY + 100);
         doc.text('ILLY ID: 340350032', 30, doc.lastAutoTable.finalY + 110);

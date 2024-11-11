@@ -52,7 +52,7 @@ const LoadingTallySheet = () => {
                 setData(response.data);
                 setLoading(false);
             } catch (err) {
-                setError('Failed to fetch loading tally sheet data');
+                setError('Failed to fetch Loading List data');
                 setLoading(false);
                 console.error('Error fetching data:', err);
             }
@@ -128,7 +128,7 @@ const LoadingTallySheet = () => {
                             thickness="4px"
                         />
                         <Text color="gray.500" fontSize="sm">
-                            Loading tally sheet data...
+                            Loading List data...
                         </Text>
                     </VStack>
                 </CardBody>
@@ -154,7 +154,7 @@ const LoadingTallySheet = () => {
                 <CardBody>
                     <VStack spacing={4} align="center" justify="center" height="48">
                         <Text color="gray.500" fontSize="xl">
-                            No loading tally sheet data available
+                            No Loading List data available
                         </Text>
                     </VStack>
                 </CardBody>
@@ -165,7 +165,7 @@ const LoadingTallySheet = () => {
     return (
         <Card width="full">
             <CardHeader>
-                <Heading size="lg">Loading Tally Sheet</Heading>
+                <Heading size="lg">Loading List</Heading>
                 <Text color="gray.500">A comprehensive list of all shipments</Text>
                 
                 {/* Filter and Search Section */}

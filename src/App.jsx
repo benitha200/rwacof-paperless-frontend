@@ -123,7 +123,7 @@ const App = () => {
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/new-shipment", icon: Plus, text: "New Shipment" },
         { to: "/shipments", icon: Package, text: "Shipments" },
-        { to: "/loading-tally-sheet", icon: SheetIcon, text: "Loading Tally Sheet" },
+        { to: "/loading-tally-sheet", icon: SheetIcon, text: "Loading List" },
       ],
     };
 

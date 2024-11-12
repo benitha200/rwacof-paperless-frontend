@@ -50,6 +50,17 @@ function ShipmentInfo() {
         setSelectedImages(files);
         handleImageUpload(event);  // Pass the event directly
     };
+    const formatNumber = (num) => {
+        if (!num) return '';
+        console.log(parseFloat(num).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }));
+        return parseFloat(num).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -89,7 +100,7 @@ function ShipmentInfo() {
                                             <td className="border border-gray-400 px-2 py-1">
                                                 <input
                                                     type="text"
-                                                    className="border w-full"
+                                                    className="border w-full p-2"
                                                     name="lotNo"
                                                     value={response.data.lotNo || ''}
 
@@ -99,7 +110,7 @@ function ShipmentInfo() {
                                             <td className="border border-gray-400 px-2 py-1">
                                                 <input
                                                     type="date"
-                                                    className="border w-full"
+                                                    className="border w-full p-2"
                                                     name="date"
                                                     value={response.data.date ? new Date(response.data.date).toISOString().split('T')[0] : '2024-10-10'}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
@@ -109,7 +120,7 @@ function ShipmentInfo() {
                                                 <input
                                                     type='text'
                                                     name='SL'
-                                                    className='border border-1 border-slate-400'
+                                                    className='w-full border bg-teal-50 p-2'
                                                     defaultValue={response.data.loadingTallySheet?.sl}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
                                                 />
@@ -118,29 +129,25 @@ function ShipmentInfo() {
                                                 <input
                                                     type='text'
                                                     name='Forwarder'
-                                                    className='border border-1 border-slate-400'
+                                                    className='w-full border p-2 bg-teal-50'
                                                     defaultValue={response.data.loadingTallySheet?.forwarder}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
                                                 />
                                             </td>
 
-                                            {/* <td className="border border-gray-400 px-2 py-1"><input type='text' name='SL' className='border border-1 border-slate-400' value={response.data.loadingTallySheet?.sl}
-                                                    onChange={(e) => handleInputChange(e, 'loadingTallySheet')}/></td>
-                                            <td className="border border-gray-400 px-2 py-1"><input type='text' name='Forwarder' className='border border-1 border-slate-400'  value={response.data.loadingTallySheet?.forwarder}
-                                                    onChange={(e) => handleInputChange(e, 'loadingTallySheet')}/></td> */}
                                             <td className="border border-gray-400 px-2 py-1">
                                                 <input
                                                     type="text"
-                                                    className="border w-full"
-                                                    name="description"
-                                                    value={response.data.description || ''}
+                                                    className="border w-full p-2 bg-teal-50"
+                                                    name="contract_reference"
+                                                    // value={''}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
                                                 />
                                             </td>
                                             <td className="border border-gray-400 px-2 py-1">
                                                 <input
                                                     type="text"
-                                                    className="border w-full"
+                                                    className="border w-full p-2"
                                                     name="truckNo"
                                                     value={response.data.truckNo || ''}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
@@ -149,7 +156,7 @@ function ShipmentInfo() {
                                             <td className="border border-gray-400 px-2 py-1">
                                                 <input
                                                     type="text"
-                                                    className="border w-full"
+                                                    className="border w-full p-2"
                                                     name="containerNo"
                                                     value={response.data.containerNo || ''}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
@@ -158,8 +165,9 @@ function ShipmentInfo() {
                                             <td className="border border-gray-400 px-2 py-1">
                                                 <input
                                                     type="text"
-                                                    className="border w-full"
+                                                    className="border w-full p-2 bg-teal-50"
                                                     name="netWeight"
+                                                    value={response.data?.loadingTallySheet?.tare}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
                                                 />
                                             </td>
@@ -187,24 +195,25 @@ function ShipmentInfo() {
                                         <h4 className="font-semibold">CONSIGNEE:</h4>
                                         <input
                                             type="text"
-                                            className="border w-full m-2"
+                                            className="border w-full mt-2 p-2"
                                             name="consignee"
                                             readOnly
                                             defaultValue={shipment.consignee || 'SUCAFINA S.A GENEVA'}
                                         />
-                                        <p className='m-2'>1PLACE ST GERVAIS, SWITZERLAND</p>
+                                        <p className='mt-2'>1PLACE ST GERVAIS, SWITZERLAND</p>
                                         <input
                                             type="date"
-                                            className="border w-full m-2"
+                                            className="border w-full mt-2 p-2"
                                             name="invoiceDate"
                                             readOnly
                                             defaultValue={shipment.date ? new Date(shipment.date).toISOString().split('T')[0] : '2024-10-10'}
                                         />
                                         <input
                                             type="text"
-                                            className="border w-full m-2"
+                                            className="border w-full mt-2 p-2 bg-teal-100"
                                             name="billOfLadingNo"
-                                            defaultValue={'SSRW-90706'}
+                                            defaultValue={response?.data?.invoice?.billOfLadingNo ||''}
+                                            placeholder='Contract Reference...'
                                         />
                                         {/* <p>SSRW-90706</p> */}
                                     </div>
@@ -259,7 +268,7 @@ function ShipmentInfo() {
                                                 </td>
                                             </tr>
                                             <tr className="border-b">
-                                                <td className="font-semibold p-2">IN BIG BAGS:</td>
+                                                <td className="font-semibold p-2">IN {response.data.quantityUnit}:</td>
                                                 <td className="p-2">
                                                     <input
                                                         type="number"
@@ -274,25 +283,30 @@ function ShipmentInfo() {
                                                 <td className="font-semibold p-2">NET WEIGHT:</td>
                                                 <td className="p-2">
                                                     <input
-                                                        type="number"
+                                                        type="text"
                                                         className="p-2 w-full"
                                                         name="netWeight"
                                                         readOnly
-                                                        defaultValue={response.data.netWeight || ''}
+                                                        value={`${response?.data?.netWeight || ''} ${response?.data?.netWeightUnit || ''}`}
                                                     />
                                                 </td>
+
                                             </tr>
                                             <tr>
-                                                <td className="font-semibold p-2">AMOUNT: U.S DOLLARS</td>
+                                                <td className="font-semibold p-2">AMOUNT(U.S DOLLARS)</td>
                                                 <td className="p-2">
                                                     <input
-                                                        type="number"
-                                                        className="p-2 w-full"
+                                                        type="text"
+                                                        className="p-2 w-full text-left"
                                                         name="amount"
                                                         readOnly
-                                                        defaultValue={response.data.amount || ''}
+                                                        value={formatNumber(response?.data?.amount)}
                                                     />
-                                                    {response.data.amount && <span> ({numberToWords(response.data.amount)})</span>}
+                                                    {response?.data?.amount && (
+                                                        <span className="text-sm  text-gray-600 mt-1 block">
+                                                            ({numberToWords(response.data.amount)})
+                                                        </span>
+                                                    )}
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -404,13 +418,13 @@ function ShipmentInfo() {
                                         </div>
                                     ))}
 
-                                    <Button
+                                    {/* <Button
                                         type="button"
                                         onClick={() => setContainerCount(prev => prev + 1)}
                                         className="mb-4"
                                     >
                                         Add Container
-                                    </Button>
+                                    </Button> */}
 
                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div>

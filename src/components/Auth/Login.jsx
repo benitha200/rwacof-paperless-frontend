@@ -15,7 +15,7 @@ import {
   InputRightElement,
   IconButton,
 } from "@chakra-ui/react";
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+// import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import API_URL from '../../constants/Constants';
 
 const Login = ({ onLogin }) => {
@@ -103,7 +103,7 @@ const Login = ({ onLogin }) => {
               <InputRightElement>
                 <IconButton
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  // icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
                   onClick={() => setShowPassword(!showPassword)}
                   variant="ghost"
                 />

@@ -133,31 +133,31 @@
 //         <VStack spacing={4} align="stretch">
 //             <SimpleGrid columns={2} spacing={4}>
 //               <FormControl isRequired>
-//                 <FormLabel htmlFor="containerNo">Container No</FormLabel>
-//                 <Input id="containerNo" name="containerNo" value={shipment.containerNo} onChange={handleChange} />
+//                 <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="containerNo">Container No</FormLabel>
+//                 <Input  fontSize={14}   id="containerNo" name="containerNo" value={shipment.containerNo} onChange={handleChange} />
 //               </FormControl>
 //               <FormControl isRequired>
-//                 <FormLabel htmlFor="truckNo">Truck No</FormLabel>
-//                 <Input id="truckNo" name="truckNo" value={shipment.truckNo} onChange={handleChange} />
+//                 <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="truckNo">Truck No</FormLabel>
+//                 <Input  fontSize={14}   id="truckNo" name="truckNo" value={shipment.truckNo} onChange={handleChange} />
 //               </FormControl>
 //             </SimpleGrid>
 
 //             <SimpleGrid columns={2} spacing={4}>
 //               <FormControl isRequired>
-//                 <FormLabel htmlFor="lotNo">Lot No</FormLabel>
-//                 <Input id="lotNo" name="lotNo" value={shipment.lotNo} onChange={handleChange} />
+//                 <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="lotNo">Lot No</FormLabel>
+//                 <Input  fontSize={14}   id="lotNo" name="lotNo" value={shipment.lotNo} onChange={handleChange} />
 //               </FormControl>
 //               <FormControl isRequired>
-//                 <FormLabel htmlFor="description">Description</FormLabel>
-//                 <Input id="description" name="description" value={shipment.description} onChange={handleChange} />
+//                 <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="description">Description</FormLabel>
+//                 <Input  fontSize={14}   id="description" name="description" value={shipment.description} onChange={handleChange} />
 //               </FormControl>
 //             </SimpleGrid>
 
 //             <SimpleGrid columns={4} spacing={4}>
 //               <FormControl isRequired>
-//                 <FormLabel htmlFor="quantity">Quantity</FormLabel>
+//                 <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="quantity">Quantity</FormLabel>
 //                 <InputGroup>
-//                   <Input id="quantity" name="quantity" type="number" value={shipment.quantity} onChange={handleChange} />
+//                   <Input  fontSize={14}   id="quantity" name="quantity" type="number" value={shipment.quantity} onChange={handleChange} />
 //                   {/* <InputRightElement width="7rem">
 //                     <Select name="quantityUnit" value={shipment.quantityUnit} onChange={handleChange} >
 //                       {PackagingType.map((unit) => (
@@ -168,9 +168,9 @@
 //                 </InputGroup>
 //               </FormControl>
 //               <FormControl isRequired>
-//                 <FormLabel htmlFor="quantity">Packaging Type</FormLabel>
+//                 <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="quantity">Packaging Type</FormLabel>
 //                 <InputGroup>
-//                   {/* <Input id="quantity" name="quantity" type="number" value={shipment.quantity} onChange={handleChange} /> */}
+//                   {/* <Input  fontSize={14}   id="quantity" name="quantity" type="number" value={shipment.quantity} onChange={handleChange} /> */}
 //                     <Select name="quantityUnit" value={shipment.quantityUnit} onChange={handleChange} >
 //                       {PackagingType.map((unit) => (
 //                         <option key={unit} value={unit}>{unit}</option>
@@ -179,9 +179,9 @@
 //                 </InputGroup>
 //               </FormControl>
 //               <FormControl isRequired>
-//                 <FormLabel htmlFor="netWeight">Net Weight</FormLabel>
+//                 <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="netWeight">Net Weight</FormLabel>
 //                 <InputGroup>
-//                   <Input id="netWeight" name="netWeight" type="number" step="0.01" value={shipment.netWeight} onChange={handleChange} />
+//                   <Input  fontSize={14}   id="netWeight" name="netWeight" type="number" step="0.01" value={shipment.netWeight} onChange={handleChange} />
 //                   <InputRightElement width="6rem">
 //                     <Select name="netWeightUnit" value={shipment.netWeightUnit} onChange={handleChange}>
 //                       {weightUnits.map((unit) => (
@@ -192,9 +192,9 @@
 //                 </InputGroup>
 //               </FormControl>
 //               <FormControl isRequired>
-//                 <FormLabel htmlFor="price">Price</FormLabel>
+//                 <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="price">Price</FormLabel>
 //                 <InputGroup>
-//                   <Input id="price" name="price" type="number" step="0.01" value={shipment.price} onChange={handleChange} />
+//                   <Input  fontSize={14}   id="price" name="price" type="number" step="0.01" value={shipment.price} onChange={handleChange} />
 //                   <InputRightElement width="4.5rem">
 //                     <Text fontSize="sm">USC/LB</Text>
 //                   </InputRightElement>
@@ -203,9 +203,9 @@
 //             </SimpleGrid>
 
 //             <FormControl isRequired>
-//               <FormLabel htmlFor="amount">Amount</FormLabel>
+//               <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="amount">Amount</FormLabel>
 //               <InputGroup>
-//                 <Input id="amount" name="amount" type="number" step="0.01" value={shipment.amount} readOnly />
+//                 <Input  fontSize={14}   id="amount" name="amount" type="number" step="0.01" value={shipment.amount} readOnly />
 //                 <InputRightElement width="4.5rem">
 //                   <Text fontSize="sm">USD</Text>
 //                 </InputRightElement>
@@ -213,7 +213,7 @@
 //             </FormControl>
 
 //             <FormControl isRequired>
-//               <FormLabel htmlFor="consignee">Consignee</FormLabel>
+//               <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="consignee">Consignee</FormLabel>
 //               <Select name="consignee" value={shipment.consignee} onChange={handleChange}>
 //                 <option value="">Select a consignee</option>
 //                 <option value="Sucafina SA">Sucafina SA</option>
@@ -223,7 +223,7 @@
 //             </FormControl>
 
 //             <FormControl isRequired>
-//               <FormLabel htmlFor="date">Date</FormLabel>
+//               <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="date">Date</FormLabel>
 //               <Popover variant="inline">
 //                 <PopoverTrigger>
 //                   <Button leftIcon={<CalendarIcon />} variant="outline" w="full" justifyContent="start">
@@ -435,18 +435,18 @@ export default function ShipmentUpdate() {
           <VStack spacing={4} align="stretch">
             <SimpleGrid columns={2} spacing={4}>
               <FormControl isRequired>
-                <FormLabel htmlFor="containerNo">Container No</FormLabel>
-                <Input id="containerNo" name="containerNo" value={shipment.containerNo} onChange={handleChange} />
+                <FormLabel className='text-sm font-light' fontSize={14} htmlFor="containerNo">Container No</FormLabel>
+                <Input  fontSize={14}   id="containerNo" className='text-xs' name="containerNo" value={shipment.containerNo} onChange={handleChange} />
               </FormControl>
               <FormControl isRequired>
-                <FormLabel htmlFor="truckNo">Truck No</FormLabel>
-                <Input id="truckNo" name="truckNo" value={shipment.truckNo} onChange={handleChange} />
+                <FormLabel className='text-sm font-light' fontSize={14}  htmlFor="truckNo">Truck No</FormLabel>
+                <Input  fontSize={14}   id="truckNo" name="truckNo" value={shipment.truckNo} onChange={handleChange} />
               </FormControl>
             </SimpleGrid>
 
             <SimpleGrid columns={2} spacing={4}>
               <FormControl isRequired>
-                <FormLabel htmlFor="lotNoSuffix">Lot No</FormLabel>
+                <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="lotNoSuffix">Lot No</FormLabel>
                 <InputGroup>
                   <InputLeftAddon children={LOT_PREFIX} />
                   <Input
@@ -460,15 +460,15 @@ export default function ShipmentUpdate() {
                 </InputGroup>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel htmlFor="description">Description</FormLabel>
-                <Input id="description" name="description" value={shipment.description} onChange={handleChange} />
+                <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="description">Description</FormLabel>
+                <Input  fontSize={14}   id="description" name="description" value={shipment.description} onChange={handleChange} />
               </FormControl>
             </SimpleGrid>
 
             <SimpleGrid columns={3} spacing={4}>
               <FormControl isRequired>
-                <FormLabel htmlFor="quantity">Quantity</FormLabel>
-                <Input 
+                <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="quantity">Quantity</FormLabel>
+                <Input  fontSize={14}   
                   id="quantity" 
                   name="quantity" 
                   type="number" 
@@ -478,14 +478,16 @@ export default function ShipmentUpdate() {
               </FormControl>
               
               <FormControl isRequired>
-                <FormLabel htmlFor="quantityUnit">Packaging Type</FormLabel>
+                <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="quantityUnit">Packaging Type</FormLabel>
                 <Select 
                   name="quantityUnit" 
                   value={shipment.quantityUnit} 
                   onChange={handleChange}
+                  placeholder="Select Packaging Type"
+                  fontSize={14}
                 >
                   {PackagingType.map((type) => (
-                    <option key={type.label} value={type.label}>
+                    <option className='text-sm' key={type.label} value={type.label}>
                       {type.label}
                     </option>
                   ))}
@@ -493,8 +495,8 @@ export default function ShipmentUpdate() {
               </FormControl>
 
               <FormControl>
-                <FormLabel htmlFor="netWeight">Net Weight (Kgs)</FormLabel>
-                <Input 
+                <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="netWeight">Net Weight (Kgs)</FormLabel>
+                <Input  fontSize={14}   
                   id="netWeight" 
                   name="netWeight" 
                   value={shipment.netWeight} 
@@ -506,9 +508,9 @@ export default function ShipmentUpdate() {
 
             <SimpleGrid columns={2} spacing={4}>
               <FormControl isRequired>
-                <FormLabel htmlFor="price">Price</FormLabel>
+                <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="price">Price</FormLabel>
                 <InputGroup>
-                  <Input 
+                  <Input  fontSize={14}   
                     id="price" 
                     name="price" 
                     type="number" 
@@ -523,9 +525,9 @@ export default function ShipmentUpdate() {
               </FormControl>
 
               <FormControl>
-                <FormLabel htmlFor="amount">Amount</FormLabel>
+                <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="amount">Amount</FormLabel>
                 <InputGroup>
-                  <Input 
+                  <Input  fontSize={14}   
                     id="amount" 
                     name="amount" 
                     type="number" 
@@ -542,17 +544,17 @@ export default function ShipmentUpdate() {
             </SimpleGrid>
 
             <FormControl isRequired>
-              <FormLabel htmlFor="consignee">Consignee</FormLabel>
-              <Select name="consignee" value={shipment.consignee} onChange={handleChange}>
-                <option value="">Select a consignee</option>
-                <option value="Sucafina SA">Sucafina SA</option>
-                <option value="Sucafina NV">Sucafina NV</option>
-                <option value="Sucafina UK">Sucafina UK</option>
+              <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="consignee">Consignee</FormLabel>
+              <Select fontsize={12} name="consignee" value={shipment.consignee} onChange={handleChange}>
+                <option className='text-sm' value="">Select a consignee</option>
+                <option className='text-sm' value="Sucafina SA">Sucafina SA</option>
+                <option className='text-sm' value="Sucafina NV">Sucafina NV</option>
+                <option className='text-sm' value="Sucafina UK">Sucafina UK</option>
               </Select>
             </FormControl>
 
             <FormControl isRequired>
-              <FormLabel htmlFor="date">Date</FormLabel>
+              <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="date">Date</FormLabel>
               <Popover variant="inline">
                 <PopoverTrigger>
                   <Button leftIcon={<CalendarIcon />} variant="outline" w="full" justifyContent="start">
@@ -561,13 +563,14 @@ export default function ShipmentUpdate() {
                 </PopoverTrigger>
                 <PopoverContent className='w-full'>
                   <PopoverBody className='w-full'>
-                    <div className='w-full'>
+                    <div className='w-full text-sm'>
                       <DatePicker
                         selected={shipment.date}
                         onChange={handleDateSelect}
                         inline
                         showMonthDropdown
                         forceShowMonthNavigation
+                        
                       />
                     </div>
                   </PopoverBody>

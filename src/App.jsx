@@ -86,25 +86,25 @@ const App = () => {
 
   const MenuContent = () => {
     const menuItems = {
-      Admin: [
+        ADMIN: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/shipments", icon: Package, text: "Shipments" },
         { to: "/containers", icon: Package, text: "Containers" },
         { to: "/users", icon: Users, text: "User Management" },
         { to: "/settings", icon: Settings, text: "System Settings" },
       ],
-      Finance: [
+      FINANCE: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/allgrns", icon: FileText, text: "GRN" },
         { to: "/payments", icon: DollarSign, text: "Payments" },
         { to: "/financial-reports", icon: FileText, text: "Financial Reports" },
       ],
-      WeightBridgeManager: [
+      WEIGHTBRIDGEMANAGER: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/grn", icon: FileText, text: "GRN" },
         { to: "/allgrns", icon: FileText, text: "ALL GRNS" },
       ],
-      QualityManager: [
+      QUALITYMANAGER: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/grn", icon: FileText, text: "GRN" },
         { to: "/allgrns", icon: FileText, text: "ALL GRNS" },
@@ -114,12 +114,12 @@ const App = () => {
         { to: "/grn", icon: FileText, text: "GRN" },
         { to: "/allgrns", icon: FileText, text: "ALL GRNS" },
       ],
-      ManagingDirector: [
+      MANAGINGDIRECTOR: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/grn", icon: FileText, text: "GRN" },
         { to: "/allgrns", icon: FileText, text: "ALL GRNS" },
       ],
-      Logistics: [
+      LOGISTICS: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/new-shipment", icon: Plus, text: "New Shipment" },
         { to: "/shipments", icon: Package, text: "Shipments" },
@@ -138,13 +138,13 @@ const App = () => {
 
   const Welcome = () => {
     switch (userRole) {
-      case 'Finance':
+      case 'FINANCE':
         return <DashboardFinance />;
-      case 'Logistics':
+      case 'LOGISTICS':
         return <LogisticsDashboard />;
-      case 'Admin':
+      case 'ADMIN':
         return <AdminDashboard />;
-      case 'WeightBridgeManager':
+      case 'WEIGHTBRIDGEMANAGER':
         return <WeightBridgeManagerDashboad />
       case 'ManagingDirector':
         return <ManagingDirectorDashboard />

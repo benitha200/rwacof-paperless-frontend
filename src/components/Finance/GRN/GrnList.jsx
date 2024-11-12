@@ -153,7 +153,7 @@ import {
   Flex,
   IconButton,
 } from '@chakra-ui/react';
-import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from '@chakra-ui/icons';
+// import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from '@chakra-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
 import axios from 'axios';
 import { format } from 'date-fns';
@@ -316,7 +316,7 @@ const GrnList = () => {
           </Text>
           <HStack>
             <IconButton
-              icon={<ChevronLeftIcon />}
+              // icon={<ChevronLeftIcon />}
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               isDisabled={currentPage === 1}
               aria-label="Previous page"
@@ -325,7 +325,7 @@ const GrnList = () => {
               Page {currentPage} of {totalPages}
             </Text>
             <IconButton
-              icon={<ChevronRightIcon />}
+              // icon={<ChevronRightIcon />}
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               isDisabled={currentPage === totalPages}
               aria-label="Next page"

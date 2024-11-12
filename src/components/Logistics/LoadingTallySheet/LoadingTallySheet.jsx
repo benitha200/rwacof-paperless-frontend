@@ -30,7 +30,7 @@ import {
 import { format } from 'date-fns';
 import axios from 'axios';
 import { CSVLink } from 'react-csv';
-import { DownloadIcon, SearchIcon } from '@chakra-ui/icons';
+// import { DownloadIcon, SearchIcon } from '@chakra-ui/icons';
 import API_URL from '../../../constants/Constants';
 
 const LoadingTallySheet = () => {
@@ -174,7 +174,7 @@ const LoadingTallySheet = () => {
                         placeholder="Search Container, Forwarder, Plate No" 
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        leftElement={<SearchIcon color="gray.300" />}
+                        // leftElement={<SearchIcon color="gray.300" />}
                     />
                     <Select 
                         placeholder="Filter by Forwarder"
@@ -203,7 +203,7 @@ const LoadingTallySheet = () => {
                             filename={`loading_tally_sheet_${format(new Date(), 'yyyyMMdd')}.csv`}
                         >
                             <Button 
-                                leftIcon={<DownloadIcon />} 
+                                // leftIcon={<DownloadIcon />} 
                                 colorScheme="green"
                                 onClick={() => toast({
                                     title: "Download Started",

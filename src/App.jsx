@@ -53,7 +53,7 @@ const App = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const storedUserRole = localStorage.getItem('userRole');
+    const storedUserRole = localStorage.getItem('userRole').toUpperCase();
     if (token && storedUserRole) {
       setIsAuthenticated(true);
       setUserRole(storedUserRole);
@@ -86,7 +86,7 @@ const App = () => {
 
   const MenuContent = () => {
     const menuItems = {
-        ADMIN: [
+      ADMIN: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/shipments", icon: Package, text: "Shipments" },
         { to: "/containers", icon: Package, text: "Containers" },
@@ -116,7 +116,7 @@ const App = () => {
       ],
       MANAGINGDIRECTOR: [
         { to: "/", icon: Home, text: "Dashboard" },
-        { to: "/grn", icon: FileText, text: "GRN" },
+        // { to: "/grn", icon: FileText, text: "GRN" },
         { to: "/allgrns", icon: FileText, text: "ALL GRNS" },
       ],
       LOGISTICS: [
@@ -137,7 +137,8 @@ const App = () => {
   };
 
   const Welcome = () => {
-    switch (userRole) {
+    // switch ((userRole || '').toUpperCase()){
+    switch (localStorage.getItem('userRole').toUpperCase()) {
       case 'FINANCE':
         return <DashboardFinance />;
       case 'LOGISTICS':
@@ -146,9 +147,9 @@ const App = () => {
         return <AdminDashboard />;
       case 'WEIGHTBRIDGEMANAGER':
         return <WeightBridgeManagerDashboad />
-      case 'ManagingDirector':
+      case 'MANAGINGDIRECTOR':
         return <ManagingDirectorDashboard />
-      case 'QualityManager':
+      case 'QUALITYMANAGER':
         return <QualityManagerDashboard />
       case 'COO':
         return <CooDashboard />
@@ -431,6 +432,18 @@ const App = () => {
                   <Route path="/grn" element={
                     <ProtectedRoute allowedRoles={['FINANCE', 'QUALITYMANAGER', 'WEIGHTBRIDGEMANAGER']}>
                       <GRN />
+                    </ProtectedRoute>
+                  } />
+
+                    {/* ManagingDirector Manager Routes  */}
+                  <Route path="/grn/:id" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
+                      <GrnView />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/allgrns" element={
+                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
+                      <GrnList />
                     </ProtectedRoute>
                   } />
 

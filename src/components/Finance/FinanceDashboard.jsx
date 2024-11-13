@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { LineChart, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Line } from 'recharts';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { DollarSign, Package, Scale, Droplet, TrendingUp, Clock } from 'lucide-react';
+import API_URL from '../../constants/Constants';
 
 const DashboardFinance = () => {
   const [grnData, setGrnData] = useState([]);
@@ -12,7 +13,7 @@ const DashboardFinance = () => {
   useEffect(() => {
     const fetchGRNData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/grn/');
+        const response = await fetch(`${API_URL}/api/grn/`);
         const data = await response.json();
         setGrnData(data);
         setLoading(false);

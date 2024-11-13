@@ -558,7 +558,7 @@ const GrnView = () => {
             <Box bg="white" shadow="lg" rounded="lg" p={6}>
                 <Box display="flex" justifyContent="right" mb={4}>
                     <Button
-                        leftIcon={<DownloadIcon />}
+                        leftIcon={<DownloadIcon color='white'/>}
                         colorScheme="teal"
                         onClick={handleDownloadPDF}
                         isLoading={isDownloading}
@@ -589,7 +589,7 @@ const GrnView = () => {
                 </Heading>
 
                 <VStack spacing={6} align="stretch">
-                    <HStack spacing={6}>             <Box>
+                    <HStack spacing={16}>             <Box>
                         <Text fontWeight="bold">GRN NO</Text>
                         <Text>{grnData.id}</Text>
                     </Box>
@@ -599,7 +599,7 @@ const GrnView = () => {
                         </Box>
                     </HStack>
 
-                    <HStack spacing={6}>
+                    <HStack spacing={12}>
                         <Box>
                             <Text fontWeight="bold">SUPPLIER</Text>
                             <Text>{grnData.supplierName}</Text>
@@ -610,7 +610,7 @@ const GrnView = () => {
                         </Box>
                     </HStack>
 
-                    <HStack spacing={6}>
+                    <HStack spacing={8}>
                         <Box>
                             <Text fontWeight="bold">VEHICLE REG NO</Text>
                             <Text>{grnData.plate_no}</Text>
@@ -621,7 +621,7 @@ const GrnView = () => {
                         </Box>
                     </HStack>
 
-                    <HStack spacing={6}>
+                    <HStack spacing={16}>
                         <Box>
                             <Text fontWeight="bold">MOISTURE</Text>
                             <Text>{grnData.moisture}%</Text>
@@ -643,16 +643,16 @@ const GrnView = () => {
                         </Thead>
                         <Tbody>
                             <Tr>
-                                <Td>1</Td>
-                                <Td>{grnData.productDescription}</Td>
+                                <Td>{grnData.id}</Td>
+                                <Td>{grnData.coffee_type}</Td>
                                 <Td>{grnData.quantity}</Td>
                                 <Td>{grnData.totalWeight} kg</Td>
                             </Tr>
                         </Tbody>
                     </Table>
 
-                    <HStack spacing={6} align="start">
-                        <Box flex={1}>
+                    <HStack spacing={6} align="start" marginTop={5}>
+                        <Box flex={0.5}>
                             <Heading as="h3" size="md" mb={2}>Weighing Details</Heading>
                             <VStack align="stretch" spacing={3}>
                                 <HStack justify="space-between">
@@ -677,7 +677,7 @@ const GrnView = () => {
                                 </HStack>
                             </VStack>
                         </Box>
-                        <Box flex={1}>
+                        {/* <Box flex={1}>
                             <Heading as="h3" size="md" mb={2}>Approvals</Heading>
                             <VStack align="stretch" spacing={4}>
                                 {['WEIGHED BY:', 'SUPPLIER:', 'APPROVED BY:'].map((label) => (
@@ -687,7 +687,7 @@ const GrnView = () => {
                                     </Box>
                                 ))}
                             </VStack>
-                        </Box>
+                        </Box> */}
                     </HStack>
 
                     <Heading size="md" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
@@ -709,9 +709,9 @@ const GrnView = () => {
                                         <option value="" disabled selected>
                                             Select Contract Ref
                                         </option>
-                                        <option value="23551">23551</option>
-                                        <option value="23551">23551</option>
-                                        <option value="23551">23551</option>
+                                        <option value="23551">SCRW-200</option>
+                                        <option value="23551">SCRW-201</option>
+                                        <option value="23551">SCRW-202</option>
                                     </select>
                                 </Td>
                                 <Td>

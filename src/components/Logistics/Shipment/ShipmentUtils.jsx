@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import logo from './../../../../assets/img/logo.png'
+import API_URL from '../../../constants/Constants';
 
 
 export const handleDownload = async (filename, title, data) => {
@@ -105,7 +106,7 @@ export const generateTallySheet = (doc, data) => {
 
     doc.autoTable({
         startY: 70,
-        head: [['LOT', 'Loading Day', 'SL','Forwarder', 'RSS / SSRW/SPRW', 'PLAQUE', 'CONTAINER', 'TARE']],
+        head: [['LOT', 'Loading Day', 'SL','Forwarder', 'RSS / SSRW/SPRW', 'PLATE NO', 'CONTAINER', 'TARE']],
         body: [
             [data.lotNo, data.loadingDay, data?.loadingTallySheet?.sl,data?.loadingTallySheet?.forwarder, data.description, data.truckNo, data.containerNo, data.netWeight]
         ],
@@ -203,9 +204,9 @@ export const generateVGM = (doc, data) => {
     doc.line(20, doc.lastAutoTable.finalY + 25, 190, doc.lastAutoTable.finalY + 25);
 };
 
-
-
 export const generateStuffingReport = (doc, data) => {
+    // Previous PDF generation code remains the same until the last page
+    
     // Add RWACOF logo
     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
 
@@ -329,9 +330,223 @@ export const generateStuffingReport = (doc, data) => {
     doc.text(data.stuffingReport.authorizedPerson, 20, 190);
     doc.text('Operations', 20, 200);
 
+    const getImages = () => {
+        const images = [];
+        for (let i = 1; i <= 8; i++) {
+            const imagePath = data.stuffingReport[`image${i}`];
+            if (imagePath) {
+                images.push({
+                    id: i,
+                    path: `${API_URL}/uploads/${imagePath.split('\\').pop()}`
+                });
+            }
+        }
+        return images;
+    };
+
+    const images = getImages();
+
+    if (images.length > 0) {
+        // Add first image page
+        doc.addPage();
+        
+        // Add RWACOF logo to the images page
+        doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
+
+        // Images section title
+        doc.setFontSize(16);
+        doc.setFont(undefined, 'bold');
+        doc.text('ATTACHED IMAGES', doc.internal.pageSize.width / 2, 60, { align: 'center' });
+
+        // Calculate image dimensions
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
+        const margin = 40; // Margins from page edges
+        const imageWidth = pageWidth - (margin * 2);
+        const imageHeight = imageWidth * 0.75; // 4:3 aspect ratio
+
+        // Add each image on a new page
+        images.forEach((image, index) => {
+            if (index > 0) {
+                // Add new page for subsequent images
+                doc.addPage();
+                // Add RWACOF logo to each new page
+                doc.addImage(logo, 'PNG', pageWidth / 2 - 15, 15, 30, 30);
+            }
+
+            try {
+                // Position image vertically centered on the page
+                const yPosition = (pageHeight - imageHeight) / 2;
+
+                // Add image
+                doc.addImage(
+                    image.path,
+                    'JPEG',
+                    margin,
+                    yPosition,
+                    imageWidth,
+                    imageHeight,
+                    `image-${image.id}`,
+                    'FAST'
+                );
+
+                // Add image number below the image
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'bold');
+                doc.text(
+                    `Image ${image.id}`,
+                    pageWidth / 2,
+                    yPosition + imageHeight + 20,
+                    { align: 'center' }
+                );
+            } catch (error) {
+                console.error(`Failed to add image ${image.id}:`, error);
+                // Add placeholder for failed image
+                doc.setFillColor(240, 240, 240);
+                doc.rect(margin, (pageHeight - imageHeight) / 2, imageWidth, imageHeight, 'F');
+                doc.setFontSize(12);
+                doc.text(
+                    'Image failed to load',
+                    pageWidth / 2,
+                    pageHeight / 2,
+                    { align: 'center' }
+                );
+            }
+        });
+    }
+
     // Save the PDF
     doc.save('stuffing-report.pdf');
 };
+
+
+// export const generateStuffingReport = (doc, data) => {
+//     // Add RWACOF logo
+//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
+
+//     // Title
+//     doc.setFontSize(16);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('STUFFING SUPERVISION REPORT', doc.internal.pageSize.width / 2, 60, { align: 'center' });
+
+//     // Client information table
+//     doc.autoTable({
+//         startY: 70,
+//         head: [['', '']],
+//         body: [
+//             ['Client', data.stuffingReport.client],
+//             ['Mandate', data.stuffingReport.mandate],
+//             ['Product', data.stuffingReport.product],
+//             ['Packing', data.stuffingReport.packing],
+//             ['Vessel name', data.stuffingReport.vesselName],
+//             ['Bill of Lading No.', data.stuffingReport.billOfLadingNo],
+//             ['Place', data.stuffingReport.place],
+//             ['Export Container stuffed', data.stuffingReport.container],
+//             ['Commenced Stuffing /loading', new Date(data.stuffingReport.stuffingStart).toLocaleString()],
+//             ['Completed Stuffing/loading', new Date(data.stuffingReport.stuffingEnd).toLocaleString()],
+//             ['temporally seal', new Date(data.stuffingReport.tempSealTime).toLocaleString()],
+//             ['Container sealing/Shipping line seal', new Date(data.stuffingReport.finalSealTime).toLocaleString()]
+//         ],
+//         theme: 'grid',
+//         styles: { fontSize: 10, cellPadding: 2 },
+//         columnStyles: { 0: { fontStyle: 'bold', cellWidth: 80 } },
+//         headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
+//     });
+
+//     // Add new page
+//     doc.addPage();
+
+//     // Add RWACOF logo to the second page
+//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
+
+//     // STUFFING REPORT title
+//     doc.setFontSize(16);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('STUFFING REPORT', doc.internal.pageSize.width / 2, 60, { align: 'center' });
+
+//     // Container Particulars & Condition
+//     doc.setFontSize(12);
+//     doc.text('1.0 CONTAINER PARTICULARS & CONDITION', 20, 80);
+//     doc.setFont(undefined, 'normal');
+//     doc.setFontSize(10);
+//     doc.text(`1.1 ${data.containerNo} (20ft Container)`, 20, 90);
+//     doc.text(`Container Condition: ${data.stuffingReport.containerCondition}`, 20, 100);
+
+//     // Descriptions of Goods
+//     doc.setFontSize(12);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('1.1.1 DESCRIPTIONS OF GOODS:', 20, 120);
+//     doc.setFont(undefined, 'normal');
+//     doc.setFontSize(10);
+//     doc.text(`PRODUCT: ${data.stuffingReport.product}`, 20, 130);
+//     doc.text(`Number of Bags: ${data.stuffingReport.numberOfBags} BAGS`, 20, 140);
+//     doc.text('LOTS:', 20, 150);
+//     doc.text(data.stuffingReport.lots, 20, 160);
+//     doc.text(`ILLY ID: ${data.stuffingReport.illyId}`, 20, 170);
+
+//     // Findings
+//     doc.setFontSize(12);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('2.0 FINDINGS', 20, 190);
+//     doc.setFont(undefined, 'normal');
+//     doc.setFontSize(10);
+//     doc.text('Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.', 20, 200);
+//     doc.text('We conducted the Stuffing Supervision of', 20, 210);
+//     doc.text(`${data.stuffingReport.product} into the export container at ${data.stuffingReport.place}`, 20, 220);
+//     doc.text('and report as follows:', 20, 230);
+
+//     // Stuffing
+//     doc.setFontSize(12);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('2.1 STUFFING', 20, 250);
+//     doc.setFont(undefined, 'normal');
+//     doc.setFontSize(10);
+//     doc.text(`Stuffing of the container at ${data.stuffingReport.place} commenced on ${new Date(data.stuffingReport.stuffingStart).toLocaleDateString()} at`, 20, 260);
+//     doc.text(`${new Date(data.stuffingReport.stuffingStart).toLocaleTimeString()} and was completed on ${new Date(data.stuffingReport.stuffingEnd).toLocaleDateString()} at ${new Date(data.stuffingReport.stuffingEnd).toLocaleTimeString()}`, 20, 270);
+//     doc.text(`${data.stuffingReport.numberOfBags} Bags of coffee packed in ${data.stuffingReport.packing} were stuffed into the container.`, 20, 280);
+
+//     // Container Sealing
+//     doc.setFontSize(12);
+//     doc.setFont(undefined, 'bold');
+//     doc.text('2.2 CONTAINER SEALING AFTER STUFFING', 20, 300);
+//     doc.setFont(undefined, 'normal');
+//     doc.setFontSize(10);
+//     doc.text(`After stuffing the ${data.stuffingReport.numberOfBags} ${data.stuffingReport.packing} into the container was completed`, 20, 310);
+//     doc.text('and the export container was closed and secured by Shipping', 20, 320);
+//     doc.text(`line seal and RRA seals on ${new Date(data.stuffingReport.finalSealTime).toLocaleString()}`, 20, 330);
+//     doc.text('Herewith below are the details:', 20, 340);
+//     doc.text(`- ${data.containerNo} (1*20FT)`, 30, 350);
+//     doc.text(`- Number of bags: ${data.stuffingReport.numberOfBags} bags (${data.stuffingReport.packing})`, 30, 360);
+
+//     // Add Rwacof Exports Ltd. details
+//     doc.setFontSize(8);
+//     doc.text('Rwacof Exports Ltd, K425 Street Kanzenze,Gikondo,Kigali,Rwanda', 20, 380);
+//     doc.text('Tel +250 252 575872 E-mail admin@rwacof.com Web www.rwacof.com', 20, 388);
+
+//     // Add new page
+//     doc.addPage();
+
+//     // Add RWACOF logo to the third page
+//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
+
+//     // Footer
+//     doc.setFontSize(10);
+//     doc.setTextColor(255, 0, 0);  // Set text color to red
+//     doc.text('NB: all Photos are enclosed at the end of this report', 20, 60);
+//     doc.setTextColor(0, 0, 0);  // Reset text color to black
+//     doc.text('This report reflects our findings determined at the time and place of our intervention', 20, 80);
+//     doc.text('only and does not relieve the parties from their contractual responsibilities.', 20, 90);
+
+//     doc.text(`GIVEN AT ${data.stuffingReport.place} ON ${new Date(data.stuffingReport.signatureDate).toLocaleDateString()}`, 20, 120);
+
+//     doc.text('Digitally Signed', 20, 160);
+
+//     doc.text(data.stuffingReport.authorizedPerson, 20, 190);
+//     doc.text('Operations', 20, 200);
+
+//     // Save the PDF
+//     doc.save('stuffing-report.pdf');
+// };
 
 
 export function formatDate(dateString) {

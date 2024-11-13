@@ -42,13 +42,13 @@ const Login = ({ onLogin }) => {
       if (response.ok) {
         const { token, role, firstName, lastName, email: userEmail, id } = data;
         localStorage.setItem('token', token);
-        localStorage.setItem('userRole', role);
+        localStorage.setItem('userRole', role.toString().toUpperCase());
         localStorage.setItem('firstName', firstName);
         localStorage.setItem('lastName', lastName);
         localStorage.setItem('email', userEmail);
         localStorage.setItem('userId', id);
         
-        onLogin(role);
+        onLogin(role.toString().toUpperCase());
         navigate('/');
 
         toast({

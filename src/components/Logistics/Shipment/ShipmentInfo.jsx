@@ -9,6 +9,7 @@ import { handleDownload, handleUpdate, formatDate, numberToWords } from './Shipm
 import ShipmentDetails from './ShipmentDetails';
 import { useToast } from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
+import StuffingReportImages from './StuffingReportImages';
 
 function ShipmentInfo() {
     const { id } = useParams();
@@ -20,6 +21,9 @@ function ShipmentInfo() {
     const [images, setImages] = useState([]);
     const toast = useToast(true);
     const [selectedImages, setSelectedImages] = useState([]);
+
+
+
 
     useEffect(() => {
         fetchShipment();
@@ -71,12 +75,16 @@ function ShipmentInfo() {
         onSubmit(formData);
     };
 
+
+
+
     const fetchShipment = () => {
         console.log(API_URL);
         axios.get(`${API_URL}/api/shipments/${id}`)
             .then(response => {
                 setShipment(response.data);
                 console.log('Retrieved shipment:', response.data);
+                console.log("Ntumbwire");
                 setSteps([
                     {
                         title: "LoadingTallysheet",
@@ -90,7 +98,7 @@ function ShipmentInfo() {
                                             <th className="border border-gray-400 px-2 py-1">SL</th>
                                             <th className="border border-gray-400 px-2 py-1">Forwarder</th>
                                             <th className="border border-gray-400 px-2 py-1">Contract Reference</th>
-                                            <th className="border border-gray-400 px-2 py-1">PLAQUE</th>
+                                            <th className="border border-gray-400 px-2 py-1">PLATE NO</th>
                                             <th className="border border-gray-400 px-2 py-1">CONTAINER</th>
                                             <th className="border border-gray-400 px-2 py-1">TARE</th>
                                         </tr>
@@ -212,7 +220,7 @@ function ShipmentInfo() {
                                             type="text"
                                             className="border w-full mt-2 p-2 bg-teal-100"
                                             name="billOfLadingNo"
-                                            defaultValue={response?.data?.invoice?.billOfLadingNo ||''}
+                                            defaultValue={response?.data?.invoice?.billOfLadingNo || ''}
                                             placeholder='Contract Reference...'
                                         />
                                         {/* <p>SSRW-90706</p> */}
@@ -638,6 +646,18 @@ function ShipmentInfo() {
                                     <p>Operations</p>
                                 </div>
 
+
+
+                                {/* <StuffingReportImages stuffingReport={response.data?.stuffingReport} /> */}
+                                {response?.data?.stuffingReport && (
+                                    <StuffingReportImages
+                                        stuffingReport={response.data.stuffingReport}
+                                    />
+                                )}
+                                {response?.data?.stuffingReport?.lots && (
+                                    <span className='text-red'>ARIKO RERO BYAGORANYE</span>
+                                )}
+
                                 <div className="mt-4">
                                     <h4 className="font-semibold">Upload Images (up to 8):</h4>
                                     <input
@@ -659,6 +679,9 @@ function ShipmentInfo() {
                                     )}
                                 </div>
 
+
+
+
                             </div>
                         ),
                         filename: 'stuffing-report.pdf'
@@ -677,7 +700,7 @@ function ShipmentInfo() {
             console.log(shipment);
             console.log("shipment id");
 
-            switch (documentType.toLowerCase()) {
+            switch (documentType?.toLowerCase()) {
                 case 'loadingtallysheet':
                     response = await axios.post(`${API_URL}/api/loading-tally-sheets`, updatedData);
                     break;

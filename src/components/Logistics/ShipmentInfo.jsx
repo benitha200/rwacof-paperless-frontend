@@ -19,6 +19,7 @@ function ShipmentInfo() {
     const [steps, setSteps] = useState([]);
     const toast = useToast();
 
+    
     useEffect(() => {
         axios.get(`${API_URL}/api/shipments/${id}`)
             .then(response => {
@@ -38,7 +39,7 @@ function ShipmentInfo() {
                                             <th className="border border-gray-400 px-2 py-1">SL</th>
                                             <th className="border border-gray-400 px-2 py-1">Forwarder</th>
                                             <th className="border border-gray-400 px-2 py-1">Contract Reference</th>
-                                            <th className="border border-gray-400 px-2 py-1">PLAQUE</th>
+                                            <th className="border border-gray-400 px-2 py-1">PLATE NO</th>
                                             <th className="border border-gray-400 px-2 py-1">CONTAINER</th>
                                             <th className="border border-gray-400 px-2 py-1">TARE</th>
                                         </tr>
@@ -574,7 +575,7 @@ function ShipmentInfo() {
 
         doc.autoTable({
             startY: 70,
-            head: [['LOT', 'Loading Day', 'SL/Forwarder', 'RSS / SSRW/SPRW', 'PLAQUE', 'CONTAINER', 'TARE']],
+            head: [['LOT', 'Loading Day', 'SL/Forwarder', 'RSS / SSRW/SPRW', 'PLATE NO', 'CONTAINER', 'TARE']],
             body: [
                 [data.lotNo, data.loadingDay, 'PIC/MSK', data.description, data.truckNo, data.containerNo, data.netWeight]
             ],

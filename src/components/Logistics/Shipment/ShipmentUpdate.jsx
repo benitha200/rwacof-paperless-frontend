@@ -294,7 +294,7 @@ export default function ShipmentUpdate() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const LOT_PREFIX = "0028/001/23";
+  const LOT_PREFIX = "028/002/23";
 
   const PackagingType = [
     { label: 'Jute Bags (10kg)', weight: 10 },

@@ -84,7 +84,6 @@ function ShipmentInfo() {
             .then(response => {
                 setShipment(response.data);
                 console.log('Retrieved shipment:', response.data);
-                console.log("Ntumbwire");
                 setSteps([
                     {
                         title: "LoadingTallysheet",
@@ -653,9 +652,6 @@ function ShipmentInfo() {
                                     <StuffingReportImages
                                         stuffingReport={response.data.stuffingReport}
                                     />
-                                )}
-                                {response?.data?.stuffingReport?.lots && (
-                                    <span className='text-red'>ARIKO RERO BYAGORANYE</span>
                                 )}
 
                                 <div className="mt-4">

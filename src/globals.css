@@ -95,3 +95,7 @@ h1, h2, h3, h4, h5, h6,span,p,input,label,button{
   /* color: rgb(71 85 105); */
   font-weight: 400;
 }
+label,td,chakra-text{
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}

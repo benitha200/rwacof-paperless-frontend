@@ -558,7 +558,7 @@ const GrnView = () => {
             <Box bg="white" shadow="lg" rounded="lg" p={6}>
                 <Box display="flex" justifyContent="right" mb={4}>
                     <Button
-                        leftIcon={<DownloadIcon color='white'/>}
+                        leftIcon={<DownloadIcon color='white' />}
                         colorScheme="teal"
                         onClick={handleDownloadPDF}
                         isLoading={isDownloading}
@@ -591,7 +591,7 @@ const GrnView = () => {
                 <VStack spacing={6} align="stretch">
                     <HStack spacing={16}>             <Box>
                         <Text fontWeight="bold">GRN NO</Text>
-                        <Text>{grnData.id}</Text>
+                        <Text size={12}>{grnData.id}</Text>
                     </Box>
                         <Box>
                             <Text fontWeight="bold">DATE</Text>
@@ -691,43 +691,43 @@ const GrnView = () => {
                     </HStack>
 
                     <Heading size="md" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
-                    <Table variant="simple">
-                        <Thead>
-                            <Tr>
-                                <Th>RPG</Th>
-                                <Th>PRICE</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            <Tr>
-                                {/* <Td><input className='border border-1 p-2 rounded w-full' placeholder='Contract Ref'/></Td>
-                                <Td><input className='border border-1 p-2 rounded w-full' placeholder='Price'/></Td>
-                                 */}
-
-                                <Td>
-                                    <select className="border border-1 p-2 rounded w-full">
-                                        <option value="" disabled selected>
-                                            Select Contract Ref
-                                        </option>
-                                        <option value="23551">SCRW-200</option>
-                                        <option value="23551">SCRW-201</option>
-                                        <option value="23551">SCRW-202</option>
-                                    </select>
-                                </Td>
-                                <Td>
-                                    <input
-                                        className="border border-1 p-2 rounded w-full"
-                                        placeholder="Price"
-                                    />
-                                </Td>
-
-                            </Tr>
-                            <Tr fontWeight="bold">
-                                <Td colSpan={3}>Total</Td>
-                                <Td>{(parseFloat(grnData.payment_weight) * parseFloat(grnData.payment_rate)).toFixed(0)}</Td>
-                            </Tr>
-                        </Tbody>
-                    </Table>
+                    {(localStorage.getItem('userRole')?.toUpperCase() === "ADMIN" ||
+                        localStorage.getItem('userRole')?.toUpperCase() === "FINANCE" ||
+                        localStorage.getItem('userRole')?.toUpperCase() === "COO" ||
+                        localStorage.getItem('userRole')?.toUpperCase() === "MANAGINGDIRECTOR") && (
+                            <Table variant="simple">
+                                <Thead>
+                                    <Tr>
+                                        <Th>RPG</Th>
+                                        <Th>PRICE</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    <Tr>
+                                        <Td>
+                                            <select className="border border-1 p-2 rounded w-full">
+                                                <option value="" disabled selected>
+                                                    Select Contract Ref
+                                                </option>
+                                                <option value="23551">SCRW-200</option>
+                                                <option value="23551">SCRW-201</option>
+                                                <option value="23551">SCRW-202</option>
+                                            </select>
+                                        </Td>
+                                        <Td>
+                                            <input
+                                                className="border border-1 p-2 rounded w-full"
+                                                placeholder="Price"
+                                            />
+                                        </Td>
+                                    </Tr>
+                                    <Tr fontWeight="bold">
+                                        <Td colSpan={2}>Total</Td>
+                                        <Td>{(parseFloat(grnData.payment_weight) * parseFloat(grnData.payment_rate)).toFixed(0)}</Td>
+                                    </Tr>
+                                </Tbody>
+                            </Table>
+                        )}
 
                     <Table variant="simple">
                         <Thead>
@@ -769,34 +769,9 @@ const GrnView = () => {
 
                 </VStack>
 
-                <Box mt={10}>
-                    <Heading as="h3" size="md" mb={4}>
-                        GRN Status
-                    </Heading>
-                    {/* <Stepper
-                        index={grnData.currentStep+1}
-                        orientation={orientation}
-                        colorScheme="teal"
-                        spacing={{ base: '2', md: '4' }}
-                        hasSte
-                    >
-                        {steps.map((step, index) => (
-                            <Step key={index} flexDirection={{ base: 'row', md: 'column' }}>
-                                <StepIndicator>
-                                    <StepStatus
-                                        complete={<StepIcon />}
-                                        incomplete={<StepNumber />}
-                                        active={<StepNumber />}
-                                    />
-                                </StepIndicator>
-
-                                <Box flexShrink='0' textAlign={{ base: 'left', md: 'center' }} ml={{ base: 3, md: 0 }}>
-                                    <StepTitle>{step.title}</StepTitle>
-                                    <StepDescription display={{ base: 'none', sm: 'block' }}>{step.description}</StepDescription>
-                                </Box>
-                            </Step>
-                        ))}
-                    </Stepper> */}
+                <Box mt={10} className='text-center'>
+                    <Heading alignContent="center" size="md" mb={4} color="teal.600">GRN STATUS</Heading>
+         
                     <Stepper
                         index={grnData.currentStep + 1}
                         orientation={orientation}

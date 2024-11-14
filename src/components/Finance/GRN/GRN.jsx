@@ -40,7 +40,7 @@ import logo from './../../../../assets/img/logo.png';
 
 const EditableField = ({ label, name, value, onChange, type = "text" }) => (
     <FormControl>
-        <FormLabel>{label}</FormLabel>
+        <FormLabel size="sm">{label}</FormLabel>
         <Input
             type={type}
             name={name}
@@ -59,7 +59,7 @@ const GRN = () => {
         wbridgeRef: '',
         moisture: '12.3',
         parch: '14.4',
-        coffee_type: 'ARABICAA PARCH FW',
+        coffee_type: 'ARABICA PARCH FW',
         bags: '100',
         quantity: '6000',
         quantityUnit: 'kgs',
@@ -120,8 +120,8 @@ const GRN = () => {
     };
 
     const coffeeTypeOptions = [
-        'ARABICAa parch fully',
-        'ARABICAa green',
+        'ARABICA parch fully',
+        'ARABICA green',
 
     ];
 
@@ -148,10 +148,10 @@ const GRN = () => {
                 parch: parseFloat(formData.parch) || null,
                 totalWeight: parseFloat(formData.totalWeight),
             };
-    
+
             // Get the token from localStorage (or wherever you store it)
             const token = localStorage.getItem('token'); // Adjust this if you store the token differently
-    
+
             // Set up the config object for axios, including the Authorization header
             const config = {
                 headers: {
@@ -159,9 +159,9 @@ const GRN = () => {
                     'Content-Type': 'application/json'
                 }
             };
-    
+
             const response = await axios.post(`${API_URL}/api/grn`, transformedData, config);
-            
+
             toast({
                 title: "GRN submitted successfully.",
                 status: "success",
@@ -191,61 +191,6 @@ const GRN = () => {
             }
         }
     };
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         const transformedData = {
-    //             ...formData,
-    //             receivedDate: formData.receivedDate.toISOString(),
-    //             paymentDate: formData.paymentDate.toISOString(),
-    //             quantity: parseInt(formData.quantity, 10),
-    //             bags: parseInt(formData.bags, 10),
-    //             lessNoOfBags: parseInt(formData.lessNoOfBags, 10) || 0,
-    //             subGrossKg: parseInt(formData.subGrossKg, 10),
-    //             lessMoistureKg: parseInt(formData.lessMoistureKg, 10) || 0,
-    //             lessQualityKg: parseInt(formData.lessQualityKg, 10) || 0,
-    //             netWeightKg: parseInt(formData.netWeightKg, 10),
-    //             payment_quantity: parseInt(formData.payment_quantity, 10),
-    //             payment_rate: parseInt(formData.payment_rate, 10),
-    //             payment_amount: parseInt(formData.payment_amount, 10),
-    //             drAc: parseInt(formData.drAc, 10),
-    //             rate: parseInt(formData.rate, 10),
-    //             moisture: parseFloat(formData.moisture),
-    //             parch: parseFloat(formData.parch) || null,
-    //             totalWeight: parseFloat(formData.totalWeight),
-    //         };
-
-    //         const response = await axios.post(`${API_URL}/api/grn`, transformedData);
-    //         toast({
-    //             title: "GRN submitted successfully.",
-    //             status: "success",
-    //             duration: 3000,
-    //             isClosable: true,
-    //         });
-    //         setActiveStep(5); // Move to the final step after successful submission
-    //     } catch (error) {
-    //         if (error.response && error.response.data && error.response.data.errors) {
-    //             error.response.data.errors.forEach((err) => {
-    //                 toast({
-    //                     title: "Error",
-    //                     description: err.msg,
-    //                     status: "error",
-    //                     duration: 5000,
-    //                     isClosable: true,
-    //                 });
-    //             });
-    //         } else {
-    //             toast({
-    //                 title: "Error submitting GRN.",
-    //                 description: "An unexpected error occurred.",
-    //                 status: "error",
-    //                 duration: 5000,
-    //                 isClosable: true,
-    //             });
-    //         }
-    //     }
-    // };
-
 
     return (
         <Container maxW="6xl" py={6}>
@@ -268,13 +213,13 @@ const GRN = () => {
                             </Box>
                         </HStack>
 
-                        <Heading as="h2" size="xl" textAlign="center" my={6} color="teal.600">
+                        <Heading as="h2" size="md" textAlign="center" my={6} color="teal.600">
                             GOODS RECEIVED NOTE
                         </Heading>
 
                         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={spacing}>
                             <FormControl>
-                                <FormLabel>RECEIVED DATE</FormLabel>
+                                <FormLabel size={12}>RECEIVED DATE</FormLabel>
                                 <DatePicker
                                     selected={formData.receivedDate}
                                     onChange={(date) => handleDateChange(date, 'receivedDate')}
@@ -282,18 +227,18 @@ const GRN = () => {
                                     customInput={<Input />}
                                 />
                             </FormControl>
-                            <EditableField label="SUPPLIER NAME" name="supplierName" value={formData.supplierName} onChange={handleInputChange} />
+                            <EditableField size="sm" label="SUPPLIER NAME" name="supplierName" value={formData.supplierName} onChange={handleInputChange} />
                         </SimpleGrid>
 
                         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={spacing}>
-                            <EditableField label="SUPPLIER ADDRESS" name="supplierAddress" value={formData.supplierAddress} onChange={handleInputChange} />
-                            <EditableField label="PLATE NO" name="plate_no" value={formData.plate_no} onChange={handleInputChange} />
+                            <EditableField size="sm" label="SUPPLIER ADDRESS" name="supplierAddress" value={formData.supplierAddress} onChange={handleInputChange} />
+                            <EditableField size="sm" label="PLATE NO" name="plate_no" value={formData.plate_no} onChange={handleInputChange} />
                         </SimpleGrid>
 
                         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={spacing}>
-                            <EditableField label="W.BRIDGE REF" name="wbridgeRef" value={formData.wbridgeRef} onChange={handleInputChange} />
-                            <EditableField label="MOISTURE" name="moisture" value={formData.moisture} onChange={handleInputChange} />
-                            <EditableField label="PARCH" name="parch" value={formData.parch} onChange={handleInputChange} />
+                            <EditableField size="sm" label="W.BRIDGE REF" name="wbridgeRef" value={formData.wbridgeRef} onChange={handleInputChange} />
+                            <EditableField size="sm" label="MOISTURE" name="moisture" value={formData.moisture} onChange={handleInputChange} />
+                            <EditableField size="sm" label="PARCH" name="parch" value={formData.parch} onChange={handleInputChange} />
                         </SimpleGrid>
 
                         <Box overflowX="auto">
@@ -343,29 +288,29 @@ const GRN = () => {
                         </Box>
 
                         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={spacing}>
-                            <EditableField label="LESS NO OF BAGS" name="lessNoOfBags" value={formData.lessNoOfBags} onChange={handleInputChange} />
-                            <EditableField label="SUB GROSS KG" name="subGrossKg" value={formData.subGrossKg} onChange={handleInputChange} />
+                            <EditableField size="sm" label="LESS NO OF BAGS" name="lessNoOfBags" value={formData.lessNoOfBags} onChange={handleInputChange} />
+                            <EditableField size="sm" label="SUB GROSS KG" name="subGrossKg" value={formData.subGrossKg} onChange={handleInputChange} />
                         </SimpleGrid>
 
                         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={spacing}>
-                            <EditableField label="LESS MOISTURE KG" name="lessMoistureKg" value={formData.lessMoistureKg} onChange={handleInputChange} />
-                            <EditableField label="LESS QUALITY KG" name="lessQualityKg" value={formData.lessQualityKg} onChange={handleInputChange} />
+                            <EditableField size="sm" label="LESS MOISTURE KG" name="lessMoistureKg" value={formData.lessMoistureKg} onChange={handleInputChange} />
+                            <EditableField size="sm" label="LESS QUALITY KG" name="lessQualityKg" value={formData.lessQualityKg} onChange={handleInputChange} />
                         </SimpleGrid>
 
-                        <EditableField label="NET WEIGHT KG" name="netWeightKg" value={formData.netWeightKg} onChange={handleInputChange} />
+                        <EditableField size="sm" label="NET WEIGHT KG" name="netWeightKg" value={formData.netWeightKg} onChange={handleInputChange} />
 
-                        <Heading as="h3" size="lg" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
+                        <Heading as="h3" size="md" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
 
                         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={spacing}>
-                            <EditableField label="PAYMENT WEIGHT" name="payment_weight" value={formData.payment_weight} onChange={handleInputChange} />
-                            <EditableField label="PAYMENT QUANTITY" name="payment_quantity" value={formData.payment_quantity} onChange={handleInputChange} />
-                            <EditableField label="PAYMENT RATE" name="payment_rate" value={formData.payment_rate} onChange={handleInputChange} />
+                            <EditableField size="sm" label="PAYMENT WEIGHT" name="payment_weight" value={formData.payment_weight} onChange={handleInputChange} />
+                            <EditableField size="sm" label="PAYMENT QUANTITY" name="payment_quantity" value={formData.payment_quantity} onChange={handleInputChange} />
+                            <EditableField size="sm" label="PAYMENT RATE" name="payment_rate" value={formData.payment_rate} onChange={handleInputChange} />
                         </SimpleGrid>
 
                         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={spacing}>
-                            <EditableField label="PAYMENT AMOUNT" name="payment_amount" value={calculateAmount()} readOnly />
+                            <EditableField size="sm" label="PAYMENT AMOUNT" name="payment_amount" value={calculateAmount()} readOnly />
                             <FormControl>
-                                <FormLabel>PAYMENT DATE</FormLabel>
+                                <FormLabel size="sm">PAYMENT DATE</FormLabel>
                                 <DatePicker
                                     selected={formData.paymentDate}
                                     onChange={(date) => handleDateChange(date, 'paymentDate')}
@@ -373,14 +318,14 @@ const GRN = () => {
                                     customInput={<Input />}
                                 />
                             </FormControl>
-                            <EditableField label="DR. A/C" name="drAc" value={formData.drAc} onChange={handleInputChange} />
+                            <EditableField size="sm" label="DR. A/C" name="drAc" value={formData.drAc} onChange={handleInputChange} />
                         </SimpleGrid>
 
-                        <EditableField label="CHEQUE IN FAVOUR OF" name="cheque_in_favor_of" value={formData.cheque_in_favor_of} onChange={handleInputChange} />
-                        <EditableField label="QUALITY GRADE" name="qualityGrade" value={formData.qualityGrade} onChange={handleInputChange} />
-                        <EditableField label="RATE" name="rate" value={formData.rate} onChange={handleInputChange} />
-                        <EditableField label="REMARKS" name="remarks" value={formData.remarks} onChange={handleInputChange} />
-
+                        <EditableField className="w-1/2" size="sm" label="CHEQUE IN FAVOUR OF" name="cheque_in_favor_of" value={formData.cheque_in_favor_of} onChange={handleInputChange} />
+                        <EditableField className="w-1/2" size="sm" label="QUALITY GRADE" name="qualityGrade" value={formData.qualityGrade} onChange={handleInputChange} />
+                        <EditableField className="w-1/2" size="sm" label="RATE" name="rate" value={formData.rate} onChange={handleInputChange} />
+                        <EditableField className="w-1/2" size="sm" label="REMARKS" name="remarks" value={formData.remarks} onChange={handleInputChange} />
+                        {/* 
                         <HStack justify="space-between">
                             {['PREPARED BY:', 'CHECKED BY:', 'AUTHORIZED BY:', 'RECEIVED BY:'].map((label) => (
                                 <Box key={label}>
@@ -388,7 +333,7 @@ const GRN = () => {
                                     <Divider borderColor="gray.400" />
                                 </Box>
                             ))}
-                        </HStack>
+                        </HStack> */}
                     </VStack>
                 </Box>
                 <Box display="flex" justifyContent="center">

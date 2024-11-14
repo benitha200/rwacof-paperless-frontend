@@ -282,7 +282,7 @@ const GrnList = () => {
                   <Td>{grn.id}</Td>
                   <Td>{format(new Date(grn.receivedDate), 'dd/MM/yyyy')}</Td>
                   <Td>{grn.supplierName}</Td>
-                  <Td>{grn.productDescription}</Td>
+                  <Td>{grn.coffee_type}</Td>
                   <Td isNumeric>{grn.quantity}</Td>
                   <Td isNumeric>{grn.totalWeight.toFixed(2)}</Td>
                   <Td>

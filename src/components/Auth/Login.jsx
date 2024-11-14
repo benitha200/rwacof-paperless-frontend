@@ -119,9 +119,9 @@ const Login = ({ onLogin }) => {
           >
             Login
           </Button>
-          <Text fontSize="sm">
+          {/* <Text fontSize="sm">
             Don't have an account? <Link color="teal.500" href="/signup">Sign up</Link>
-          </Text>
+          </Text> */}
         </VStack>
       </form>
     </div>

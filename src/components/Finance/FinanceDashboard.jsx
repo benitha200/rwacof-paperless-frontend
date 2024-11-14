@@ -89,7 +89,7 @@ const DashboardFinance = () => {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Finance Dashboard</h1>
         <p className="text-gray-500">
-          {grnData.length} GRNs processed - Last updated: {new Date(latestGRN.updatedAt).toLocaleString()}
+          {grnData.length} GRNs processed
         </p>
       </div>
 
@@ -145,28 +145,28 @@ const DashboardFinance = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium text-gray-500">Latest Supplier</p>
-                  <p className="text-lg font-semibold">{latestGRN.supplierName}</p>
+                  <p className="text-lg font-semibold">{latestGRN?.supplierName}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Coffee Type</p>
-                  <p className="text-lg font-semibold">{latestGRN.coffee_type}</p>
+                  <p className="text-lg font-semibold">{latestGRN?.coffee_type}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Quality Grade</p>
-                  <p className="text-lg font-semibold">{latestGRN.qualityGrade}</p>
+                  <p className="text-lg font-semibold">{latestGRN?.qualityGrade}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Status</p>
-                  <p className="text-lg font-semibold">{latestGRN.status}</p>
+                  <p className="text-lg font-semibold">{latestGRN?.status}</p>
                 </div>
               </div>
 
-              <Alert className={latestGRN.status === 'Received' ? 'bg-green-50' : 'bg-yellow-50'}>
+              <Alert className={latestGRN?.status === 'Received' ? 'bg-green-50' : 'bg-yellow-50'}>
                 <AlertTitle>Current Status</AlertTitle>
                 <AlertDescription>
-                  {latestGRN.status === 'Received' 
-                    ? `${latestGRN.supplierName} delivery successfully received and processed`
-                    : `${latestGRN.supplierName} delivery is in ${latestGRN.status} status`}
+                  {latestGRN?.status === 'Received' 
+                    ? `${latestGRN?.supplierName} delivery successfully received and processed`
+                    : `${latestGRN?.supplierName} delivery is in ${latestGRN?.status} status`}
                 </AlertDescription>
               </Alert>
             </div>

@@ -53,7 +53,7 @@ const App = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const storedUserRole = localStorage.getItem('userRole').toUpperCase();
+    const storedUserRole = localStorage.getItem('userRole')?.toUpperCase();
     if (token && storedUserRole) {
       setIsAuthenticated(true);
       setUserRole(storedUserRole);
@@ -138,7 +138,7 @@ const App = () => {
 
   const Welcome = () => {
     // switch ((userRole || '').toUpperCase()){
-    switch (localStorage.getItem('userRole').toUpperCase()) {
+    switch (localStorage.getItem('userRole')?.toUpperCase()) {
       case 'FINANCE':
         return <DashboardFinance />;
       case 'LOGISTICS':
@@ -184,7 +184,7 @@ const App = () => {
     }
 
     // Convert both stored role and allowed roles to uppercase for consistent comparison
-    if (allowedRoles && !allowedRoles.includes(storedUserRole.toUpperCase())) {
+    if (allowedRoles && !allowedRoles.includes(storedUserRole?.toUpperCase())) {
       return <Navigate to="/" />;
     }
     return children;

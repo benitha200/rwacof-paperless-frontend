@@ -93,8 +93,8 @@ function ShipmentInfo() {
                                     <thead>
                                         <tr>
                                             <th className="border border-gray-400 px-2 py-1">LOT</th>
-                                            <th className="border border-gray-400 px-2 py-1">Loading Day</th>
-                                            <th className="border border-gray-400 px-2 py-1">SL</th>
+                                            <th className="border border-gray-400 px-2 py-1">Loading Date</th>
+                                            <th className="border border-gray-400 px-2 py-1">Shipping Line</th>
                                             <th className="border border-gray-400 px-2 py-1">Forwarder</th>
                                             <th className="border border-gray-400 px-2 py-1">Contract Reference</th>
                                             <th className="border border-gray-400 px-2 py-1">PLATE NO</th>

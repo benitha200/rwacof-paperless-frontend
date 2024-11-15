@@ -48,14 +48,14 @@ const updateSpecificSection = (section, sectionData, updateFunction) => {
 
 export const generateInvoice = (doc, data) => {
     // Set font size and style
-    doc.setFontSize(14);
+    doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
     doc.text('RWACOF EXPORTS LTD', 20, 20);
 
-    doc.setFontSize(13);
+    doc.setFontSize(12);
     doc.text('INVOICE', 20, 30);
 
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
 
     // Seller information
@@ -69,20 +69,20 @@ export const generateInvoice = (doc, data) => {
     doc.text(data.consignee || 'Sucafina SA', 120, 55);
     doc.text('1PLACE ST GERVAIS, SWITZERLAND', 120, 65);
     doc.text(formatDate(data.date) || '10/14/2024', 120, 75);
-    doc.text(data.loadingTallySheet.rssSsrwSprw || 'SSRW-90706', 120, 85);
+    doc.text(data.invoice?.billOfLadingNo || 'SSRW-90706', 120, 85);
 
     // Invoice details
     const startY = 95;
     doc.autoTable({
-        startY: startY,
-        head: [['Description', '']],
+        startY: startY, 
+        head: [['Invoice Details', '']],
         body: [
             ['TRUCK NO:', data.truckNo || 'RAF239R/RL3581'],
             ['CONTAINER No:', data.containerNo || 'MSKU2706542'],
             ['LOT No:', data.lotNo || '228'],
             ['DESCRIPTION:', data.description || 'RWANDA ARABICA COFFEE'],
             ['IN BIG BAGS:', data.quantity || '80'],
-            ['NET WEIGHT:', data.netWeight || '78'],
+            ['NET WEIGHT (KGS)', data.netWeight || '78'],
             ['AMOUNT (U.S DOLLARS)', `${data.amount || '15476.29'} USD \n\n(${numberToWords(data.amount || 15476.29)})`],
         ],
         theme: 'grid',
@@ -103,12 +103,13 @@ export const generateInvoice = (doc, data) => {
 
 export const generateTallySheet = (doc, data) => {
     doc.text('Loading List', 20, 60);
+    
 
     doc.autoTable({
         startY: 70,
-        head: [['LOT', 'Loading Day', 'SL','Forwarder', 'RSS / SSRW/SPRW', 'PLATE NO', 'CONTAINER', 'TARE']],
+        head: [['LOT', 'Loading Date', 'Shipping Line','Forwarder', 'CONTRACT REFERENCE', 'PLATE NO', 'CONTAINER', "NUMBER OF BAGS","NET WEIGHT",'TARE']],
         body: [
-            [data.lotNo, data.loadingDay, data?.loadingTallySheet?.sl,data?.loadingTallySheet?.forwarder, data.description, data.truckNo, data.containerNo, data.netWeight]
+            [data.lotNo, data.loadingDay, data?.loadingTallySheet?.sl,data?.loadingTallySheet?.forwarder, data?.loadingTallySheet?.rssSsrwSprw, data.truckNo, data.containerNo, data.quantity,data.netWeight,data?.loadingTallySheet?.tare]
         ],
         theme:'grid',
         headStyles: { fillColor: [255, 193, 7], textColor: 0, fontStyle: 'bold' },

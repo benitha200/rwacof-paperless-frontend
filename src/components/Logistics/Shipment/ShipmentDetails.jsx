@@ -11,7 +11,7 @@ function ShipmentDetails({ steps, activeStep, setActiveStep, shipment, updateShi
     let updatedData = {};
 
     switch (documentType.toLowerCase()) {
-      case 'loadingtallysheet':
+      case 'loadinglist':
         updatedData = {
           shipmentId: shipment.id,
           loadingDay: new Date(document.querySelector('input[name="date"]').value + 'T00:00:00Z').toISOString(),
@@ -45,7 +45,7 @@ function ShipmentDetails({ steps, activeStep, setActiveStep, shipment, updateShi
       case 'vgm':
         const containers = Array.from(document.querySelectorAll('.container-row')).map(row => ({
           containerNumber: row.querySelector('input[name="containerNumber"]').value,
-          containerTypeSize: row.querySelector('input[name="containerTypeSize"]').value,
+          containerTypeSize: row.querySelector('select[name="containerTypeSize"]').value,
           vgmKgs: parseFloat(row.querySelector('input[name="vgmKgs"]').value) || 0,
           cargoGwKgs: parseFloat(row.querySelector('input[name="cargoGwKgs"]').value) || 0,
           method: row.querySelector('input[name="method"]').value,

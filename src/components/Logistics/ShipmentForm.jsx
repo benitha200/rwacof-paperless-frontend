@@ -174,16 +174,29 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import API_URL from '../../constants/Constants';
 import { useToast } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
+
 
 const ShipmentForm = () => {
+  const location = useLocation();
+  const { contractId, contractNumber,contractPrice } = location.state || {};
+  
   const [shipment, setShipment] = useState({
     containerNo: '',
     truckNo: '',
     description: 'RWANDA ARABICA COFFEE',
-    date: null
+    lotNo: '',
+    quantity: '',
+    quantityUnit: '',
+    netWeight: '',
+    netWeightUnit: '',
+    amount: '',
+    price: '',
+    consignee: '',
+    date: null,
   });
-  const navigate=useNavigate();
+  
+  const navigate = useNavigate();
   const toast = useToast();
 
   const handleChange = (e) => {
@@ -193,20 +206,38 @@ const ShipmentForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("button clicked")
+    console.log("button clicked");
+
+    if (!contractId) {
+      toast({
+        title: "Error",
+        description: "Contract ID is required",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
 
     const formattedShipment = {
-      ...shipment,
-      // quantity: parseInt(shipment.quantity, 10),
-      // netWeight: parseFloat(shipment.netWeight),
-      // amount: parseFloat(shipment.amount),
-      // price: parseFloat(shipment.price),
-      date: shipment.date ? shipment.date.toISOString() : null,
+      containerNo: shipment.containerNo,
+      truckNo: shipment.truckNo,
+      description: shipment.description,
+      lotNo: shipment.lotNo || undefined,
+      quantity: shipment.quantity ? parseInt(shipment.quantity, 10) : undefined,
+      quantityUnit: shipment.quantityUnit || undefined,
+      netWeight: shipment.netWeight ? parseFloat(shipment.netWeight) : undefined,
+      netWeightUnit: shipment.netWeightUnit || undefined,
+      amount: shipment.amount ? parseFloat(shipment.amount) : undefined,
+      price: shipment.price ? parseFloat(shipment.price) : undefined,
+      consignee: shipment.consignee || undefined,
+      date: shipment.date ? shipment.date.toISOString() : new Date().toISOString(),
       userId: parseInt(localStorage.getItem('userId')),
     };
 
     try {
-      const response = await fetch(`${API_URL}/api/shipments`, {
+      // Note: Using the contract-specific endpoint
+      const response = await fetch(`${API_URL}/api/contracts/${contractId}/shipments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -215,7 +246,8 @@ const ShipmentForm = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create shipment');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create shipment');
       }
 
       const data = await response.json();
@@ -226,12 +258,12 @@ const ShipmentForm = () => {
         duration: 5000,
         isClosable: true,
       });
-      navigate(`/shipments`);
+      navigate(`/contracts/${contractId}`);
     } catch (error) {
       console.error('Error creating shipment:', error);
       toast({
         title: "Error",
-        description: "Failed to create shipment. Please try again.",
+        description: error.message || "Failed to create shipment. Please try again.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -239,13 +271,62 @@ const ShipmentForm = () => {
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   console.log("button clicked")
+
+  //   const formattedShipment = {
+  //     ...shipment,
+  //     // quantity: parseInt(shipment.quantity, 10),
+  //     // netWeight: parseFloat(shipment.netWeight),
+  //     // amount: parseFloat(shipment.amount),
+  //     // price: parseFloat(shipment.price),
+  //     date: shipment.date ? shipment.date.toISOString() : null,
+  //     userId: parseInt(localStorage.getItem('userId')),
+  //   };
+
+  //   try {
+  //     const response = await fetch(`${API_URL}/api/shipments`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(formattedShipment),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to create shipment');
+  //     }
+
+  //     const data = await response.json();
+  //     toast({
+  //       title: "Shipment created",
+  //       description: "The shipment was successfully created.",
+  //       status: "success",
+  //       duration: 5000,
+  //       isClosable: true,
+  //     });
+  //     navigate(`/shipments`);
+  //   } catch (error) {
+  //     console.error('Error creating shipment:', error);
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to create shipment. Please try again.",
+  //       status: "error",
+  //       duration: 5000,
+  //       isClosable: true,
+  //     });
+  //   }
+  // };
+
+
 
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl font-serif text-gray-700">New Shipment</CardTitle>
         <CardDescription className="font-normal tracking-wide text-sm">
-          Enter the details for a new shipment
+          Enter the details for a new shipment - Contract #{contractNumber}
         </CardDescription>
       </CardHeader>
       <CardContent>

@@ -86,7 +86,7 @@ function ShipmentInfo() {
                 console.log('Retrieved shipment:', response.data);
                 setSteps([
                     {
-                        title: "LoadingTallysheet",
+                        title: "LoadingList",
                         content: (
                             <div className="p-2 rounded-lg overflow-auto w-full m-2">
                                 <table className="min-w-full border-collapse">
@@ -147,7 +147,7 @@ function ShipmentInfo() {
                                                     type="text"
                                                     className="border w-full p-2 bg-teal-50"
                                                     name="contract_reference"
-                                                    // value={''}
+                                                    defaultValue={response.data.contract?.contractNumber}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
                                                 />
                                             </td>
@@ -174,7 +174,7 @@ function ShipmentInfo() {
                                                     type="text"
                                                     className="border w-full p-2 bg-teal-50"
                                                     name="netWeight"
-                                                    value={response.data?.loadingTallySheet?.tare}
+                                                    defaultValue={response.data?.loadingTallySheet?.tare}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
                                                 />
                                             </td>
@@ -183,7 +183,7 @@ function ShipmentInfo() {
                                 </table>
                             </div>
                         ),
-                        filename: 'tally-sheet.pdf'
+                        filename: 'tally-list.pdf'
                     },
                     {
                         title: "invoice",
@@ -205,7 +205,7 @@ function ShipmentInfo() {
                                             className="border w-full mt-2 p-2"
                                             name="consignee"
                                             readOnly
-                                            defaultValue={shipment.consignee || 'SUCAFINA S.A GENEVA'}
+                                            defaultValue={response.data.consignee || 'SUCAFINA S.A GENEVA'}
                                         />
                                         <p className='mt-2'>1PLACE ST GERVAIS, SWITZERLAND</p>
                                         <input
@@ -213,13 +213,13 @@ function ShipmentInfo() {
                                             className="border w-full mt-2 p-2"
                                             name="invoiceDate"
                                             readOnly
-                                            defaultValue={shipment.date ? new Date(shipment.date).toISOString().split('T')[0] : '2024-10-10'}
+                                            value={response.data.date ? new Date(response.data.date).toISOString().split('T')[0] : '2024-10-10'}
                                         />
                                         <input
                                             type="text"
                                             className="border w-full mt-2 p-2 bg-teal-100"
                                             name="billOfLadingNo"
-                                            defaultValue={response?.data?.invoice?.billOfLadingNo || ''}
+                                            defaultValue={response.data.contract?.contractNumber || ''}
                                             placeholder='Contract Reference...'
                                         />
                                         {/* <p>SSRW-90706</p> */}
@@ -360,7 +360,7 @@ function ShipmentInfo() {
                                             <h4 className="font-bold mb-2">Container {index + 1}</h4>
                                             <table className="w-full border-collapse mb-2">
                                                 <thead>
-                                                    <tr className="bg-yellow-400">
+                                                    <tr className="bg-teal-600 text-white">
                                                         <th className="border border-black p-1">Container number</th>
                                                         <th className="border border-black p-1">Container type/size</th>
                                                         <th className="border border-black p-1">VGM (KGS)</th>
@@ -376,23 +376,51 @@ function ShipmentInfo() {
                                                                 type="text"
                                                                 className="border w-full"
                                                                 name="containerNumber"
-                                                                defaultValue={response.data.vgm?.containerNumber}
+                                                                defaultValue={response.data?.containerNo}
                                                             />
                                                         </td>
-                                                        <td className="border border-black p-1">
+                                                        {/* <td className="border border-black p-1">
                                                             <input
                                                                 type="text"
                                                                 className="border w-full"
                                                                 name="containerTypeSize"
                                                                 defaultValue={response.data.vgm?.containerTypeSize}
                                                             />
+                                                        </td> */}
+                                                        <td className="border border-black p-1">
+                                                            <select
+                                                                className="border w-full"
+                                                                name="containerTypeSize"
+                                                                value={response.data?.vgm?.containerTypeSize}
+                                                                onChange={(e) => {
+                                                                    setShipment(prev => ({
+                                                                        ...prev,
+                                                                        data: {
+                                                                            ...prev.data,
+                                                                            vgm: {
+                                                                                ...(prev.data?.vgm || {}),
+                                                                                containerTypeSize: e.target.value
+                                                                            }
+                                                                        }
+                                                                    }));
+                                                                }}
+                                                            >
+                                                                <option value="">Select size</option>
+                                                                <option value="20">20FT</option>
+                                                                <option value="40">40FT</option>
+                                                            </select>
                                                         </td>
                                                         <td className="border border-black p-1">
                                                             <input
                                                                 type="number"
                                                                 className="border w-full"
                                                                 name="vgmKgs"
-                                                                defaultValue={response.data.vgm?.vgmKgs}
+                                                                defaultValue={(() => {
+                                                                    const cargoWeight = Number(response.data?.vgm?.cargoGwKgs) || 0;
+                                                                    const tareWeight = Number(response.data?.loadingTallySheet?.tare) || 0;
+                                                                    return cargoWeight + tareWeight;
+                                                                })()}
+                                                                readOnly
                                                             />
                                                         </td>
                                                         <td className="border border-black p-1">
@@ -400,9 +428,32 @@ function ShipmentInfo() {
                                                                 type="number"
                                                                 className="border w-full"
                                                                 name="cargoGwKgs"
-                                                                value={response.data.vgm?.cargoGwKgs}
+                                                                defaultValue={response?.data?.vgm?.cargoGwKgs}
+                                                                onChange={(e) => {
+                                                                    const { value } = e.target;
+                                                                    const newCargoWeight = Number(value) || 0;
+                                                                    const tareWeight = Number(response?.data?.loadingTallySheet?.tare) || 0;
+
+                                                                    // Safely update state
+                                                                    setShipment((prev) => ({
+                                                                        ...prev,
+                                                                        data: {
+                                                                            ...prev.data,
+                                                                            vgm: {
+                                                                                ...prev.data?.vgm,
+                                                                                cargoGwKgs: value, // Allow editing here
+                                                                                vgmKgs: newCargoWeight + tareWeight, // Dynamically calculate and update vgmKgs
+                                                                            },
+                                                                        },
+                                                                    }));
+                                                                }}
                                                             />
                                                         </td>
+
+
+
+
+
                                                         <td className="border border-black p-1">
                                                             <input
                                                                 type="text"
@@ -440,7 +491,7 @@ function ShipmentInfo() {
                                                 type="text"
                                                 className="border w-full p-1"
                                                 name="vesselName"
-                                                value={response.data?.vgm?.vesselName || ""}
+                                                defaultValue={response.data?.vgm?.vesselName}
                                             />
                                         </div>
                                         <div>
@@ -449,7 +500,7 @@ function ShipmentInfo() {
                                                 type="text"
                                                 className="border w-full p-1"
                                                 name="voyageNumber"
-                                                value={response.data?.vgm?.voyageNumber || ""}
+                                                defaultValue={response.data?.vgm?.voyageNumber}
                                             />
                                         </div>
                                     </div>
@@ -461,7 +512,7 @@ function ShipmentInfo() {
                                                 type="text"
                                                 className="border w-full p-1"
                                                 name="authorizedPerson"
-                                                defaultValue="Berthe MUKANOHERI"
+                                                defaultValue="Thierry Pascal RWIRANGIRA "
                                             />
                                         </div>
                                         <div>
@@ -470,7 +521,7 @@ function ShipmentInfo() {
                                                 type="text"
                                                 className="border w-full p-1"
                                                 name="position"
-                                                defaultValue="LOGISTICS MANAGER"
+                                                defaultValue="Contracts and Logistics Coordinator"
                                             />
                                         </div>
                                         <div>
@@ -532,31 +583,32 @@ function ShipmentInfo() {
                                         <tr>
                                             <td className="font-semibold">Product</td>
                                             <td>
-                                                <input type="text" name='product' value="RWANDA ARABICA COFFEE" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" name='product' defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Packing</td>
                                             <td>
-                                                <input type="text" value={response?.data?.stuffingReport?.packing || ''} name='packing' defaultValue="JUTE BAGS" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" value={response?.data?.quantityUnit || ''} name='packing' defaultValue="JUTE BAGS" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Vessel name</td>
                                             <td>
-                                                <input type="text" value={response?.data?.stuffingReport?.vesselName || ''} name='vesselName' defaultValue="" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" value={response?.data?.vgm?.vesselName || ''} name='vesselName' defaultValue="" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Bill of Lading No.</td>
                                             <td>
-                                                <input type="text" value={response?.data?.stuffingReport?.billOfLadingNo || ''} name='billOfLadingNo' defaultValue="227771442" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" value={response?.data?.vgm?.bookingBlNumber || ''} name='billOfLadingNo' defaultValue="227771442" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
                                             <td className="font-semibold">Place</td>
                                             <td>
-                                                <input type="text" name='place' value={response?.data?.stuffingReport?.place || ''} defaultValue="RWACOF EXPORTS LTD YARD" className="border border-gray-300 p-1 w-full" />
+                                                <input type="text" name='place' defaultValue="RWACOF EXPORTS LTD YARD" className="border border-gray-300 p-1 w-full" />
+                                                {/* <input type="text" name='place' value={response?.data?.stuffingReport?.place} defaultValue="RWACOF EXPORTS LTD YARD" className="border border-gray-300 p-1 w-full" /> */}
                                             </td>
                                         </tr>
                                         <tr>
@@ -618,7 +670,7 @@ function ShipmentInfo() {
                                 <p>PRODUCT: <input type="text" value="RWANDA ARABICA COFFEE" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>Number of Bags: <input type="number" name='numberOfBags' value={response.data.quantity || ''} defaultValue="320" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>LOTS: <input type="text" name='lots' value={response.data.lotNo} defaultValue="28/002/22018" className="border border-gray-300 p-1 w-full" /></p>
-                                <p>ILLY ID: <input type="text" name='illyId' defaultValue="340350032" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>CLIENT REFERENCE: <input type="text" name='illyId' defaultValue="340350032" className="border border-gray-300 p-1 w-full" /></p>
 
                                 <h4 className="font-semibold mt-2">2.0 FINDINGS</h4>
                                 <p>Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.</p>
@@ -641,7 +693,7 @@ function ShipmentInfo() {
                                     <p>This report reflects our findings determined at the time and place of our intervention only and does not relieve the parties from their contractual responsibilities.</p>
                                     <p className="mt-2">GIVEN AT RWACOF EXPORTS LTD ON <input type='date' name='signatureDate' defaultValue='2024-10-10' className="border border-gray-300 p-1 w-full" /></p>
                                     <p className="mt-2">SIGNED: Digitally Signed</p>
-                                    <p><input type="number" name='authorizedPerson' value={response.data.authorizedPerson} defaultValue="THIERRY PASCAL" className="border border-gray-300 p-1 w-full" /></p>
+                                    <p><input type="number" name='authorizedPerson' value={response.data.authorizedPerson || "THIERRY PASCAL"} defaultValue="THIERRY PASCAL" className="border border-gray-300 p-1 w-full" /></p>
                                     <p>Operations</p>
                                 </div>
 
@@ -697,7 +749,7 @@ function ShipmentInfo() {
             console.log("shipment id");
 
             switch (documentType?.toLowerCase()) {
-                case 'loadingtallysheet':
+                case 'loadinglist':
                     response = await axios.post(`${API_URL}/api/loading-tally-sheets`, updatedData);
                     break;
                 case 'vgm':

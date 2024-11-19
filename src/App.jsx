@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { Home, Package, Plus, FileText, DollarSign, Users, Settings, Menu as MenuIcon, Bold, SheetIcon } from 'lucide-react';
+import { Home, Package, Plus, FileText, DollarSign, Users, Settings, Menu as MenuIcon, Bold, SheetIcon, File } from 'lucide-react';
 import {
   Box, VStack, HStack, Heading, Text, Button, Image, Icon,
   useColorModeValue, ChakraProvider, Flex, Menu, MenuButton, MenuList, MenuItem,
@@ -30,6 +30,9 @@ import QualityManagerDashboard from './components/Quality/QualityManagerDashboar
 import CooDashboard from './components/COO/CooDashboard';
 import LoadingTallySheet from './components/Logistics/LoadingTallySheet/LoadingTallySheet';
 import ShipmentUpdate from './components/Logistics/Shipment/ShipmentUPdate';
+import ContractList from './components/Logistics/Contract/ContractList';
+import ContractForm from './components/Logistics/Contract/ContractForm';
+import ContractDetails from './components/Logistics/Contract/ContractDetails';
 
 // Custom theme
 const theme = extendTheme({
@@ -106,7 +109,6 @@ const App = () => {
       ],
       QUALITYMANAGER: [
         { to: "/", icon: Home, text: "Dashboard" },
-        { to: "/grn", icon: FileText, text: "GRN" },
         { to: "/allgrns", icon: FileText, text: "ALL GRNS" },
       ],
       COO: [
@@ -121,9 +123,9 @@ const App = () => {
       ],
       LOGISTICS: [
         { to: "/", icon: Home, text: "Dashboard" },
-        { to: "/new-shipment", icon: Plus, text: "New Shipment" },
         { to: "/shipments", icon: Package, text: "Shipments" },
-        { to: "/loading-tally-sheet", icon: SheetIcon, text: "Loading List" },
+        { to: "/contracts", icon: File, text: "Contracts" },
+        // { to: "/loading-tally-sheet", icon: SheetIcon, text: "Loading List" },
       ],
     };
 
@@ -388,6 +390,21 @@ const App = () => {
                   <Route path="/shipments" element={
                     <ProtectedRoute allowedRoles={['ADMIN', 'LOGISTICS']}>
                       <ShipmentList />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/contracts" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'LOGISTICS']}>
+                      <ContractList />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/contract/:id" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'LOGISTICS']}>
+                      <ContractDetails />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/new-contract" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'LOGISTICS']}>
+                      <ContractForm />
                     </ProtectedRoute>
                   } />
                   <Route path="/containers" element={

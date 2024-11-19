@@ -6,27 +6,38 @@ import API_URL from '../../../constants/Constants';
 
 export const handleDownload = async (filename, title, data) => {
     console.log(`Generating ${filename}`);
-
-    const doc = new jsPDF();
+    let doc;
 
     switch (title.toLowerCase()) {
         case 'invoice':
+            doc = new jsPDF();
             generateInvoice(doc, data);
+            doc.save(filename);
             break;
-        case 'loadingtallysheet':
+            
+        case 'loadinglist':
+            doc = new jsPDF('l', 'pt');
             generateTallySheet(doc, data);
+            doc.save(filename);
             break;
+            
         case 'vgm':
+            doc = new jsPDF();
             generateVGM(doc, data);
+            doc.save(filename);
             break;
+            
         case 'stuffingreport':
+            doc = new jsPDF();
             generateStuffingReport(doc, data);
+            doc.save(filename);
             break;
+            
         default:
+            doc = new jsPDF();
             doc.text('No specific content available for this document type.', 20, 50);
+            doc.save(filename);
     }
-
-    doc.save(filename);
 };
 
 export const handleUpdate = (section, shipment, updateFunction) => {
@@ -65,10 +76,10 @@ export const generateInvoice = (doc, data) => {
     doc.text('RWANDA', 20, 75);
 
     // Consignee information
+    doc.text(formatDate(data.date) || '10/14/2024', 120, 75);
     doc.text('CONSIGNEE:', 120, 45);
     doc.text(data.consignee || 'Sucafina SA', 120, 55);
     doc.text('1PLACE ST GERVAIS, SWITZERLAND', 120, 65);
-    doc.text(formatDate(data.date) || '10/14/2024', 120, 75);
     doc.text(data.invoice?.billOfLadingNo || 'SSRW-90706', 120, 85);
 
     // Invoice details
@@ -81,12 +92,17 @@ export const generateInvoice = (doc, data) => {
             ['CONTAINER No:', data.containerNo || 'MSKU2706542'],
             ['LOT No:', data.lotNo || '228'],
             ['DESCRIPTION:', data.description || 'RWANDA ARABICA COFFEE'],
-            ['IN BIG BAGS:', data.quantity || '80'],
+            [`IN ${data.quantityUnit}:`, data.quantity || '80'],
             ['NET WEIGHT (KGS)', data.netWeight || '78'],
             ['AMOUNT (U.S DOLLARS)', `${data.amount || '15476.29'} USD \n\n(${numberToWords(data.amount || 15476.29)})`],
         ],
         theme: 'grid',
-        styles: { fontSize: 12, cellPadding: 5 },
+        styles: { fontSize: 10, cellPadding: 3 },
+        headStyles: { 
+            fillColor: [0, 128, 128], 
+            textColor: 255, 
+            fontStyle: 'bold' 
+        },
         columnStyles: { 0: { cellWidth: 80 }, 1: { cellWidth: 110 } },
     });
 
@@ -96,23 +112,41 @@ export const generateInvoice = (doc, data) => {
     doc.text('AUTHORISED SIGNATURE', 20, finalY + 20);
     doc.text('RWACOF', 20, finalY + 30);
 
-    // Total amount
-    // doc.setFont(undefined, 'bold');
-    // doc.text(data.amount || '15476.29', 170, finalY + 30, { align: 'right' });
+ 
 };
 
-export const generateTallySheet = (doc, data) => {
-    doc.text('Loading List', 20, 60);
+// export const generateTallySheet = (doc, data) => {
+//     doc.text('Loading List', 20, 60);
     
 
-    doc.autoTable({
-        startY: 70,
-        head: [['LOT', 'Loading Date', 'Shipping Line','Forwarder', 'CONTRACT REFERENCE', 'PLATE NO', 'CONTAINER', "NUMBER OF BAGS","NET WEIGHT",'TARE']],
+//     doc.autoTable({
+//         startY: 70,
+//         head: [['LOT', 'Loading Date', 'Shipping Line','Forwarder', 'CONTRACT REFERENCE', 'PLATE NO', 'CONTAINER', "NUMBER OF BAGS","NET WEIGHT",'TARE']],
+//         body: [
+//             [data.lotNo, data.loadingDay, data?.loadingTallySheet?.sl,data?.loadingTallySheet?.forwarder, data?.loadingTallySheet?.rssSsrwSprw, data.truckNo, data.containerNo, data.quantity,data.netWeight,data?.loadingTallySheet?.tare]
+//         ],
+//         theme:'grid',
+//         headStyles: { fillColor: [255, 193, 7], textColor: 0, fontStyle: 'bold' },
+//         styles: { fontSize: 10 },
+//     });
+// };
+
+export const generateTallySheet = (docl, data) => {
+    
+    docl.text('Loading List', 20, 40);
+    
+    docl.autoTable({
+        startY: 50,
+        head: [['LOT', 'Loading Date', 'Shipping Line', 'Forwarder', 'CONTRACT REFERENCE', 'PLATE NO', 'CONTAINER', "NUMBER OF BAGS", "NET WEIGHT", 'TARE']],
         body: [
-            [data.lotNo, data.loadingDay, data?.loadingTallySheet?.sl,data?.loadingTallySheet?.forwarder, data?.loadingTallySheet?.rssSsrwSprw, data.truckNo, data.containerNo, data.quantity,data.netWeight,data?.loadingTallySheet?.tare]
+            [data.lotNo, data.loadingDay, data?.loadingTallySheet?.sl, data?.loadingTallySheet?.forwarder, data?.loadingTallySheet?.rssSsrwSprw, data.truckNo, data.containerNo, data.quantity, data.netWeight, data?.loadingTallySheet?.tare]
         ],
-        theme:'grid',
-        headStyles: { fillColor: [255, 193, 7], textColor: 0, fontStyle: 'bold' },
+        theme: 'grid',
+        headStyles: { 
+            fillColor: [0, 128, 128], 
+            textColor: 255, 
+            fontStyle: 'bold' 
+        },
         styles: { fontSize: 10 },
     });
 };
@@ -145,8 +179,12 @@ export const generateVGM = (doc, data) => {
         startY: 80,
         head: [['Shipper Name', 'Booking or B/L Number']],
         body: [['RWACOF EXPORTS LIMITED', data?.vgm?.bookingBlNumber || '']],
-        theme: 'grid',
-        headStyles: { fillColor: [255, 193, 7], textColor: 0, fontStyle: 'bold' },
+        theme: 'plain',
+        headStyles: { 
+            fillColor: [0, 128, 128], 
+            textColor: 255, 
+            fontStyle: 'bold' 
+        },
         styles: { fontSize: 10 },
     });
 
@@ -155,11 +193,15 @@ export const generateVGM = (doc, data) => {
         startY: doc.lastAutoTable.finalY + 10,
         head: [['Container number', 'Container type/size', 'VGM (KGS)', 'Cargo G.W. (KGS)', 'Method (I or II)', 'Remarks']],
         body: [
-            [data?.vmg?.containerNumber, data?.vgm?.containerTypeSize, data?.vgm?.vgmKgs, data?.vgm?.cargoGwKgs, data?.vgm?.method, data?.vgm?.remarks || 'XXX'],
+            [data?.vgm?.containerNumber, data?.vgm?.containerTypeSize, data?.vgm?.vgmKgs, data?.vgm?.cargoGwKgs, data?.vgm?.method, data?.vgm?.remarks || 'XXX'],
             // ['SUDU7675134', '20/DV', '39,100.00 KGS', '21,620.00 KGS', '1', 'XXXX']
         ],
         theme: 'grid',
-        headStyles: { fillColor: [255, 193, 7], textColor: 0, fontStyle: 'bold' },
+        headStyles: { 
+            fillColor: [0, 128, 128], 
+            textColor: 255, 
+            fontStyle: 'bold' 
+        },
         styles: { fontSize: 10 },
     });
 
@@ -181,7 +223,7 @@ export const generateVGM = (doc, data) => {
         startY: doc.lastAutoTable.finalY + 10,
         head: [['Full Name of Authorized Person (in CAPITAL letters)', 'Position', 'Contact Number']],
         body: [[data?.vgm?.authorizedPerson, data?.vgm?.position, data?.vgm?.contactNumber]],
-        theme: 'grid',
+        theme: 'plain',
         headStyles: { fillColor: [255, 255, 255], textColor: 0, fontStyle: 'bold' },
         styles: { fontSize: 10,margin:5 },
     });
@@ -191,8 +233,8 @@ export const generateVGM = (doc, data) => {
     doc.autoTable({
         startY: signatureY,
         body: [
-            ['Authorized Signature', 'Date (dd/mm/yy)'],
-            ['Digitally Signed', data?.vgm?.signatureDate.date || '29/Jul/2024']
+            ['Authorized Signature', '29/Nov/2024'],
+            ['Digitally Signed', data?.vgm?.signatureDate.date || '29/Nov/2024']
         ],
         theme: 'plain',
         styles: { fontSize: 10 },
@@ -420,134 +462,6 @@ export const generateStuffingReport = (doc, data) => {
     doc.save('stuffing-report.pdf');
 };
 
-
-// export const generateStuffingReport = (doc, data) => {
-//     // Add RWACOF logo
-//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
-
-//     // Title
-//     doc.setFontSize(16);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('STUFFING SUPERVISION REPORT', doc.internal.pageSize.width / 2, 60, { align: 'center' });
-
-//     // Client information table
-//     doc.autoTable({
-//         startY: 70,
-//         head: [['', '']],
-//         body: [
-//             ['Client', data.stuffingReport.client],
-//             ['Mandate', data.stuffingReport.mandate],
-//             ['Product', data.stuffingReport.product],
-//             ['Packing', data.stuffingReport.packing],
-//             ['Vessel name', data.stuffingReport.vesselName],
-//             ['Bill of Lading No.', data.stuffingReport.billOfLadingNo],
-//             ['Place', data.stuffingReport.place],
-//             ['Export Container stuffed', data.stuffingReport.container],
-//             ['Commenced Stuffing /loading', new Date(data.stuffingReport.stuffingStart).toLocaleString()],
-//             ['Completed Stuffing/loading', new Date(data.stuffingReport.stuffingEnd).toLocaleString()],
-//             ['temporally seal', new Date(data.stuffingReport.tempSealTime).toLocaleString()],
-//             ['Container sealing/Shipping line seal', new Date(data.stuffingReport.finalSealTime).toLocaleString()]
-//         ],
-//         theme: 'grid',
-//         styles: { fontSize: 10, cellPadding: 2 },
-//         columnStyles: { 0: { fontStyle: 'bold', cellWidth: 80 } },
-//         headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
-//     });
-
-//     // Add new page
-//     doc.addPage();
-
-//     // Add RWACOF logo to the second page
-//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
-
-//     // STUFFING REPORT title
-//     doc.setFontSize(16);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('STUFFING REPORT', doc.internal.pageSize.width / 2, 60, { align: 'center' });
-
-//     // Container Particulars & Condition
-//     doc.setFontSize(12);
-//     doc.text('1.0 CONTAINER PARTICULARS & CONDITION', 20, 80);
-//     doc.setFont(undefined, 'normal');
-//     doc.setFontSize(10);
-//     doc.text(`1.1 ${data.containerNo} (20ft Container)`, 20, 90);
-//     doc.text(`Container Condition: ${data.stuffingReport.containerCondition}`, 20, 100);
-
-//     // Descriptions of Goods
-//     doc.setFontSize(12);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('1.1.1 DESCRIPTIONS OF GOODS:', 20, 120);
-//     doc.setFont(undefined, 'normal');
-//     doc.setFontSize(10);
-//     doc.text(`PRODUCT: ${data.stuffingReport.product}`, 20, 130);
-//     doc.text(`Number of Bags: ${data.stuffingReport.numberOfBags} BAGS`, 20, 140);
-//     doc.text('LOTS:', 20, 150);
-//     doc.text(data.stuffingReport.lots, 20, 160);
-//     doc.text(`ILLY ID: ${data.stuffingReport.illyId}`, 20, 170);
-
-//     // Findings
-//     doc.setFontSize(12);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('2.0 FINDINGS', 20, 190);
-//     doc.setFont(undefined, 'normal');
-//     doc.setFontSize(10);
-//     doc.text('Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.', 20, 200);
-//     doc.text('We conducted the Stuffing Supervision of', 20, 210);
-//     doc.text(`${data.stuffingReport.product} into the export container at ${data.stuffingReport.place}`, 20, 220);
-//     doc.text('and report as follows:', 20, 230);
-
-//     // Stuffing
-//     doc.setFontSize(12);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('2.1 STUFFING', 20, 250);
-//     doc.setFont(undefined, 'normal');
-//     doc.setFontSize(10);
-//     doc.text(`Stuffing of the container at ${data.stuffingReport.place} commenced on ${new Date(data.stuffingReport.stuffingStart).toLocaleDateString()} at`, 20, 260);
-//     doc.text(`${new Date(data.stuffingReport.stuffingStart).toLocaleTimeString()} and was completed on ${new Date(data.stuffingReport.stuffingEnd).toLocaleDateString()} at ${new Date(data.stuffingReport.stuffingEnd).toLocaleTimeString()}`, 20, 270);
-//     doc.text(`${data.stuffingReport.numberOfBags} Bags of coffee packed in ${data.stuffingReport.packing} were stuffed into the container.`, 20, 280);
-
-//     // Container Sealing
-//     doc.setFontSize(12);
-//     doc.setFont(undefined, 'bold');
-//     doc.text('2.2 CONTAINER SEALING AFTER STUFFING', 20, 300);
-//     doc.setFont(undefined, 'normal');
-//     doc.setFontSize(10);
-//     doc.text(`After stuffing the ${data.stuffingReport.numberOfBags} ${data.stuffingReport.packing} into the container was completed`, 20, 310);
-//     doc.text('and the export container was closed and secured by Shipping', 20, 320);
-//     doc.text(`line seal and RRA seals on ${new Date(data.stuffingReport.finalSealTime).toLocaleString()}`, 20, 330);
-//     doc.text('Herewith below are the details:', 20, 340);
-//     doc.text(`- ${data.containerNo} (1*20FT)`, 30, 350);
-//     doc.text(`- Number of bags: ${data.stuffingReport.numberOfBags} bags (${data.stuffingReport.packing})`, 30, 360);
-
-//     // Add Rwacof Exports Ltd. details
-//     doc.setFontSize(8);
-//     doc.text('Rwacof Exports Ltd, K425 Street Kanzenze,Gikondo,Kigali,Rwanda', 20, 380);
-//     doc.text('Tel +250 252 575872 E-mail admin@rwacof.com Web www.rwacof.com', 20, 388);
-
-//     // Add new page
-//     doc.addPage();
-
-//     // Add RWACOF logo to the third page
-//     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
-
-//     // Footer
-//     doc.setFontSize(10);
-//     doc.setTextColor(255, 0, 0);  // Set text color to red
-//     doc.text('NB: all Photos are enclosed at the end of this report', 20, 60);
-//     doc.setTextColor(0, 0, 0);  // Reset text color to black
-//     doc.text('This report reflects our findings determined at the time and place of our intervention', 20, 80);
-//     doc.text('only and does not relieve the parties from their contractual responsibilities.', 20, 90);
-
-//     doc.text(`GIVEN AT ${data.stuffingReport.place} ON ${new Date(data.stuffingReport.signatureDate).toLocaleDateString()}`, 20, 120);
-
-//     doc.text('Digitally Signed', 20, 160);
-
-//     doc.text(data.stuffingReport.authorizedPerson, 20, 190);
-//     doc.text('Operations', 20, 200);
-
-//     // Save the PDF
-//     doc.save('stuffing-report.pdf');
-// };
 
 
 export function formatDate(dateString) {

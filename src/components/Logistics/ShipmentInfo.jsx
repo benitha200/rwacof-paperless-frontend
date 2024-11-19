@@ -263,10 +263,10 @@ function ShipmentInfo() {
                                         </tr>
                                         <tr>
                                             <td className="border border-black p-1">
-                                                <input type="text" className="border w-full" defaultValue="Berthe MUKANOHERI" />
+                                                <input type="text" className="border w-full" defaultValue="Thierry Pascal RWIRANGIRA " />
                                             </td>
                                             <td className="border border-black p-1">
-                                                <input type="text" className="border w-full" defaultValue="LOGISTICS MANAGER" />
+                                                <input type="text" className="border w-full" defaultValue="Contracts and Logistics Coordinator" />
                                             </td>
                                             <td className="border border-black p-1">
                                                 <input type="text" className="border w-full" defaultValue="250.788.249.673" />
@@ -412,7 +412,7 @@ function ShipmentInfo() {
                                     <p>This report reflects our findings determined at the time and place of our intervention only and does not relieve the parties from their contractual responsibilities.</p>
                                     <p className="mt-2">GIVEN AT RWACOF EXPORTS LTD ON <input type="text" defaultValue="14 June 2023" className="border border-gray-300 p-1 w-full" /></p>
                                     <p className="mt-2">SIGNED: [Signature and Stamp]</p>
-                                    <p>Berthe Mukanoheri</p>
+                                    <p>Thierry Pascal RWIRANGIRA </p>
                                     <p>Operations</p>
                                 </div>
 
@@ -620,7 +620,7 @@ function ShipmentInfo() {
             startY: finalY + 10,
             head: [['Full Name of Authorized Person (in CAPITAL letters)', 'Position', 'Contact Number']],
             body: [
-                ['Berthe MUKANOHERI', 'LOGISTICS MANAGER', '250.788.249.673']
+                ['Thierry Pascal RWIRANGIRA ', 'Contracts and Logistics Coordinator', '250.788.249.673']
             ],
         });
 

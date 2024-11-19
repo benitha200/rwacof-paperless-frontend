@@ -318,6 +318,8 @@ export default function ShipmentUpdate() {
     return '';
   };
 
+  console.log(location.state);
+
   // Initialize state with default values or values from navigation state
   const [shipment, setShipment] = useState({
     id: location.state?.id || null,
@@ -331,7 +333,8 @@ export default function ShipmentUpdate() {
     netWeight: location.state?.netWeight?.toString() || '',
     netWeightUnit: location.state?.netWeightUnit || 'Kgs',
     amount: location.state?.amount?.toString() || '',
-    price: location.state?.price?.toString() || '',
+    price: location.state?.contract?.price?.toString() || location.state?.price,
+    contractId: location.state?.contractId?.toString() || '',
     consignee: location.state?.consignee || '',
     date: location.state?.date instanceof Date ? location.state.date : null
   });
@@ -411,7 +414,7 @@ export default function ShipmentUpdate() {
         isClosable: true,
       });
       
-      navigate(`/shipments/${data.id || shipment.id}`);
+      navigate(`/contracts/${shipment.contractId}`);
     } catch (error) {
       console.error(`Error ${isUpdate ? 'updating' : 'creating'} shipment:`, error);
       toast({
@@ -545,7 +548,7 @@ export default function ShipmentUpdate() {
 
             <FormControl isRequired>
               <FormLabel className='text-sm font-light'  fontSize={14}   htmlFor="consignee">Consignee</FormLabel>
-              <Select fontsize={12} name="consignee" value={shipment.consignee} onChange={handleChange}>
+              <Select fontSize={14} name="consignee" value={shipment.consignee} onChange={handleChange}>
                 <option className='text-sm' value="">Select a consignee</option>
                 <option className='text-sm' value="Sucafina SA">Sucafina SA</option>
                 <option className='text-sm' value="Sucafina NV">Sucafina NV</option>

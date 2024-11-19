@@ -62,6 +62,7 @@ export default function ContainerForm() {
               value={container.type}
               onChange={handleChange}
               required
+              className="bg-white"
             />
           </div>
           <div className="space-y-2">

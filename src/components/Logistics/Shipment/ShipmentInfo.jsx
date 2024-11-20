@@ -8,7 +8,6 @@ import { CheckCircle2, Circle } from "lucide-react";
 import { handleDownload, handleUpdate, formatDate, numberToWords } from './ShipmentUtils';
 import ShipmentDetails from './ShipmentDetails';
 import { useToast } from '@chakra-ui/react';
-import { Input } from '@chakra-ui/react';
 import StuffingReportImages from './StuffingReportImages';
 
 function ShipmentInfo() {
@@ -84,6 +83,7 @@ function ShipmentInfo() {
             .then(response => {
                 setShipment(response.data);
                 console.log('Retrieved shipment:', response.data);
+                console.log(response.data.date);
                 setSteps([
                     {
                         title: "LoadingList",
@@ -119,7 +119,10 @@ function ShipmentInfo() {
                                                     type="date"
                                                     className="border w-full p-2"
                                                     name="date"
-                                                    value={response.data.date ? new Date(response.data.date).toISOString().split('T')[0] : '2024-10-10'}
+                                                    value={response.data.date
+                                                        ? new Date(new Date(response.data.date).setDate(new Date(response.data.date).getDate() + 1)).toISOString().split('T')[0]
+                                                        : '2024-10-10'}
+
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
                                                 />
                                             </td>
@@ -213,7 +216,10 @@ function ShipmentInfo() {
                                             className="border w-full mt-2 p-2"
                                             name="invoiceDate"
                                             readOnly
-                                            value={response.data.date ? new Date(response.data.date).toISOString().split('T')[0] : '2024-10-10'}
+                                            value={response.data.date
+                                                ? new Date(new Date(response.data.date).setDate(new Date(response.data.date).getDate() + 1)).toISOString().split('T')[0]
+                                                : '2024-10-10'}
+
                                         />
                                         <input
                                             type="text"
@@ -222,7 +228,6 @@ function ShipmentInfo() {
                                             defaultValue={response.data.contract?.contractNumber || ''}
                                             placeholder='Contract Reference...'
                                         />
-                                        {/* <p>SSRW-90706</p> */}
                                     </div>
                                 </div>
                                 <div className="border border-gray-300 p-2 mb-4">
@@ -351,6 +356,8 @@ function ShipmentInfo() {
                                                 type="text"
                                                 className="border w-full p-1"
                                                 name="bookingBlNumber"
+                                                defaultValue={response.data?.vgm?.bookingBlNumber || ""}
+
                                             />
                                         </div>
                                     </div>
@@ -379,14 +386,6 @@ function ShipmentInfo() {
                                                                 defaultValue={response.data?.containerNo}
                                                             />
                                                         </td>
-                                                        {/* <td className="border border-black p-1">
-                                                            <input
-                                                                type="text"
-                                                                className="border w-full"
-                                                                name="containerTypeSize"
-                                                                defaultValue={response.data.vgm?.containerTypeSize}
-                                                            />
-                                                        </td> */}
                                                         <td className="border border-black p-1">
                                                             <select
                                                                 className="border w-full"
@@ -476,13 +475,6 @@ function ShipmentInfo() {
                                         </div>
                                     ))}
 
-                                    {/* <Button
-                                        type="button"
-                                        onClick={() => setContainerCount(prev => prev + 1)}
-                                        className="mb-4"
-                                    >
-                                        Add Container
-                                    </Button> */}
 
                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div>
@@ -542,7 +534,6 @@ function ShipmentInfo() {
                                                 type="date"
                                                 className="border w-full p-1"
                                                 name="signatureDate"
-                                                defaultValue="2024-07-26"
                                             />
                                         </div>
                                         <div>
@@ -589,7 +580,8 @@ function ShipmentInfo() {
                                         <tr>
                                             <td className="font-semibold">Packing</td>
                                             <td>
-                                                <input type="text" value={response?.data?.quantityUnit || ''} name='packing' defaultValue="JUTE BAGS" className="border border-gray-300 p-1 w-full" />
+                                                {/* <input type="text" value={response?.data?.quantityUnit || ''} name='packing' defaultValue="JUTE BAGS" className="border border-gray-300 p-1 w-full" /> */}
+                                                <input type="text" value={response?.data?.quantityUnit ? response?.data?.quantityUnit.split('(')[0].trim() : ''} name='packing' defaultValue="JUTE BAGS" className="border border-gray-300 p-1 w-full" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -684,7 +676,7 @@ function ShipmentInfo() {
                                 <p>After stuffing the 320 JUTE BAGS into the container was completed and the export container was closed and secured by Shipping line seal and RRA seals on <input type="text" defaultValue="2nd June 2023 at 15:00hrs" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>Herewith below are the details:</p>
                                 <ul className="list-disc list-inside">
-                                    <li>{response.data.containerNo} (1*20FT)</li>
+                                    <li>{response.data.containerNo} (1*{response.data.containerTypeSize}FT)</li>
                                     <li>Number of bags: <input type="number" value={response.data.quantity} defaultValue="320" className="border border-gray-300 p-1 w-full" /> bags (JUTE BAGS)</li>
                                 </ul>
 
@@ -693,13 +685,17 @@ function ShipmentInfo() {
                                     <p>This report reflects our findings determined at the time and place of our intervention only and does not relieve the parties from their contractual responsibilities.</p>
                                     <p className="mt-2">GIVEN AT RWACOF EXPORTS LTD ON <input type='date' name='signatureDate' defaultValue='2024-10-10' className="border border-gray-300 p-1 w-full" /></p>
                                     <p className="mt-2">SIGNED: Digitally Signed</p>
-                                    <p><input type="number" name='authorizedPerson' value={response.data.authorizedPerson || "THIERRY PASCAL"} defaultValue="THIERRY PASCAL" className="border border-gray-300 p-1 w-full" /></p>
+                                    <p>
+                                        <input
+                                            type="text"
+                                            name="authorizedPerson"
+                                            defaultValue={response.data.authorizedPerson || "THIERRY PASCAL"}
+                                            className="border border-gray-300 p-1 w-full"
+                                        />
+                                    </p>
                                     <p>Operations</p>
                                 </div>
 
-
-
-                                {/* <StuffingReportImages stuffingReport={response.data?.stuffingReport} /> */}
                                 {response?.data?.stuffingReport && (
                                     <StuffingReportImages
                                         stuffingReport={response.data.stuffingReport}

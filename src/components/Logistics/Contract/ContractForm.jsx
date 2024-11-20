@@ -27,7 +27,7 @@ const ContractForm = () => {
     quantityUnit: 'MT',
     price: '',
     currency: 'USD',
-    terms: '',
+    terms: 'None',
     status: 'ACTIVE'
   });
 
@@ -48,7 +48,7 @@ const ContractForm = () => {
       totalQuantity: parseInt(contract.totalQuantity, 10),
       price: parseFloat(contract.price),
       startDate: contract.startDate?.toISOString(),
-      endDate: contract.endDate?.toISOString()
+      endDate: contract.startDate?.toISOString(),
     };
 
     try {
@@ -113,7 +113,7 @@ const ContractForm = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
               <Label>Start Date</Label>
               <Popover>
@@ -160,7 +160,7 @@ const ContractForm = () => {
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label>End Date</Label>
               <Popover>
                 <PopoverTrigger asChild>
@@ -205,12 +205,12 @@ const ContractForm = () => {
                   />
                 </PopoverContent>
               </Popover>
-            </div>
+            </div> */}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="totalQuantity">Total Quantity</Label>
+              <Label htmlFor="totalQuantity">Total Quantity (MT)</Label>
               <div className="flex gap-2">
                 <Input
                   id="totalQuantity"
@@ -266,7 +266,7 @@ const ContractForm = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="terms">Terms & Conditions</Label>
             <Textarea
               id="terms"
@@ -276,7 +276,7 @@ const ContractForm = () => {
               className="min-h-[100px]"
               required
             />
-          </div>
+          </div> */}
 
           {/* <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
@@ -302,7 +302,7 @@ const ContractForm = () => {
           onClick={handleSubmit}
           className="w-full bg-teal-600 hover:bg-teal-700"
         >
-          Create Contract
+          Save Contract
         </Button>
       </CardFooter>
     </Card>

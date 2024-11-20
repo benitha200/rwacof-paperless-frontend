@@ -14,25 +14,25 @@ export const handleDownload = async (filename, title, data) => {
             generateInvoice(doc, data);
             doc.save(filename);
             break;
-            
+
         case 'loadinglist':
             doc = new jsPDF('l', 'pt');
             generateTallySheet(doc, data);
             doc.save(filename);
             break;
-            
+
         case 'vgm':
             doc = new jsPDF();
             generateVGM(doc, data);
             doc.save(filename);
             break;
-            
+
         case 'stuffingreport':
             doc = new jsPDF();
             generateStuffingReport(doc, data);
             doc.save(filename);
             break;
-            
+
         default:
             doc = new jsPDF();
             doc.text('No specific content available for this document type.', 20, 50);
@@ -50,7 +50,7 @@ const updateSpecificSection = (section, sectionData, updateFunction) => {
     // Implement the logic to update the specific section
     // This could involve showing a modal, form, or other UI elements to edit the data
     console.log(`Updating ${section} with data:`, sectionData);
-    
+
     // After getting the updated data, call the updateFunction
     // For now, let's just pass the sectionData back as an example
     updateFunction({ [section]: sectionData });
@@ -70,7 +70,7 @@ export const generateInvoice = (doc, data) => {
     doc.setFont(undefined, 'normal');
 
     // Seller information
-    doc.text('SELLER', 20, 45);
+    doc.text('SELLER:', 20, 45);
     doc.text('RWACOF EXPORTS LTD', 20, 55);
     doc.text('BP 6934 KIGALI', 20, 65);
     doc.text('RWANDA', 20, 75);
@@ -85,7 +85,7 @@ export const generateInvoice = (doc, data) => {
     // Invoice details
     const startY = 95;
     doc.autoTable({
-        startY: startY, 
+        startY: startY,
         head: [['Invoice Details', '']],
         body: [
             ['TRUCK NO:', data.truckNo || 'RAF239R/RL3581'],
@@ -98,10 +98,10 @@ export const generateInvoice = (doc, data) => {
         ],
         theme: 'grid',
         styles: { fontSize: 10, cellPadding: 3 },
-        headStyles: { 
-            fillColor: [0, 128, 128], 
-            textColor: 255, 
-            fontStyle: 'bold' 
+        headStyles: {
+            fillColor: [0, 128, 128],
+            textColor: 255,
+            fontStyle: 'bold'
         },
         columnStyles: { 0: { cellWidth: 80 }, 1: { cellWidth: 110 } },
     });
@@ -112,40 +112,25 @@ export const generateInvoice = (doc, data) => {
     doc.text('AUTHORISED SIGNATURE', 20, finalY + 20);
     doc.text('RWACOF', 20, finalY + 30);
 
- 
+
 };
 
-// export const generateTallySheet = (doc, data) => {
-//     doc.text('Loading List', 20, 60);
-    
-
-//     doc.autoTable({
-//         startY: 70,
-//         head: [['LOT', 'Loading Date', 'Shipping Line','Forwarder', 'CONTRACT REFERENCE', 'PLATE NO', 'CONTAINER', "NUMBER OF BAGS","NET WEIGHT",'TARE']],
-//         body: [
-//             [data.lotNo, data.loadingDay, data?.loadingTallySheet?.sl,data?.loadingTallySheet?.forwarder, data?.loadingTallySheet?.rssSsrwSprw, data.truckNo, data.containerNo, data.quantity,data.netWeight,data?.loadingTallySheet?.tare]
-//         ],
-//         theme:'grid',
-//         headStyles: { fillColor: [255, 193, 7], textColor: 0, fontStyle: 'bold' },
-//         styles: { fontSize: 10 },
-//     });
-// };
 
 export const generateTallySheet = (docl, data) => {
-    
+
     docl.text('Loading List', 20, 40);
-    
+
     docl.autoTable({
         startY: 50,
-        head: [['LOT', 'Loading Date', 'Shipping Line', 'Forwarder', 'CONTRACT REFERENCE', 'PLATE NO', 'CONTAINER', "NUMBER OF BAGS", "NET WEIGHT", 'TARE']],
+        head: [['LOT', 'Loading Date', 'Shipping Line', 'Forwarder', 'CONTRACT REFERENCE', 'PLATE NO', 'CONTAINER', "NET WEIGHT", 'TARE']],
         body: [
-            [data.lotNo, data.loadingDay, data?.loadingTallySheet?.sl, data?.loadingTallySheet?.forwarder, data?.loadingTallySheet?.rssSsrwSprw, data.truckNo, data.containerNo, data.quantity, data.netWeight, data?.loadingTallySheet?.tare]
+            [data.lotNo, formatDate(data.date), data?.loadingTallySheet?.sl, data?.loadingTallySheet?.forwarder, data?.loadingTallySheet?.rssSsrwSprw, data.truckNo, data.containerNo, data.netWeight, data?.loadingTallySheet?.tare]
         ],
         theme: 'grid',
-        headStyles: { 
-            fillColor: [0, 128, 128], 
-            textColor: 255, 
-            fontStyle: 'bold' 
+        headStyles: {
+            fillColor: [0, 128, 128],
+            textColor: 255,
+            fontStyle: 'bold'
         },
         styles: { fontSize: 10 },
     });
@@ -180,10 +165,10 @@ export const generateVGM = (doc, data) => {
         head: [['Shipper Name', 'Booking or B/L Number']],
         body: [['RWACOF EXPORTS LIMITED', data?.vgm?.bookingBlNumber || '']],
         theme: 'plain',
-        headStyles: { 
-            fillColor: [0, 128, 128], 
-            textColor: 255, 
-            fontStyle: 'bold' 
+        headStyles: {
+            fillColor: [0, 128, 128],
+            textColor: 255,
+            fontStyle: 'bold'
         },
         styles: { fontSize: 10 },
     });
@@ -193,14 +178,13 @@ export const generateVGM = (doc, data) => {
         startY: doc.lastAutoTable.finalY + 10,
         head: [['Container number', 'Container type/size', 'VGM (KGS)', 'Cargo G.W. (KGS)', 'Method (I or II)', 'Remarks']],
         body: [
-            [data?.vgm?.containerNumber, data?.vgm?.containerTypeSize, data?.vgm?.vgmKgs, data?.vgm?.cargoGwKgs, data?.vgm?.method, data?.vgm?.remarks || 'XXX'],
-            // ['SUDU7675134', '20/DV', '39,100.00 KGS', '21,620.00 KGS', '1', 'XXXX']
+            [data?.vgm?.containerNumber, `${data?.vgm?.containerTypeSize} FT`, data?.vgm?.vgmKgs, data?.vgm?.cargoGwKgs, data?.vgm?.method, data?.vgm?.remarks || 'XXX'],
         ],
         theme: 'grid',
-        headStyles: { 
-            fillColor: [0, 128, 128], 
-            textColor: 255, 
-            fontStyle: 'bold' 
+        headStyles: {
+            fillColor: [0, 128, 128],
+            textColor: 255,
+            fontStyle: 'bold'
         },
         styles: { fontSize: 10 },
     });
@@ -225,7 +209,7 @@ export const generateVGM = (doc, data) => {
         body: [[data?.vgm?.authorizedPerson, data?.vgm?.position, data?.vgm?.contactNumber]],
         theme: 'plain',
         headStyles: { fillColor: [255, 255, 255], textColor: 0, fontStyle: 'bold' },
-        styles: { fontSize: 10,margin:5 },
+        styles: { fontSize: 10, margin: 5 },
     });
 
     // Authorized Signature and Date
@@ -233,8 +217,8 @@ export const generateVGM = (doc, data) => {
     doc.autoTable({
         startY: signatureY,
         body: [
-            ['Authorized Signature', '29/Nov/2024'],
-            ['Digitally Signed', data?.vgm?.signatureDate.date || '29/Nov/2024']
+            ['Authorized Signature', formatDate(data?.vgm?.signatureDate) || '29/Nov/2024'],
+            ['Digitally Signed', formatDate(data?.vgm?.signatureDate) || '29/Nov/2024']
         ],
         theme: 'plain',
         styles: { fontSize: 10 },
@@ -249,7 +233,7 @@ export const generateVGM = (doc, data) => {
 
 export const generateStuffingReport = (doc, data) => {
     // Previous PDF generation code remains the same until the last page
-    
+
     // Add RWACOF logo
     doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
 
@@ -344,7 +328,7 @@ export const generateStuffingReport = (doc, data) => {
     doc.text('and the export container was closed and secured by Shipping', 20, 320);
     doc.text(`line seal and RRA seals on ${new Date(data.stuffingReport.finalSealTime).toLocaleString()}`, 20, 330);
     doc.text('Herewith below are the details:', 20, 340);
-    doc.text(`- ${data.containerNo} (1*20FT)`, 30, 350);
+    doc.text(`- ${data.containerNo} (1* ${data.containerTypeSize} FT)`, 30, 350);
     doc.text(`- Number of bags: ${data.stuffingReport.numberOfBags} bags (${data.stuffingReport.packing})`, 30, 360);
 
     // Add Rwacof Exports Ltd. details
@@ -392,7 +376,7 @@ export const generateStuffingReport = (doc, data) => {
     if (images.length > 0) {
         // Add first image page
         doc.addPage();
-        
+
         // Add RWACOF logo to the images page
         doc.addImage(logo, 'PNG', doc.internal.pageSize.width / 2 - 15, 15, 30, 30);
 

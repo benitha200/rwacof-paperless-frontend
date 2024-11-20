@@ -258,7 +258,7 @@ const ShipmentForm = () => {
         duration: 5000,
         isClosable: true,
       });
-      navigate(`/contracts/${contractId}`);
+      navigate(`/shipments`);
     } catch (error) {
       console.error('Error creating shipment:', error);
       toast({

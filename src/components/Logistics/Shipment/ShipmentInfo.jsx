@@ -675,11 +675,11 @@ function ShipmentInfo() {
                                 <p>Container Condition: <input type="text" name='containerCondition' defaultValue="found to be good, clean, and free from Any spillage and stains." className="border border-gray-300 p-1 w-full" /></p>
 
                                 <h4 className="font-semibold mt-2">1.1.1 DESCRIPTIONS OF GOODS:</h4>
-                                <p>PRODUCT: <input type="text" value="RWANDA ARABICA COFFEE" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" /></p>
-                                <p>Number of Bags: <input type="number" name='numberOfBags' value={response.data.quantity || ''} defaultValue="320" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>PRODUCT: <input type="text" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>Number of Bags: <input type="number" name='numberOfBags' defaultValue={response.data.quantity || ''} className="border border-gray-300 p-1 w-full" /></p>
                                 <p>LOTS: <input type="text" name='lots' value={response.data.lotNo} defaultValue="28/002/22018" className="border border-gray-300 p-1 w-full" /></p>
-                                <p>CLIENT REFERENCE: <input type="text" name='illyId' defaultValue="340350032" className="border border-gray-300 p-1 w-full" /></p>
-
+                                <p>CLIENT REFERENCE: <input type="text" name='illyId' defaultValue={response?.data?.stuffingReport?.illyId} className="border border-gray-300 p-1 w-full" /></p>
+                                
                                 <h4 className="font-semibold mt-2">2.0 FINDINGS</h4>
                                 <p>Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.</p>
                                 <p>We conducted the Stuffing Supervision of RWANDA ARABICA COFFEE into the export container at RWACOF EXPORTS LTD YARD and report as follows:</p>
@@ -693,7 +693,7 @@ function ShipmentInfo() {
                                 <p>Herewith below are the details:</p>
                                 <ul className="list-disc list-inside">
                                     <li>{response.data.containerNo} (1*{response.data.containerTypeSize}FT)</li>
-                                    <li>Number of bags: <input type="number" value={response.data.quantity} defaultValue="320" className="border border-gray-300 p-1 w-full" /> bags ({response.data.quantityUnit})</li>
+                                    <li>Number of bags: <input type="number" defaultValue={response?.data?.stuffingReport?.numberOfBags ? response?.data?.stuffingReport?.numberOfBags : response.data.quantity} className="border border-gray-300 p-1 w-full" /> bags ({response.data.quantityUnit})</li>
                                 </ul>
 
                                 <div className="mt-4">

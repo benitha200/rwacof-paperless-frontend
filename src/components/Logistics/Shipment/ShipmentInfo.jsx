@@ -750,7 +750,7 @@ function ShipmentInfo() {
             });
     };
 
-    const updateShipment = async (updatedData, documentType,fetchShipment) => {
+    const updateShipment = async (updatedData, documentType) => {
         try {
             let response;
             console.log(documentType);

@@ -22,9 +22,6 @@ function ShipmentInfo() {
     const toast = useToast(true);
     const [selectedImages, setSelectedImages] = useState([]);
 
-    const formattedDate = format(new Date("2024-11-20T10:14:00.000Z"), "do MMMM yyyy 'at' HH:mm'hrs'");
-
-
 
 
     useEffect(() => {
@@ -676,7 +673,7 @@ function ShipmentInfo() {
 
                                 <h4 className="font-semibold mt-2">1.1.1 DESCRIPTIONS OF GOODS:</h4>
                                 <p>PRODUCT: <input type="text" defaultValue="RWANDA ARABICA COFFEE" className="border border-gray-300 p-1 w-full" /></p>
-                                <p>Number of Bags: <input type="number" name='numberOfBags' defaultValue={response.data.quantity || ''} className="border border-gray-300 p-1 w-full" /></p>
+                                <p>Number of Bags: <input type="number" name='numberOfBags' defaultValue={response?.data?.stuffingReport?.numberOfBags ? response?.data?.stuffingReport?.numberOfBags : response.data.quantity} className="border border-gray-300 p-1 w-full" /></p>
                                 <p>LOTS: <input type="text" name='lots' value={response.data.lotNo} defaultValue="28/002/22018" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>CLIENT REFERENCE: <input type="text" name='illyId' defaultValue={response?.data?.stuffingReport?.illyId} className="border border-gray-300 p-1 w-full" /></p>
                                 
@@ -685,11 +682,11 @@ function ShipmentInfo() {
                                 <p>We conducted the Stuffing Supervision of RWANDA ARABICA COFFEE into the export container at RWACOF EXPORTS LTD YARD and report as follows:</p>
 
                                 <h4 className="font-semibold mt-2">2.1 STUFFING</h4>
-                                <p>Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.stuffingStart)} className="border border-gray-300 p-1 w-full" /> and was completed on the same date <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.stuffingEnd)} className="border border-gray-300 p-1 w-full" /></p>
+                                <p>Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.stuffingStart)|| ""} className="border border-gray-300 p-1 w-full" /> and was completed on the same date <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.stuffingEnd) || ""} className="border border-gray-300 p-1 w-full" /></p>
                                 <p>320 Bags of coffee packed in Jute bags were stuffed into the container.</p>
 
                                 <h4 className="font-semibold mt-2">2.2 CONTAINER SEALING AFTER STUFFING</h4>
-                                <p>After stuffing the {response.data.quantity} {response.data.quantityUnit} into the container was completed and the export container was closed and secured by Shipping line seal and RRA seals on <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.finalSealTime)} className="border border-gray-300 p-1 w-full" /></p>
+                                <p>After stuffing the {response.data.quantity} {response.data.quantityUnit} into the container was completed and the export container was closed and secured by Shipping line seal and RRA seals on <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.finalSealTime) || ""} className="border border-gray-300 p-1 w-full" /></p>
                                 <p>Herewith below are the details:</p>
                                 <ul className="list-disc list-inside">
                                     <li>{response.data.containerNo} (1*{response.data.containerTypeSize}FT)</li>
@@ -753,7 +750,7 @@ function ShipmentInfo() {
             });
     };
 
-    const updateShipment = async (updatedData, documentType) => {
+    const updateShipment = async (updatedData, documentType,fetchShipment) => {
         try {
             let response;
             console.log(documentType);

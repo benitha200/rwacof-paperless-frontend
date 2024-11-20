@@ -560,7 +560,7 @@ export function numberToWords(num) {
 //     return `${day}${suffix(day)} ${month} ${year} at ${hours}:${minutes}hrs`;
 //   };
 
-const formatDate2 = (dateString) => {
+export const formatDate2 = (dateString) => {
     // Check if dateString is null, undefined, or an empty string
     if (!dateString) return "";
   

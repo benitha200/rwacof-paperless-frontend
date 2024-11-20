@@ -538,26 +538,60 @@ export function numberToWords(num) {
     return result;
 }
 
-export const formatDate2 = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.toLocaleString('default', { month: 'long' });
-    const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
+// export const formatDate2 = (dateString) => {
+//     const date = new Date(dateString);
+//     const day = date.getDate();
+//     const month = date.toLocaleString('default', { month: 'long' });
+//     const year = date.getFullYear();
+//     const hours = date.getHours().toString().padStart(2, '0');
+//     const minutes = date.getMinutes().toString().padStart(2, '0');
     
-    // Add ordinal suffix to day
-    const suffix = (day) => {
-      if (day > 3 && day < 21) return 'th';
-      switch (day % 10) {
-        case 1: return 'st';
-        case 2: return 'nd';
-        case 3: return 'rd';
-        default: return 'th';
-      }
-    };
+//     // Add ordinal suffix to day
+//     const suffix = (day) => {
+//       if (day > 3 && day < 21) return 'th';
+//       switch (day % 10) {
+//         case 1: return 'st';
+//         case 2: return 'nd';
+//         case 3: return 'rd';
+//         default: return 'th';
+//       }
+//     };
   
-    return `${day}${suffix(day)} ${month} ${year} at ${hours}:${minutes}hrs`;
+//     return `${day}${suffix(day)} ${month} ${year} at ${hours}:${minutes}hrs`;
+//   };
+
+const formatDate2 = (dateString) => {
+    // Check if dateString is null, undefined, or an empty string
+    if (!dateString) return "";
+  
+    try {
+      const date = new Date(dateString);
+      
+      // Check if the date is valid
+      if (isNaN(date.getTime())) return "";
+  
+      const day = date.getDate();
+      const month = date.toLocaleString('default', { month: 'long' });
+      const year = date.getFullYear();
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      
+      // Add ordinal suffix to day
+      const suffix = (day) => {
+        if (day > 3 && day < 21) return 'th';
+        switch (day % 10) {
+          case 1: return 'st';
+          case 2: return 'nd';
+          case 3: return 'rd';
+          default: return 'th';
+        }
+      };
+  
+      return `${day}${suffix(day)} ${month} ${year} at ${hours}:${minutes}hrs`;
+    } catch (error) {
+      // If any error occurs during formatting, return empty string
+      return "";
+    }
   };
   
   export const formatDateForInput = (isoDateString) => {

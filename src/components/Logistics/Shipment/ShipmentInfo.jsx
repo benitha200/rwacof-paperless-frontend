@@ -5,10 +5,11 @@ import API_URL from '../../../constants/Constants';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '../../ui/button';
 import { CheckCircle2, Circle } from "lucide-react";
-import { handleDownload, handleUpdate, formatDate, numberToWords } from './ShipmentUtils';
+import { handleDownload, handleUpdate, formatDate2, numberToWords, formatDateForInput } from './ShipmentUtils';
 import ShipmentDetails from './ShipmentDetails';
 import { useToast } from '@chakra-ui/react';
 import StuffingReportImages from './StuffingReportImages';
+import { format } from 'date-fns';
 
 function ShipmentInfo() {
     const { id } = useParams();
@@ -20,6 +21,8 @@ function ShipmentInfo() {
     const [images, setImages] = useState([]);
     const toast = useToast(true);
     const [selectedImages, setSelectedImages] = useState([]);
+
+    const formattedDate = format(new Date("2024-11-20T10:14:00.000Z"), "do MMMM yyyy 'at' HH:mm'hrs'");
 
 
 
@@ -388,7 +391,7 @@ function ShipmentInfo() {
                                                         </td>
                                                         <td className="border border-black p-1">
                                                             <select
-                                                                className="border w-full"
+                                                                className="border w-full p-2"
                                                                 name="containerTypeSize"
                                                                 value={response.data?.vgm?.containerTypeSize}
                                                                 onChange={(e) => {
@@ -412,7 +415,7 @@ function ShipmentInfo() {
                                                         <td className="border border-black p-1">
                                                             <input
                                                                 type="number"
-                                                                className="border w-full"
+                                                                className="border w-full p-2"
                                                                 name="vgmKgs"
                                                                 defaultValue={(() => {
                                                                     const cargoWeight = Number(response.data?.vgm?.cargoGwKgs) || 0;
@@ -425,7 +428,7 @@ function ShipmentInfo() {
                                                         <td className="border border-black p-1">
                                                             <input
                                                                 type="number"
-                                                                className="border w-full"
+                                                                className="border w-full p-2"
                                                                 name="cargoGwKgs"
                                                                 defaultValue={response?.data?.vgm?.cargoGwKgs}
                                                                 onChange={(e) => {
@@ -456,7 +459,7 @@ function ShipmentInfo() {
                                                         <td className="border border-black p-1">
                                                             <input
                                                                 type="text"
-                                                                className="border w-full"
+                                                                className="border w-full p-2"
                                                                 name="method"
                                                                 value={response.data?.vgm?.method}
                                                             />
@@ -464,7 +467,7 @@ function ShipmentInfo() {
                                                         <td className="border border-black p-1">
                                                             <input
                                                                 type="text"
-                                                                className="border w-full"
+                                                                className="border w-full p-2"
                                                                 name="remarks"
                                                                 defaultValue={response.data?.vgm?.remarks || ""}
                                                             />
@@ -481,7 +484,7 @@ function ShipmentInfo() {
                                             <label className="block mb-1">Vessel Name</label>
                                             <input
                                                 type="text"
-                                                className="border w-full p-1"
+                                                className="border w-full p-2"
                                                 name="vesselName"
                                                 defaultValue={response.data?.vgm?.vesselName}
                                             />
@@ -490,7 +493,7 @@ function ShipmentInfo() {
                                             <label className="block mb-1">Voyage Number</label>
                                             <input
                                                 type="text"
-                                                className="border w-full p-1"
+                                                className="border w-full p-2"
                                                 name="voyageNumber"
                                                 defaultValue={response.data?.vgm?.voyageNumber}
                                             />
@@ -502,7 +505,7 @@ function ShipmentInfo() {
                                             <label className="block mb-1">Authorized Person</label>
                                             <input
                                                 type="text"
-                                                className="border w-full p-1"
+                                                className="border w-full p-2"
                                                 name="authorizedPerson"
                                                 defaultValue="Thierry Pascal RWIRANGIRA "
                                             />
@@ -511,7 +514,7 @@ function ShipmentInfo() {
                                             <label className="block mb-1">Position</label>
                                             <input
                                                 type="text"
-                                                className="border w-full p-1"
+                                                className="border w-full p-2"
                                                 name="position"
                                                 defaultValue="Contracts and Logistics Coordinator"
                                             />
@@ -520,7 +523,7 @@ function ShipmentInfo() {
                                             <label className="block mb-1">Contact Number</label>
                                             <input
                                                 type="text"
-                                                className="border w-full p-1"
+                                                className="border w-full p-2"
                                                 name="contactNumber"
                                                 defaultValue="250788249673"
                                             />
@@ -615,27 +618,37 @@ function ShipmentInfo() {
                                                 <input
                                                     type="datetime-local"
                                                     name="stuffingStart"
-                                                    // value={response?.data?.stuffingReport?.stuffingStart || ''}
+                                                    defaultValue={response?.data?.stuffingReport?.stuffingStart
+                                                        ? new Date(response.data.stuffingReport.stuffingStart).toISOString().slice(0, 16)
+                                                        : ''}
                                                     className="border border-gray-300 p-1 w-full"
                                                 />
                                             </td>
                                         </tr>
+
                                         <tr>
-                                            <td className="font-semibold">Completed Stuffing/loading</td>
+                                            <td className="font-semibold">Stuffing End</td>
                                             <td>
                                                 <input
                                                     type="datetime-local"
                                                     name="stuffingEnd"
+                                                    defaultValue={response?.data?.stuffingReport?.stuffingEnd
+                                                        ? new Date(response.data.stuffingReport.stuffingEnd).toISOString().slice(0, 16)
+                                                        : ''}
                                                     className="border border-gray-300 p-1 w-full"
                                                 />
                                             </td>
                                         </tr>
+
                                         <tr>
-                                            <td className="font-semibold">Temporally seal</td>
+                                            <td className="font-semibold">Temp Seal Time</td>
                                             <td>
                                                 <input
                                                     type="datetime-local"
                                                     name="tempSealTime"
+                                                    defaultValue={response?.data?.stuffingReport?.tempSealTime
+                                                        ? new Date(response.data.stuffingReport.tempSealTime).toISOString().slice(0, 16)
+                                                        : ''}
                                                     className="border border-gray-300 p-1 w-full"
                                                 />
                                             </td>
@@ -647,6 +660,9 @@ function ShipmentInfo() {
                                                     type="datetime-local"
                                                     name="finalSealTime"
                                                     className="border border-gray-300 p-1 w-full"
+                                                    defaultValue={response?.data?.stuffingReport?.finalSealTime
+                                                        ? new Date(response.data.stuffingReport.finalSealTime).toISOString().slice(0, 16)
+                                                        : ''}
                                                 />
                                             </td>
                                         </tr>
@@ -669,15 +685,15 @@ function ShipmentInfo() {
                                 <p>We conducted the Stuffing Supervision of RWANDA ARABICA COFFEE into the export container at RWACOF EXPORTS LTD YARD and report as follows:</p>
 
                                 <h4 className="font-semibold mt-2">2.1 STUFFING</h4>
-                                <p>Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on <input type="text" defaultValue="2nd June 2023 at 10:30hrs" className="border border-gray-300 p-1 w-full" /> and was completed on the same date <input type="text" defaultValue="2nd June 2023 at 11:10hrs" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.stuffingStart)} className="border border-gray-300 p-1 w-full" /> and was completed on the same date <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.stuffingEnd)} className="border border-gray-300 p-1 w-full" /></p>
                                 <p>320 Bags of coffee packed in Jute bags were stuffed into the container.</p>
 
                                 <h4 className="font-semibold mt-2">2.2 CONTAINER SEALING AFTER STUFFING</h4>
-                                <p>After stuffing the 320 JUTE BAGS into the container was completed and the export container was closed and secured by Shipping line seal and RRA seals on <input type="text" defaultValue="2nd June 2023 at 15:00hrs" className="border border-gray-300 p-1 w-full" /></p>
+                                <p>After stuffing the {response.data.quantity} {response.data.quantityUnit} into the container was completed and the export container was closed and secured by Shipping line seal and RRA seals on <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.finalSealTime)} className="border border-gray-300 p-1 w-full" /></p>
                                 <p>Herewith below are the details:</p>
                                 <ul className="list-disc list-inside">
                                     <li>{response.data.containerNo} (1*{response.data.containerTypeSize}FT)</li>
-                                    <li>Number of bags: <input type="number" value={response.data.quantity} defaultValue="320" className="border border-gray-300 p-1 w-full" /> bags (JUTE BAGS)</li>
+                                    <li>Number of bags: <input type="number" value={response.data.quantity} defaultValue="320" className="border border-gray-300 p-1 w-full" /> bags ({response.data.quantityUnit})</li>
                                 </ul>
 
                                 <div className="mt-4">

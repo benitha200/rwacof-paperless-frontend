@@ -537,3 +537,43 @@ export function numberToWords(num) {
 
     return result;
 }
+
+export const formatDate2 = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'long' });
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    
+    // Add ordinal suffix to day
+    const suffix = (day) => {
+      if (day > 3 && day < 21) return 'th';
+      switch (day % 10) {
+        case 1: return 'st';
+        case 2: return 'nd';
+        case 3: return 'rd';
+        default: return 'th';
+      }
+    };
+  
+    return `${day}${suffix(day)} ${month} ${year} at ${hours}:${minutes}hrs`;
+  };
+  
+  export const formatDateForInput = (isoDateString) => {
+    if (!isoDateString) return '';
+    
+    // Create a Date object from the ISO string
+    const date = new Date(isoDateString);
+    
+    // Get local date and time components
+    const localDate = date.toLocaleDateString('en-CA'); // YYYY-MM-DD format
+    const localTime = date.toLocaleTimeString('en-GB', { 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      hour12: false 
+    }).replace(':', '-'); // HH-MM format
+  
+    // Combine date and time for datetime-local input
+    return `${localDate}T${localTime}`;
+  };

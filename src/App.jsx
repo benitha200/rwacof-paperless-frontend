@@ -29,10 +29,14 @@ import ManagingDirectorDashboard from './components/ManagingDirector/ManagingDir
 import QualityManagerDashboard from './components/Quality/QualityManagerDashboard';
 import CooDashboard from './components/COO/CooDashboard';
 import LoadingTallySheet from './components/Logistics/LoadingTallySheet/LoadingTallySheet';
-import ShipmentUpdate from './components/Logistics/Shipment/ShipmentUPdate';
+import ShipmentUpdate from './components/Logistics/Shipment/ShipmentUpdate';
 import ContractList from './components/Logistics/Contract/ContractList';
 import ContractForm from './components/Logistics/Contract/ContractForm';
 import ContractDetails from './components/Logistics/Contract/ContractDetails';
+import AdministrationDashboard from './components/Administration/AdministrationDashboard';
+import Cars from './components/Administration/Cars';
+import Drivers from './components/Administration/Drivers';
+import Trips from './components/Administration/Trips';
 
 // Custom theme
 const theme = extendTheme({
@@ -127,6 +131,12 @@ const App = () => {
         { to: "/contracts", icon: File, text: "Contracts" },
         // { to: "/loading-tally-sheet", icon: SheetIcon, text: "Loading List" },
       ],
+      ADMINISTRATION: [
+        { to: "/", icon: Home, text: "Dashboard" },
+        { to: "/cars", icon: Package, text: "Cars" },
+        { to: "/drivers", icon: File, text: "Drivers" },
+        { to: "/trips", icon: File, text: "Trips" },
+      ],
     };
 
     return (
@@ -155,6 +165,8 @@ const App = () => {
         return <QualityManagerDashboard />
       case 'COO':
         return <CooDashboard />
+      case 'ADMINISTRATION':
+        return <AdministrationDashboard />
       default:
         return (
           <VStack spacing={8} align="center" w="full" h="80vh" justify="center">
@@ -483,6 +495,23 @@ const App = () => {
                   <Route path="/shipments/:id" element={
                     <ProtectedRoute allowedRoles={['ADMIN', 'LOGISTICS']}>
                       <ShipmentInfo />
+                    </ProtectedRoute>
+                  } />
+
+                  {/* Administration Route */}
+                  <Route path="/cars" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION']}>
+                      <Cars />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/drivers" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION']}>
+                      <Drivers />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/trips" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION']}>
+                      <Trips />
                     </ProtectedRoute>
                   } />
 

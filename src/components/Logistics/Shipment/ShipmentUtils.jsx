@@ -124,7 +124,7 @@ export const generateTallySheet = (docl, data) => {
         startY: 50,
         head: [['LOT', 'Loading Date', 'Shipping Line', 'Forwarder', 'CONTRACT REFERENCE', 'PLATE NO', 'CONTAINER', "NET WEIGHT", 'TARE']],
         body: [
-            [data.lotNo, formatDate(data.date), data?.loadingTallySheet?.sl, data?.loadingTallySheet?.forwarder, data?.loadingTallySheet?.rssSsrwSprw, data.truckNo, data.containerNo, data.netWeight, data?.loadingTallySheet?.tare]
+            [data.lotNo, formatDate(data.date), data?.loadingTallySheet?.sl, data?.loadingTallySheet?.forwarder, data?.contract?.contractNumber, data.truckNo, data.containerNo, data.netWeight, data?.loadingTallySheet?.tare]
         ],
         theme: 'grid',
         headStyles: {
@@ -295,7 +295,7 @@ export const generateStuffingReport = (doc, data) => {
     doc.text(`Number of Bags: ${data.stuffingReport.numberOfBags} BAGS`, 20, 140);
     doc.text('LOTS:', 20, 150);
     doc.text(data.stuffingReport.lots, 20, 160);
-    doc.text(`ILLY ID: ${data.stuffingReport.illyId}`, 20, 170);
+    doc.text(`Client ID:  ${data.stuffingReport.illyId}`, 20, 170);
 
     // Findings
     doc.setFontSize(12);

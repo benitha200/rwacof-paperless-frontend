@@ -150,7 +150,7 @@ function ShipmentInfo() {
                                                     type="text"
                                                     className="border w-full p-2 bg-teal-50"
                                                     name="contract_reference"
-                                                    defaultValue={response.data.contract?.contractNumber}
+                                                    defaultValue={response.data.contract?.contractNumber || ''}
                                                     onChange={(e) => handleInputChange(e, 'loadingTallySheet')}
                                                 />
                                             </td>

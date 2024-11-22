@@ -255,10 +255,18 @@ export const generateStuffingReport = (doc, data) => {
             ['Bill of Lading No.', data.stuffingReport.billOfLadingNo],
             ['Place', data.stuffingReport.place],
             ['Export Container stuffed', data.stuffingReport.container],
-            ['Commenced Stuffing /loading', new Date(data.stuffingReport.stuffingStart).toLocaleString()],
-            ['Completed Stuffing/loading', new Date(data.stuffingReport.stuffingEnd).toLocaleString()],
-            ['temporally seal', new Date(data.stuffingReport.tempSealTime).toLocaleString()],
-            ['Container sealing/Shipping line seal', new Date(data.stuffingReport.finalSealTime).toLocaleString()]
+            ['Commenced Stuffing /loading', data.stuffingReport?.stuffingStart 
+                ? new Date(data.stuffingReport.stuffingStart).toISOString().slice(0, 16) 
+                : ''],
+              ['Completed Stuffing/loading', data.stuffingReport?.stuffingEnd
+                ? new Date(data.stuffingReport.stuffingEnd).toISOString().slice(0, 16)
+                : ''],
+              ['temporally seal', data.stuffingReport?.tempSealTime
+                ? new Date(data.stuffingReport.tempSealTime).toISOString().slice(0, 16)
+                : ''],
+              ['Container sealing/Shipping line seal', data.stuffingReport?.finalSealTime
+                ? new Date(data.stuffingReport.finalSealTime).toISOString().slice(0, 16)
+                : '']
         ],
         theme: 'grid',
         styles: { fontSize: 10, cellPadding: 2 },

@@ -295,7 +295,7 @@ export const generateStuffingReport = (doc, data) => {
     doc.text(`Number of Bags: ${data.stuffingReport.numberOfBags} BAGS`, 20, 140);
     doc.text('LOTS:', 20, 150);
     doc.text(data.stuffingReport.lots, 20, 160);
-    doc.text(`Client ID:  ${data.stuffingReport.illyId}`, 20, 170);
+    doc.text(`Client Reference:  ${data.stuffingReport.illyId}`, 20, 170);
 
     // Findings
     doc.setFontSize(12);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
-  User, Phone, Mail, Car, CheckCircle, XCircle 
+  User, Car
 } from 'lucide-react';
 
 const Drivers = () => {

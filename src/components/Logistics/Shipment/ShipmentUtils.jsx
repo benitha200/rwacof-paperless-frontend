@@ -255,16 +255,16 @@ export const generateStuffingReport = (doc, data) => {
             ['Bill of Lading No.', data.stuffingReport.billOfLadingNo],
             ['Place', data.stuffingReport.place],
             ['Export Container stuffed', data.stuffingReport.container],
-            ['Commenced Stuffing /loading', data.stuffingReport?.stuffingStart 
-                ? new Date(data.stuffingReport.stuffingStart).toISOString().slice(0, 16) 
+            ['Commenced Stuffing /loading', data.stuffingReport?.stuffingStart
+                ? new Date(data.stuffingReport.stuffingStart).toISOString().slice(0, 16)
                 : ''],
-              ['Completed Stuffing/loading', data.stuffingReport?.stuffingEnd
+            ['Completed Stuffing/loading', data.stuffingReport?.stuffingEnd
                 ? new Date(data.stuffingReport.stuffingEnd).toISOString().slice(0, 16)
                 : ''],
-              ['temporally seal', data.stuffingReport?.tempSealTime
+            ['temporally seal', data.stuffingReport?.tempSealTime
                 ? new Date(data.stuffingReport.tempSealTime).toISOString().slice(0, 16)
                 : ''],
-              ['Container sealing/Shipping line seal', data.stuffingReport?.finalSealTime
+            ['Container sealing/Shipping line seal', data.stuffingReport?.finalSealTime
                 ? new Date(data.stuffingReport.finalSealTime).toISOString().slice(0, 16)
                 : '']
         ],
@@ -553,7 +553,7 @@ export function numberToWords(num) {
 //     const year = date.getFullYear();
 //     const hours = date.getHours().toString().padStart(2, '0');
 //     const minutes = date.getMinutes().toString().padStart(2, '0');
-    
+
 //     // Add ordinal suffix to day
 //     const suffix = (day) => {
 //       if (day > 3 && day < 21) return 'th';
@@ -564,58 +564,77 @@ export function numberToWords(num) {
 //         default: return 'th';
 //       }
 //     };
-  
+
 //     return `${day}${suffix(day)} ${month} ${year} at ${hours}:${minutes}hrs`;
 //   };
 
 export const formatDate2 = (dateString) => {
     // Check if dateString is null, undefined, or an empty string
     if (!dateString) return "";
-  
+
     try {
-      const date = new Date(dateString);
-      
-      // Check if the date is valid
-      if (isNaN(date.getTime())) return "";
-  
-      const day = date.getDate();
-      const month = date.toLocaleString('default', { month: 'long' });
-      const year = date.getFullYear();
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      
-      // Add ordinal suffix to day
-      const suffix = (day) => {
-        if (day > 3 && day < 21) return 'th';
-        switch (day % 10) {
-          case 1: return 'st';
-          case 2: return 'nd';
-          case 3: return 'rd';
-          default: return 'th';
-        }
-      };
-  
-      return `${day}${suffix(day)} ${month} ${year} at ${hours}:${minutes}hrs`;
+        const date = new Date(dateString);
+
+        // Check if the date is valid
+        if (isNaN(date.getTime())) return "";
+
+        const day = date.getDate();
+        const month = date.toLocaleString('default', { month: 'long' });
+        const year = date.getFullYear();
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+
+        // Add ordinal suffix to day
+        const suffix = (day) => {
+            if (day > 3 && day < 21) return 'th';
+            switch (day % 10) {
+                case 1: return 'st';
+                case 2: return 'nd';
+                case 3: return 'rd';
+                default: return 'th';
+            }
+        };
+
+        return `${day}${suffix(day)} ${month} ${year} at ${hours}:${minutes}hrs`;
     } catch (error) {
-      // If any error occurs during formatting, return empty string
-      return "";
+        // If any error occurs during formatting, return empty string
+        return "";
     }
-  };
-  
-  export const formatDateForInput = (isoDateString) => {
+};
+
+export const formatDateForInput = (isoDateString) => {
     if (!isoDateString) return '';
-    
+
     // Create a Date object from the ISO string
     const date = new Date(isoDateString);
-    
+
     // Get local date and time components
     const localDate = date.toLocaleDateString('en-CA'); // YYYY-MM-DD format
-    const localTime = date.toLocaleTimeString('en-GB', { 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      hour12: false 
+    const localTime = date.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
     }).replace(':', '-'); // HH-MM format
-  
+
     // Combine date and time for datetime-local input
     return `${localDate}T${localTime}`;
-  };
+};
+
+export const adjustTimezoneForInput = (timestamp) => {
+    if (!timestamp) return '';
+
+    // Create a Date object from the timestamp
+    const date = new Date(timestamp);
+
+    // Check if the date is valid
+    if (isNaN(date.getTime())) return '';
+
+    // Get the local timezone offset
+    const offset = date.getTimezoneOffset();
+
+    // Adjust the date by the timezone offset to ensure correct local time
+    const adjustedDate = new Date(date.getTime() - (offset * 60000));
+
+    // Convert to the format required by datetime-local input (YYYY-MM-DDTHH:mm)
+    return adjustedDate.toISOString().slice(0, 16);
+};

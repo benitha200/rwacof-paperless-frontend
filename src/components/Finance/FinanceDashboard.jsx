@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { LineChart, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Line } from 'recharts';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { DollarSign, Package, Scale, Droplet, TrendingUp, Clock } from 'lucide-react';
+import { DollarSign, Package, Scale, Droplet } from 'lucide-react';
 import API_URL from '../../constants/Constants';
 
 const DashboardFinance = () => {

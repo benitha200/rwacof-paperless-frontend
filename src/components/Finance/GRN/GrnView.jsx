@@ -365,17 +365,6 @@ const GrnView = () => {
                                 </HStack>
                             </VStack>
                         </Box>
-                        {/* <Box flex={1}>
-                            <Heading as="h3" size="md" mb={2}>Approvals</Heading>
-                            <VStack align="stretch" spacing={4}>
-                                {['WEIGHED BY:', 'SUPPLIER:', 'APPROVED BY:'].map((label) => (
-                                    <Box key={label}>
-                                        <Text fontWeight="medium">{label}</Text>
-                                        <Divider borderColor="gray.400" />
-                                    </Box>
-                                ))}
-                            </VStack>
-                        </Box> */}
                     </HStack>
 
                     <Heading size="md" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
@@ -446,44 +435,9 @@ const GrnView = () => {
                         </Tbody>
                     </Table>
 
-                    {/* <HStack justify="space-between">
-                        {['PREPARED BY:', 'CHECKED BY:', 'AUTHORIZED BY:', 'RECEIVED BY:'].map((label) => (
-                            <Box key={label}>
-                                <Text fontWeight="medium">{label}</Text>
-                                <Divider borderColor="gray.400" />
-                            </Box>
-                        ))}
-                    </HStack> */}
 
                 </VStack>
 
-                {/* <Box mt={10} className='text-center'>
-                    <Heading alignContent="center" size="md" mb={4} color="teal.600">GRN STATUS</Heading>
-
-                    <Stepper
-                        index={grnData.currentStep + 1}
-                        orientation={orientation}
-                        colorScheme="teal"
-                        spacing={{ base: '2', md: '4' }}
-                        hasStepSeparator={true}
-                    >
-                        {steps.map((step, index) => (
-                            <Step key={index} flexDirection={{ base: 'row', md: 'column' }}>
-                                <StepIndicator>
-                                    <StepStatus
-                                        complete={<StepIcon />}
-                                        incomplete={<StepNumber />}
-                                        active={<StepNumber />}
-                                    />
-                                </StepIndicator>
-                                <Box flexShrink='0' textAlign={{ base: 'left', md: 'center' }} ml={{ base: 3, md: 0 }}>
-                                    <StepTitle>{step.title}</StepTitle>
-                                    <StepDescription display={{ base: 'none', sm: 'block' }}>{step.description}</StepDescription>
-                                </Box>
-                            </Step>
-                        ))}
-                    </Stepper>
-                </Box> */}
 
                 <Box mt={10} className='text-center'>
                     <Heading alignContent="center" size="md" mb={4} color="teal.600">

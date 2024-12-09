@@ -5,7 +5,7 @@ import API_URL from '../../../constants/Constants';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '../../ui/button';
 import { CheckCircle2, Circle } from "lucide-react";
-import { handleDownload, handleUpdate, formatDate2, numberToWords, formatDateForInput } from './ShipmentUtils';
+import { handleDownload, handleUpdate, formatDate2, numberToWords, formatDateForInput, adjustTimezoneForInput } from './ShipmentUtils';
 import ShipmentDetails from './ShipmentDetails';
 import { useToast } from '@chakra-ui/react';
 import StuffingReportImages from './StuffingReportImages';
@@ -616,9 +616,10 @@ function ShipmentInfo() {
                                                     type="datetime-local"
                                                     name="stuffingStart"
                                                     defaultValue={response?.data?.stuffingReport?.stuffingStart
-                                                        ? new Date(response.data.stuffingReport.stuffingStart).toISOString().slice(0, 16)
+                                                        ? adjustTimezoneForInput(response.data.stuffingReport.stuffingStart)
                                                         : ''}
                                                     className="border border-gray-300 p-1 w-full"
+                                                    onChange={handleInputChange}
                                                 />
                                             </td>
                                         </tr>
@@ -630,9 +631,10 @@ function ShipmentInfo() {
                                                     type="datetime-local"
                                                     name="stuffingEnd"
                                                     defaultValue={response?.data?.stuffingReport?.stuffingEnd
-                                                        ? new Date(response.data.stuffingReport.stuffingEnd).toISOString().slice(0, 16)
+                                                        ? adjustTimezoneForInput(response.data.stuffingReport.stuffingEnd)
                                                         : ''}
                                                     className="border border-gray-300 p-1 w-full"
+                                                    onChange={handleInputChange}
                                                 />
                                             </td>
                                         </tr>
@@ -644,12 +646,14 @@ function ShipmentInfo() {
                                                     type="datetime-local"
                                                     name="tempSealTime"
                                                     defaultValue={response?.data?.stuffingReport?.tempSealTime
-                                                        ? new Date(response.data.stuffingReport.tempSealTime).toISOString().slice(0, 16)
+                                                        ? adjustTimezoneForInput(response.data.stuffingReport.tempSealTime)
                                                         : ''}
                                                     className="border border-gray-300 p-1 w-full"
+                                                    onChange={handleInputChange}
                                                 />
                                             </td>
                                         </tr>
+
                                         <tr>
                                             <td className="font-semibold">Container sealing/Shipping line seal</td>
                                             <td>
@@ -658,8 +662,9 @@ function ShipmentInfo() {
                                                     name="finalSealTime"
                                                     className="border border-gray-300 p-1 w-full"
                                                     defaultValue={response?.data?.stuffingReport?.finalSealTime
-                                                        ? new Date(response.data.stuffingReport.finalSealTime).toISOString().slice(0, 16)
+                                                        ? adjustTimezoneForInput(response.data.stuffingReport.finalSealTime)
                                                         : ''}
+                                                    onChange={handleInputChange}
                                                 />
                                             </td>
                                         </tr>
@@ -676,13 +681,13 @@ function ShipmentInfo() {
                                 <p>Number of Bags: <input type="number" name='numberOfBags' defaultValue={response?.data?.stuffingReport?.numberOfBags ? response?.data?.stuffingReport?.numberOfBags : response.data.quantity} className="border border-gray-300 p-1 w-full" /></p>
                                 <p>LOTS: <input type="text" name='lots' value={response.data.lotNo} defaultValue="28/002/22018" className="border border-gray-300 p-1 w-full" /></p>
                                 <p>CLIENT REFERENCE: <input type="text" name='illyId' defaultValue={response?.data?.stuffingReport?.illyId} className="border border-gray-300 p-1 w-full" /></p>
-                                
+
                                 <h4 className="font-semibold mt-2">2.0 FINDINGS</h4>
                                 <p>Vide instructions from OPERATIONS/RWACOF EXPORTS LTD LOGISTICS.</p>
                                 <p>We conducted the Stuffing Supervision of RWANDA ARABICA COFFEE into the export container at RWACOF EXPORTS LTD YARD and report as follows:</p>
 
                                 <h4 className="font-semibold mt-2">2.1 STUFFING</h4>
-                                <p>Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.stuffingStart)|| ""} className="border border-gray-300 p-1 w-full" /> and was completed on the same date <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.stuffingEnd) || ""} className="border border-gray-300 p-1 w-full" /></p>
+                                <p>Stuffing of the container at RWACOF EXPORTS LTD YARD commenced on <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.stuffingStart) || ""} className="border border-gray-300 p-1 w-full" /> and was completed on the same date <input type="text" defaultValue={formatDate2(response.data?.stuffingReport?.stuffingEnd) || ""} className="border border-gray-300 p-1 w-full" /></p>
                                 <p>320 Bags of coffee packed in Jute bags were stuffed into the container.</p>
 
                                 <h4 className="font-semibold mt-2">2.2 CONTAINER SEALING AFTER STUFFING</h4>

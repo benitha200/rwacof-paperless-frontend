@@ -15,6 +15,7 @@ import {
   TrendingDown,
   Scale
 } from 'lucide-react';
+import API_URL from '../../constants/Constants';
 
 const FinancialReports = () => {
   const [grnData, setGrnData] = useState([]);
@@ -24,7 +25,7 @@ const FinancialReports = () => {
   useEffect(() => {
     const fetchGRNData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/grn/');
+        const response = await fetch(`${API_URL}/api/grn/`);
         const data = await response.json();
         setGrnData(data);
         setLoading(false);

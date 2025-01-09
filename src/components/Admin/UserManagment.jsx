@@ -16,6 +16,7 @@ import {
   Heading,
   useToast,
 } from '@chakra-ui/react';
+import API_URL from '../../constants/Constants';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -34,7 +35,7 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/users/all', {
+      const response = await fetch(`${API_URL}/api/users/all`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +68,7 @@ const UserManagement = () => {
   const handleAddUser = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/api/users/register', {
+      const response = await fetch(`${API_URL}/api/users/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

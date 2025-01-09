@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { Home, Package, Plus, FileText, DollarSign, Users, Settings, Menu as MenuIcon, Bold, SheetIcon, File } from 'lucide-react';
+import { Home, Package, FileText, DollarSign, Users, Settings, Menu as MenuIcon, File } from 'lucide-react';
 import {
   Box, VStack, HStack, Heading, Text, Button, Image, Icon,
   useColorModeValue, ChakraProvider, Flex, Menu, MenuButton, MenuList, MenuItem,
@@ -37,6 +37,12 @@ import AdministrationDashboard from './components/Administration/AdministrationD
 import Cars from './components/Administration/Cars';
 import Drivers from './components/Administration/Drivers';
 import Trips from './components/Administration/Trips';
+import EmployeeDashboard from './components/Employee/EmployeeDashboard';
+import MyTrips from './components/Employee/MyTrips';
+import ReceptionistDashboard from './components/Receptionist/ReceptionistDashboard';
+import FinishTripPage from './components/Receptionist/FinishTripPage';
+import EmployeeTrips from './components/Employee/EmployeeTrips';
+import TripForm from './components/Employee/TripForm';
 
 // Custom theme
 const theme = extendTheme({
@@ -137,6 +143,29 @@ const App = () => {
         { to: "/drivers", icon: File, text: "Drivers" },
         { to: "/trips", icon: File, text: "Trips" },
       ],
+      // EMPLOYEE: [
+      //   { to: "/", icon: Home, text: "Dashboard" },
+      //   // { to: "/cars", icon: Package, text: "Cars" },
+      //   // { to: "/drivers", icon: File, text: "Drivers" },
+      //   { to: "/trips/employee", icon: File, text: "Trips" },
+      // ],
+
+      EMPLOYEE: [
+        { to: "/", icon: Home, text: "Dashboard" },
+        { 
+          to: localStorage.getItem('userId') === '17' 
+            ? "/trips/employee-requests" 
+            : "/trips/employee", 
+          icon: File, 
+          text: "Trips" 
+        },
+      ],
+      RECEPTIONIST: [
+        { to: "/", icon: Home, text: "Dashboard" },
+        { to: "/ongoing/trips", icon: Package, text: "Trips" },
+        // { to: "/drivers", icon: File, text: "Drivers" },
+        // { to: "/trips/employee-requests", icon: File, text: "Trips" },
+      ],
     };
 
     return (
@@ -167,6 +196,10 @@ const App = () => {
         return <CooDashboard />
       case 'ADMINISTRATION':
         return <AdministrationDashboard />
+      case 'EMPLOYEE':
+        return <EmployeeDashboard />
+      case 'RECEPTIONIST':
+        return <ReceptionistDashboard />
       default:
         return (
           <VStack spacing={8} align="center" w="full" h="80vh" justify="center">
@@ -176,18 +209,6 @@ const App = () => {
     }
   };
 
-  // const ProtectedRoute = ({ children, allowedRoles }) => {
-  //   const token = localStorage.getItem('token');
-  //   const storedUserRole = localStorage.getItem('userRole');
-
-  //   if (!token || !storedUserRole) {
-  //     return <Navigate to="/login" />;
-  //   }
-  //   if (allowedRoles && !allowedRoles.includes(storedUserRole)) {
-  //     return <Navigate to="/" />;
-  //   }
-  //   return children;
-  // };
 
   const ProtectedRoute = ({ children, allowedRoles }) => {
     const token = localStorage.getItem('token');
@@ -262,134 +283,7 @@ const App = () => {
               )}
 
               <Box flex={1} p={8}>
-                {/* <Routes>
-                  <Route path="/login" element={<Login onLogin={handleLogin} />} />
-                  <Route path="/" element={
-                    <ProtectedRoute>
-                      <Welcome />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="*" element={<Navigate to="/" />} />
 
-                 
-                  <Route path="/shipments" element={
-                    <ProtectedRoute allowedRoles={['ADMIN', 'LOGISTICS']}>
-                      <ShipmentList />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/containers" element={
-                    <ProtectedRoute allowedRoles={['ADMIN']}>
-                      <ContainerList />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/users" element={
-                    <ProtectedRoute allowedRoles={['ADMIN']}>
-                      <UserManagment />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/settings" element={
-                    <ProtectedRoute allowedRoles={['ADMIN']}>
-                      <SystemSettings />
-                    </ProtectedRoute>
-                  } />
-
-                  Finance Routes
-                  <Route path="/grn/:id" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'WeightBridgeManager', 'COO', 'ManagingDirector']}>
-                      <GrnView />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/allgrns" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'WeightBridgeManager', 'COO', 'ManagingDirector']}>
-                      <GrnList />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/payments" element={
-                    <ProtectedRoute allowedRoles={['FINANCE']}>
-                      <Payments />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/financial-reports" element={
-                    <ProtectedRoute allowedRoles={['FINANCE']}>
-                      <FinancialReports />
-                    </ProtectedRoute>
-                  } />
-
-                Weight Bridge Manager Routes 
-                  <Route path="/grn" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GRN />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/grn/:id" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GrnView />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/allgrns" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GrnList />
-                    </ProtectedRoute>
-                  } />
-
-
-                COO Manager Routes 
-                  <Route path="/grn" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GRN />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/grn/:id" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GrnView />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/allgrns" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager']}>
-                      <GrnList />
-                    </ProtectedRoute>
-                  } />
-
-                   ManagingDirector Manager Routes 
-                  <Route path="/grn/:id" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
-                      <GrnView />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/allgrns" element={
-                    <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
-                      <GrnList />
-                    </ProtectedRoute>
-                  } />
-
-
-                  Logistics Routes
-                  <Route path="/new-shipment" element={
-                    <ProtectedRoute allowedRoles={['LOGISTICS']}>
-                      <ShipmentForm />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/update-shipment" element={
-                    <ProtectedRoute allowedRoles={['LOGISTICS']}>
-                      <ShipmentUpdate />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/shipments" element={
-                    <ProtectedRoute allowedRoles={['LOGISTICS']}>
-                      <ShipmentList />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/loading-tally-sheet" element={
-                    <ProtectedRoute allowedRoles={['LOGISTICS']}>
-                      <LoadingTallySheet />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/shipments/:id" element={
-                    <ProtectedRoute allowedRoles={['ADMIN', 'LOGISTICS']}>
-                      <ShipmentInfo />
-                    </ProtectedRoute>
-                  } />
-                </Routes> */}
                 <Routes>
                   <Route path="/login" element={<Login onLogin={handleLogin} />} />
                   <Route path="/" element={
@@ -464,7 +358,7 @@ const App = () => {
                     </ProtectedRoute>
                   } />
 
-                    {/* ManagingDirector Manager Routes  */}
+                  {/* ManagingDirector Manager Routes  */}
                   <Route path="/grn/:id" element={
                     <ProtectedRoute allowedRoles={['FINANCE', 'QualityManager', 'ManagingDirector']}>
                       <GrnView />
@@ -500,18 +394,39 @@ const App = () => {
 
                   {/* Administration Route */}
                   <Route path="/cars" element={
-                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION']}>
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION', 'EMPLOYEE']}>
                       <Cars />
                     </ProtectedRoute>
                   } />
                   <Route path="/drivers" element={
-                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION']}>
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION', 'EMPLOYEE']}>
                       <Drivers />
                     </ProtectedRoute>
                   } />
                   <Route path="/trips" element={
                     <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION']}>
                       <Trips />
+                    </ProtectedRoute>
+                  } />
+                  
+                  <Route path="/trips/employee-requests" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION','EMPLOYEE']}>
+                      <MyTrips />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/trips/employee" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION','EMPLOYEE']}>
+                      <EmployeeTrips />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/trips/employee/create" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION','EMPLOYEE']}>
+                      <TripForm />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/ongoing/trips" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION','RECEPTIONIST']}>
+                      <FinishTripPage />
                     </ProtectedRoute>
                   } />
 

@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Car, User, Calendar, Clock } from 'lucide-react';
 import API_URL from '../../constants/Constants';
 
-const AdministrationDashboard = () => {
+const ReceptionistDashboard = () => {
   const [trips, setTrips] = useState([]);
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,8 +79,6 @@ const AdministrationDashboard = () => {
     const busyCars = cars.filter(car => car.status === 'IN_USE');
     const availableCars = cars.filter(car => car.status === 'AVAILABLE');
 
-    console.log(busyCars);
-
     return {
       totalCars: cars.length,
       busyCars: busyCars,
@@ -96,7 +94,7 @@ const AdministrationDashboard = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-4">Receptionist Dashboard</h1>
 
       {/* Car Usage Overview */}
       <Card>
@@ -217,7 +215,5 @@ const AdministrationDashboard = () => {
   );
 };
 
-export default AdministrationDashboard;
-
-
+export default ReceptionistDashboard;
 

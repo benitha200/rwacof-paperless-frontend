@@ -30,7 +30,6 @@ import {
 import { format } from 'date-fns';
 import axios from 'axios';
 import { CSVLink } from 'react-csv';
-// import { DownloadIcon, SearchIcon } from '@chakra-ui/icons';
 import API_URL from '../../../constants/Constants';
 
 const LoadingTallySheet = () => {

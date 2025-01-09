@@ -1,211 +1,524 @@
-import React, { useState } from 'react';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription 
-} from '@/components/ui/dialog';
-import { CarFront, Edit, History, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import {
+  ThemeProvider,
+  createTheme
+} from '@mui/material/styles';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  Select,
+  MenuItem,
+  Chip,
+  IconButton
+} from '@mui/material';
+import {
+  DirectionsCar as CarFrontIcon,
+  Edit as EditIcon,
+  History as HistoryIcon,
+  Close as CloseIcon,
+  Add as AddIcon
+} from '@mui/icons-material';
+import API_URL from '../../constants/Constants';
+
+// Create a custom theme
+const theme = createTheme({
+  palette: {
+    mode: 'light', // or 'dark'
+  },
+});
 
 const Cars = () => {
-  const [cars, setCars] = useState([
-    { 
-      id: 1, 
-      carNo: 'CAR001', 
-      plateNo: '34 ABC 123', 
-      status: 'Active',
-      history: [
-        { date: '2024-01-15', action: 'Purchased', details: 'New vehicle added to fleet' },
-        { date: '2024-02-20', action: 'Maintenance', details: 'Regular service check' }
-      ]
-    },
-    { 
-      id: 2, 
-      carNo: 'CAR002', 
-      plateNo: '34 DEF 456', 
-      status: 'Maintenance',
-      history: [
-        { date: '2024-03-10', action: 'Maintenance', details: 'Engine repair' }
-      ]
-    },
-    { 
-      id: 3, 
-      carNo: 'CAR003', 
-      plateNo: '34 GHI 789', 
-      status: 'Inactive',
-      history: [
-        { date: '2024-01-05', action: 'Decommissioned', details: 'Retired from service' }
-      ]
-    }
-  ]);
-
+  const [cars, setCars] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalCars: 0
+  });
   const [editingCar, setEditingCar] = useState(null);
+  const [newCar, setNewCar] = useState({
+    make: '',
+    model: '',
+    licensePlate: '',
+    year: '',
+    mileage: '',
+    status: 'AVAILABLE'
+  });
+  const [isAddingCar, setIsAddingCar] = useState(false);
   const [historyModalCar, setHistoryModalCar] = useState(null);
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole'));
 
-  const getStatusVariant = (status) => {
-    switch(status) {
-      case 'Active': return 'accent';
-      case 'Maintenance': return 'secondary';
-      case 'Inactive': return 'destructive';
-      default: return 'outline';
+  // Fetch cars from API
+  useEffect(() => {
+    fetchCars();
+  }, []);
+
+  // const fetchCars = async () => {
+  //   try {
+  //     const response = await fetch(`${API_URL}/api/car`);
+  //     if (!response.ok) {
+  //       throw new Error('Failed to fetch cars');
+  //     }
+  //     const data = await response.json();
+  //     setCars(data);
+  //   } catch (error) {
+  //     console.error('Error fetching cars:', error);
+  //   }
+  // };
+
+  const fetchCars = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/car`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch cars');
+      }
+      const data = await response.json();
+
+      // Update cars with the cars array from the response
+      setCars(data.cars);
+
+      // Update pagination information
+      setPagination({
+        currentPage: data.pagination.currentPage,
+        totalPages: data.pagination.totalPages,
+        totalCars: data.pagination.totalCars
+      });
+    } catch (error) {
+      console.error('Error fetching cars:', error);
+    }
+  };
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'AVAILABLE': return 'info';
+      case 'IN_USE': return 'error';
+      case 'MAINTENANCE': return 'secondary';
+      default: return 'default';
     }
   };
 
   const handleEditCar = (car) => {
-    setEditingCar(car);
+    setEditingCar({ ...car });
   };
 
-  const handleUpdateCar = () => {
-    setCars(cars.map(car => 
-      car.id === editingCar.id ? editingCar : car
-    ));
-    setEditingCar(null);
+  // const handleUpdateCar = async () => {
+  //   try {
+  //     const response = await fetch(`${API_URL}/api/car/${editingCar.id}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         make: editingCar.make,
+  //         model: editingCar.model,
+  //         licensePlate: editingCar.licensePlate,
+  //         year: parseInt(editingCar.year),
+  //         mileage: parseInt(editingCar.mileage),
+  //         status: editingCar.status
+  //       })
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to update car');
+  //     }
+
+  //     // Refresh the car list
+  //     fetchCars();
+  //     setEditingCar(null);
+  //   } catch (error) {
+  //     console.error('Error updating car:', error);
+  //   }
+  // };
+
+  // const handleAddCar = async () => {
+  //   try {
+  //     const response = await fetch(`${API_URL}/api/car`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(newCar)
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to add car');
+  //     }
+
+  //     // Refresh the car list
+  //     fetchCars();
+
+  //     // Reset new car form and close dialog
+  //     setNewCar({
+  //       make: '',
+  //       model: '',
+  //       licensePlate: '',
+  //       year: '',
+  //       mileage: '',
+  //       status: 'AVAILABLE'
+  //     });
+  //     setIsAddingCar(false);
+  //   } catch (error) {
+  //     console.error('Error adding car:', error);
+  //   }
+  // };
+
+
+  const handleAddCar = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/car`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...newCar,
+          year: parseInt(newCar.year),
+          mileage: parseInt(newCar.mileage)
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to add car');
+      }
+  
+      // Refresh the car list
+      fetchCars();
+  
+      // Reset new car form and close dialog
+      setNewCar({
+        make: '',
+        model: '',
+        licensePlate: '',
+        year: '',
+        mileage: '',
+        status: 'AVAILABLE'
+      });
+      setIsAddingCar(false);
+    } catch (error) {
+      console.error('Error adding car:', error);
+    }
+  };
+  
+  const handleUpdateCar = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/car/${editingCar.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          make: editingCar.make,
+          model: editingCar.model,
+          licensePlate: editingCar.licensePlate,
+          year: parseInt(editingCar.year),
+          mileage: parseInt(editingCar.mileage),
+          status: editingCar.status
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update car');
+      }
+  
+      // Refresh the car list
+      fetchCars();
+      setEditingCar(null);
+    } catch (error) {
+      console.error('Error updating car:', error);
+    }
   };
 
   const handleViewHistory = (car) => {
-    setHistoryModalCar(car);
+    const history = [
+      {
+        date: car.createdAt,
+        action: 'Created',
+        details: 'Car added to the system'
+      },
+      ...(car.updatedAt !== car.createdAt ? [{
+        date: car.updatedAt,
+        action: 'Updated',
+        details: 'Car details modified'
+      }] : [])
+    ];
+  
+    setHistoryModalCar({ ...car, history });
   };
 
   return (
-    <div className="w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-      <div className="flex items-center bg-teal-50 p-4 border-b">
-        <CarFront className="w-6 h-6 mr-3 text-teal-600" />
-        <h2 className="text-xl font-bold text-teal-800">Car Fleet Management</h2>
-      </div>
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-gray-100 hover:bg-gray-100">
-            <TableHead className="font-bold text-gray-700">Car No</TableHead>
-            <TableHead className="font-bold text-gray-700">Plate No</TableHead>
-            <TableHead className="font-bold text-gray-700">Status</TableHead>
-            <TableHead className="font-bold text-gray-700">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {cars.map((car) => (
-            <TableRow key={car.id} className="hover:bg-gray-50">
-              <TableCell className="font-medium text-gray-800">{car.carNo}</TableCell>
-              <TableCell className="text-gray-600">{car.plateNo}</TableCell>
-              <TableCell>
-                <Badge className="p-2" variant={getStatusVariant(car.status)}>
-                  {car.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleEditCar(car)}
-                  >
-                    <Edit className="w-4 h-4 mr-2" /> Edit
-                  </Button>
-                  <Button 
-                    variant="secondary" 
-                    size="sm" 
-                    onClick={() => handleViewHistory(car)}
-                  >
-                    <History className="w-4 h-4 mr-2" /> History
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <ThemeProvider theme={theme}>
+      <Paper elevation={3} sx={{ width: '100%', overflow: 'hidden' }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '16px',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <CarFrontIcon sx={{ marginRight: 2 }} />
+            <Typography variant="h6">Cars</Typography>
+          </div>
+          {userRole !== "EMPLOYEE" && (
+            <Button
+              variant="contained"
+              startIcon={<AddIcon sx={{ color: "white" }} color='white' />}
+              onClick={() => setIsAddingCar(true)}
+            >
+              Add Car
+            </Button>
+          )}
+        </div>
 
-      {/* Edit Car Dialog */}
-      <Dialog open={!!editingCar} onOpenChange={() => setEditingCar(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Car Details</DialogTitle>
-            <DialogDescription>
-              Update information for {editingCar?.carNo}
-            </DialogDescription>
-          </DialogHeader>
-          {editingCar && (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Car Number</label>
-                <input
-                  type="text"
-                  value={editingCar.carNo}
-                  onChange={(e) => setEditingCar({...editingCar, carNo: e.target.value})}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell><strong>Make</strong></TableCell>
+                <TableCell><strong>Model</strong></TableCell>
+                <TableCell><strong>License Plate</strong></TableCell>
+                <TableCell><strong>Year</strong></TableCell>
+                <TableCell><strong>Status</strong></TableCell>
+                {userRole !== "EMPLOYEE" && (
+                  <TableCell><strong>Actions</strong></TableCell>
+                )}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {cars.map((car) => (
+                <TableRow key={car.id} hover>
+                  <TableCell>{car.make}</TableCell>
+                  <TableCell>{car.model}</TableCell>
+                  <TableCell>{car.licensePlate}</TableCell>
+                  <TableCell>{car.year}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={car.status}
+                      // color={getStatusColor(car.status)}
+                      size="small"
+                    />
+                  </TableCell>
+                  {userRole !== "EMPLOYEE" && (
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        startIcon={<EditIcon />}
+                        size="small"
+                        onClick={() => handleEditCar(car)}
+                        sx={{ marginRight: 1 }}
+                      >
+                        Edit
+                      </Button>
+                      {/* <Button
+                        variant="outlined"
+                        startIcon={<HistoryIcon />}
+                        size="small"
+                        onClick={() => handleViewHistory(car)}
+                      >
+                        History 
+                      </Button>*/}
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {/* Edit Car Dialog */}
+        <Dialog
+          open={!!editingCar}
+          onClose={() => setEditingCar(null)}
+          maxWidth="xs"
+          fullWidth
+        >
+          <DialogTitle>Edit Car Details</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Update information for {editingCar?.licensePlate}
+            </DialogContentText>
+            {editingCar && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <TextField
+                  label="Make"
+                  value={editingCar.make}
+                  onChange={(e) => setEditingCar({ ...editingCar, make: e.target.value })}
+                  fullWidth
+                  margin="normal"
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Plate Number</label>
-                <input
-                  type="text"
-                  value={editingCar.plateNo}
-                  onChange={(e) => setEditingCar({...editingCar, plateNo: e.target.value})}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                <TextField
+                  label="Model"
+                  value={editingCar.model}
+                  onChange={(e) => setEditingCar({ ...editingCar, model: e.target.value })}
+                  fullWidth
+                  margin="normal"
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Status</label>
-                <select
+                <TextField
+                  label="License Plate"
+                  value={editingCar.licensePlate}
+                  onChange={(e) => setEditingCar({ ...editingCar, licensePlate: e.target.value })}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Year"
+                  type="number"
+                  value={editingCar.year}
+                  onChange={(e) => setEditingCar({ ...editingCar, year: e.target.value })}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Mileage"
+                  type="number"
+                  value={editingCar.mileage}
+                  onChange={(e) => setEditingCar({ ...editingCar, mileage: e.target.value })}
+                  fullWidth
+                  margin="normal"
+                />
+                <Select
                   value={editingCar.status}
-                  onChange={(e) => setEditingCar({...editingCar, status: e.target.value})}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                  onChange={(e) => setEditingCar({ ...editingCar, status: e.target.value })}
+                  fullWidth
                 >
-                  <option value="Active">Active</option>
-                  <option value="Maintenance">Maintenance</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
+                  <MenuItem value="AVAILABLE">Available</MenuItem>
+                  <MenuItem value="MAINTENANCE">Maintenance</MenuItem>
+                  <MenuItem value="UNAVAILABLE">Unavailable</MenuItem>
+                </Select>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleUpdateCar}
+                  fullWidth
+                >
+                  Save Changes
+                </Button>
               </div>
-              <Button onClick={handleUpdateCar} className="w-full">
-                Save Changes
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Add Car Dialog */}
+        <Dialog
+          open={isAddingCar}
+          onClose={() => setIsAddingCar(false)}
+          maxWidth="xs"
+          fullWidth
+        >
+          <DialogTitle>Add New Car</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Enter details for the new car
+            </DialogContentText>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <TextField
+                label="Make"
+                value={newCar.make}
+                onChange={(e) => setNewCar({ ...newCar, make: e.target.value })}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Model"
+                value={newCar.model}
+                onChange={(e) => setNewCar({ ...newCar, model: e.target.value })}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="License Plate"
+                value={newCar.licensePlate}
+                onChange={(e) => setNewCar({ ...newCar, licensePlate: e.target.value })}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Year"
+                type="number"
+                value={newCar.year}
+                onChange={(e) => setNewCar({ ...newCar, year: e.target.value })}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Mileage"
+                type="number"
+                value={newCar.mileage}
+                onChange={(e) => setNewCar({ ...newCar, mileage: e.target.value })}
+                fullWidth
+                margin="normal"
+              />
+              <Select
+                value={newCar.status}
+                onChange={(e) => setNewCar({ ...newCar, status: e.target.value })}
+                fullWidth
+              >
+                <MenuItem value="AVAILABLE">Available</MenuItem>
+                <MenuItem value="MAINTENANCE">Maintenance</MenuItem>
+                <MenuItem value="UNAVAILABLE">Unavailable</MenuItem>
+              </Select>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddCar}
+                fullWidth
+              >
+                Add Car
               </Button>
             </div>
-          )}
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
 
-      {/* Car History Modal */}
-      <Dialog open={!!historyModalCar} onOpenChange={() => setHistoryModalCar(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex justify-between items-center">
-              Car History for {historyModalCar?.carNo}
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setHistoryModalCar(null)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="max-h-[300px] overflow-y-auto">
-            {historyModalCar?.history.map((entry, index) => (
-              <div 
-                key={index} 
-                className="border-b py-3 last:border-b-0"
-              >
-                <div className="flex justify-between items-center mb-1">
-                  <span className="font-medium text-sm text-gray-600">{entry.date}</span>
-                  <Badge variant="secondary" className="text-xs">{entry.action}</Badge>
+        {/* Car History Modal */}
+        <Dialog
+          open={!!historyModalCar}
+          onClose={() => setHistoryModalCar(null)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              Car History for {historyModalCar?.licensePlate}
+              <IconButton onClick={() => setHistoryModalCar(null)}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </DialogTitle>
+          <DialogContent dividers>
+            <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+              {historyModalCar?.history.map((entry, index) => (
+                <div
+                  key={index}
+                  style={{
+                    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+                    padding: '12px 0',
+                    '&:last-child': { borderBottom: 'none' }
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                    <Typography variant="body2" color="textSecondary">
+                      {new Date(entry.date).toLocaleString()}
+                    </Typography>
+                    <Chip label={entry.action} size="small" color="secondary" />
+                  </div>
+                  <Typography variant="body2">{entry.details}</Typography>
                 </div>
-                <p className="text-gray-700 text-sm">{entry.details}</p>
-              </div>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
+      </Paper>
+    </ThemeProvider>
   );
 };
 

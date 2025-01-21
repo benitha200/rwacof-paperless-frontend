@@ -128,15 +128,17 @@ const Trips = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'AVAILABLE':
-        return 'bg-green-100 text-green-800';
+        return 'bg-emerald-200 text-emerald-900';  // Brighter, more vivid green
       case 'PENDING':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-amber-200 text-amber-900';      // Warmer, more visible yellow
       case 'SUPERVISOR_APPROVED':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-sky-200 text-sky-900';          // Brighter, more noticeable blue
       case 'ASSIGNED':
-        return 'bg-green-100 text-green-800';
+        return 'bg-lime-200 text-lime-900';        // Different shade of green than AVAILABLE
       case 'REJECTED':
-        return 'bg-red-100 text-red-800';
+        return 'bg-rose-200 text-rose-900';        // More vibrant red
+      case 'COMPLETED':
+        return 'bg-purple-200 text-purple-900';    // Rich purple that stands out
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -251,9 +253,9 @@ const Trips = () => {
               <Th>Employee</Th>
               <Th>Reporting Manager</Th>
               <Th>Department</Th>
-              <Th>Status</Th>
               <Th>Vehicle</Th>
               <Th>Driver</Th>
+              <Th>Status</Th>
               <Th>Actions</Th>
             </Tr>
           </Thead>
@@ -269,11 +271,6 @@ const Trips = () => {
                 <Td>{trip.employee?.department}</Td>
 
                 <Td>
-                  <span className={`px-2 py-2 m-3 rounded-full text-xs font-semibold ${getStatusColor(trip.status)}`}>
-                    {trip.status === 'ASSIGNED' ? 'CAR ASSIGNED' : trip.status}
-                  </span>
-                </Td>
-                <Td>
                   {trip.car
                     ? `${trip.car.make} ${trip.car.model} (${trip.car.licensePlate})`
                     : "Not Assigned"}
@@ -282,6 +279,12 @@ const Trips = () => {
                   {trip.driver
                     ? `${trip.driver.firstName} ${trip.driver.lastName}`
                     : "Not Assigned"}
+                </Td>
+                
+                <Td>
+                  <span className={`px-2 py-2 m-3 rounded-full text-xs font-semibold ${getStatusColor(trip.status)}`}>
+                    {trip.status === 'ASSIGNED' ? 'CAR ASSIGNED' : trip.status}
+                  </span>
                 </Td>
                 <Td>
                   {/* Approval buttons for pending trips */}

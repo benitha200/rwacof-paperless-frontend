@@ -21,11 +21,13 @@ import {
   Car as CarIcon,
   Clock,
   Navigation,
-  FileText
+  FileText,
+  ArrowLeftRightIcon
 } from 'lucide-react';
 import API_URL from '../../constants/Constants';
 import { Button } from '@/components/ui/button';
 import FinishTripModal from './FinishTripModal1';
+import { TripOrigin, TripOriginRounded } from '@mui/icons-material';
 
 const FinishTripPage = () => {
   const [trips, setTrips] = useState([]);
@@ -114,9 +116,15 @@ const FinishTripPage = () => {
     <div className="p-6 space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <MapPin className="mr-2" /> All Trips
+          <CardTitle className="flex items-center mb-6">
+            <MapPin className="mr-4" /> All Trips
           </CardTitle>
+
+          <Button className="w-1/12 mt-4">
+            
+            <ArrowLeftRightIcon className="ml-2 h-4 w-4" />
+            <a href='/trip/create' className="w-full">Add New Trip</a>
+          </Button>
         </CardHeader>
         <CardContent>
           <Table>

@@ -21,6 +21,8 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import API_URL from "../../constants/Constants";
+import { Calendar, CarIcon, Clock, FileText, Navigation, User } from "lucide-react";
+import { Badge } from '@/components/ui/badge';
 
 // Create an axios instance with default configuration
 const api = axios.create({
@@ -144,6 +146,26 @@ const Trips = () => {
     }
   };
 
+  const getStatusBadgeVariant = (status) => {
+    switch (status) {
+      case 'PENDING':
+        return 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+      case 'SUPERVISOR_APPROVED':
+        return 'bg-blue-100 text-blue-800 border border-blue-200';
+      case 'ASSIGNED':
+        return 'bg-green-100 text-green-800 border border-green-200';
+      case 'COMPLETED':
+        return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+      case 'REJECTED':
+        return 'bg-red-100 text-red-800 border border-red-200';
+      case 'IN_PROGRESS':
+        return 'bg-indigo-100 text-indigo-800 border border-indigo-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border border-gray-200';
+    }
+  };
+
+
 
   // Similar updates for handleReject and handleAssignment methods...
   const handleReject = async (tripId) => {
@@ -243,6 +265,17 @@ const Trips = () => {
       currentUser.employee.id === trip.employee.reportsToId;
   };
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+
   return (
     <div className="p-4">
       <h2 className="text-2xl mb-4">Trip Requests</h2>
@@ -260,6 +293,103 @@ const Trips = () => {
             </Tr>
           </Thead>
           <Tbody>
+            {trips.map((trip) => (
+              <Tr key={trip.id}>
+                <Td>
+                  <div className="flex items-center">
+                    <User className="mr-2 h-4 w-4" />
+                    {trip.employee?.user?.firstName} {trip.employee?.user?.lastName}
+
+                  </div>
+                  <div className="mr-2 text-sm text-muted-foreground">
+                    {trip.employee?.employeeNumber}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {trip.employee?.department}
+                  </div>
+                </Td>
+                <Td>
+                  <div className="flex items-center">
+                    <FileText className="mr-2 h-4 w-4" />
+                    <div>
+                      <div>{trip.reason}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {trip.itinerary}
+                      </div>
+                    </div>
+                  </div>
+                </Td>
+                <Td>
+                  <div className="flex flex-col">
+                    <div className="flex items-center mb-1">
+                      <Calendar className="mr-2 h-4 w-4" />
+                      <span>Departure: {formatDate(trip.departureDate)}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="mr-2 h-4 w-4" />
+                      <span>Return: {formatDate(trip.returnDate)}</span>
+                    </div>
+                  </div>
+                </Td>
+                <Td>
+                  {trip.car ? (
+                    <div className="flex flex-col">
+                      <div className="flex items-center">
+                        <CarIcon className="mr-2 h-4 w-4" />
+                        {trip.car.make} {trip.car.model}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Plate: {trip.car.licensePlate}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Year: {trip.car.year}
+                      </div>
+                    </div>
+                  ) : (
+                    'No car assigned'
+                  )}
+                </Td>
+                <Td>
+                  <div className="flex flex-col">
+                    <div className="flex items-center">
+                      <Navigation className="mr-2 h-4 w-4" />
+                      <span>Start: {trip.kmAtDeparture} km</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Navigation className="mr-2 h-4 w-4" />
+                      <span>End: {trip.kmAtArrival} km</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Total: {trip.kmAtArrival - trip.kmAtDeparture} km
+                    </div>
+                  </div>
+                </Td>
+                <Td>
+                  <Badge
+                    className={`p-2 ${getStatusBadgeVariant(trip.status)}`}
+                  >
+                    {trip.status}
+                  </Badge>
+                </Td>
+                <Td>
+                  {trip.supervisorApproval && !trip.car && trip.status.toLowerCase()!=='rejected' && (
+                    <Button
+                      colorScheme="blue"
+                      onClick={() => {
+                        setSelectedTrip(trip); // Set the selected trip for assignment
+                        onOpen(); // Open the modal
+                      }}
+                    >
+                      Assign Car
+                    </Button>
+
+
+                  )}
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+          {/* <Tbody>
             {trips.map((trip) => (
               <Tr key={trip.id}>
                 <Td>
@@ -287,7 +417,7 @@ const Trips = () => {
                   </span>
                 </Td>
                 <Td>
-                  {/* Approval buttons for pending trips */}
+                  {/* Approval buttons for pending trips
                   {trip.status === "PENDING" && !trip.supervisorApproval && canManageTrip(trip) && (
                     <div className="flex gap-2">
                       <Button
@@ -305,7 +435,7 @@ const Trips = () => {
                     </div>
                   )}
 
-                  {/* Car assignment button */}
+                  {/* Car assignment button
                   {trip.supervisorApproval && !trip.car && (
                     <Button
                       colorScheme="blue"
@@ -322,7 +452,7 @@ const Trips = () => {
                 </Td>
               </Tr>
             ))}
-          </Tbody>
+          </Tbody> */}
         </Table>
       </TableContainer>
 

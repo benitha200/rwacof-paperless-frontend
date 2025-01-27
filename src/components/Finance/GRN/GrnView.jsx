@@ -382,14 +382,18 @@ const GrnView = () => {
                                 <Tbody>
                                     <Tr>
                                         <Td>
-                                            <select className="border border-1 p-2 rounded w-full">
+                                            {/* <select className="border border-1 p-2 rounded w-full">
                                                 <option value="" disabled selected>
                                                     Select Contract Ref
                                                 </option>
                                                 <option value="23551">SCRW-200</option>
                                                 <option value="23551">SCRW-201</option>
                                                 <option value="23551">SCRW-202</option>
-                                            </select>
+                                            </select> */}
+                                             <input
+                                                className="border border-1 p-2 rounded w-full"
+                                                placeholder="Contract Ref"
+                                            />
                                         </Td>
                                         <Td>
                                             <input

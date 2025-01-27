@@ -43,6 +43,7 @@ import ReceptionistDashboard from './components/Receptionist/ReceptionistDashboa
 import FinishTripPage from './components/Receptionist/FinishTripPage';
 import EmployeeTrips from './components/Employee/EmployeeTrips';
 import TripForm from './components/Employee/TripForm';
+import CreateTrip from './components/Receptionist/CreateTrip';
 
 // Custom theme
 const theme = extendTheme({
@@ -406,6 +407,11 @@ const App = () => {
                   <Route path="/trips" element={
                     <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION']}>
                       <Trips />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/trip/create" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION','RECEPTIONIST']}>
+                      <CreateTrip />
                     </ProtectedRoute>
                   } />
                   

@@ -8,6 +8,7 @@ import {
   useDisclosure, Avatar, Tooltip, useBreakpointValue
 } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ShipmentList from './components/Logistics/ShipmentList';
 import ShipmentForm from './components/Logistics/ShipmentForm';
 import ContainerList from './components/Logistics/ContainerList';
@@ -46,13 +47,13 @@ import TripForm from './components/Employee/TripForm';
 import CreateTrip from './components/Receptionist/CreateTrip';
 
 // Custom theme
-const theme = extendTheme({
-  colors: {
-    brand: {
-      50: "#E6FFFA",
-      100: "#B2F5EA",
-      500: "#319795",
-      600: "#2C7A7B",
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#115e59', // teal-800
+      light: '#0f766e', // teal-700
+      dark: '#134e4a', // teal-900
+      contrastText: '#ffffff',
     },
   },
 });
@@ -227,7 +228,7 @@ const App = () => {
   };
 
   return (
-    <ChakraProvider theme={theme}>
+    <ChakraProvider>
       <Router>
         <Box minHeight="100vh" bg={bgColor}>
           <Flex direction="column" h="full">

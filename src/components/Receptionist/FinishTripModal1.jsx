@@ -112,7 +112,7 @@ const FinishTripModal = ({ open, onClose, tripId, userId, onTripFinished }) => {
           <Button onClick={onClose} color="inherit" disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button onClick={handleFinishTrip} color="primary" disabled={isSubmitting}>
+          <Button onClick={handleFinishTrip} color="primary" variant='contained' disabled={isSubmitting}>
             {isSubmitting ? 'Finishing...' : 'Finish Trip'}
           </Button>
         </DialogActions>

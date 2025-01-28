@@ -32,6 +32,7 @@ import {
 } from '@mui/icons-material';
 import API_URL from '../../constants/Constants';
 import { color } from 'framer-motion';
+import { Plus } from 'lucide-react';
 
 // Create a custom theme
 const theme = createTheme({
@@ -201,10 +202,11 @@ const Drivers = () => {
           </div>
           {userRole !== "EMPLOYEE" && (
             <Button
-              variant="contained"
-              startIcon={<AddIcon sx={{ color: "white" }} color='white' />}
+            variant='contained'
               onClick={() => setIsAddingDriver(true)}
+              className="bg-teal-800 hover:bg-teal-700 text-white"
             >
+              <Plus className="mr-2 h-4 w-4" />
               Add Driver
             </Button>
           )}

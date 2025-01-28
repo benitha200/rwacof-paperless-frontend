@@ -19,6 +19,9 @@ import {
   Select,
   useDisclosure,
   useToast,
+  FormControl,
+  FormLabel,
+  Input,
 } from "@chakra-ui/react";
 import API_URL from "../../constants/Constants";
 import { Calendar, CarIcon, Clock, FileText, Navigation, User } from "lucide-react";
@@ -168,47 +171,65 @@ const Trips = () => {
 
 
   // Similar updates for handleReject and handleAssignment methods...
-  const handleReject = async (tripId) => {
-    try {
-      const response = await api.patch(
-        `/trips/${tripId}/reject`,
-        { userId: currentUser.id }
-      );
 
-      setTrips(trips.map((trip) =>
-        trip.id === tripId
-          ? {
-            ...trip,
-            status: 'REJECTED',
-            supervisorApproval: false
-          }
-          : trip
-      ));
+  // const handleAssignment = async (event) => {
+  //   event.preventDefault();
+  //   const formData = new FormData(event.target);
+  //   const carId = Number(formData.get("car"));
+  //   const driverId = Number(formData.get("driver"));
 
-      toast({
-        title: "Rejected",
-        description: "Trip request rejected",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.response?.data?.error || "Failed to reject trip request",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-      console.error("Error rejecting trip:", error);
-    }
-  };
+  //   try {
+  //     const response = await api.patch(
+  //       `/trips/${selectedTrip.id}/assign`,
+  //       {
+  //         carId,
+  //         driverId,
+  //         userId: parseInt(localStorage.getItem("userId"))
+  //       }
+  //     );
+
+  //     // Update local state
+  //     setTrips(trips.map((trip) =>
+  //       trip.id === selectedTrip.id
+  //         ? {
+  //           ...trip,
+  //           carId,
+  //           driverId,
+  //           car: cars.find(c => c.id === carId),
+  //           driver: drivers.find(d => d.id === driverId),
+  //           status: 'ASSIGNED',
+  //           adminApproval: true
+  //         }
+  //         : trip
+  //     ));
+
+  //     toast({
+  //       title: "Assigned",
+  //       description: "Car and driver assigned successfully",
+  //       status: "success",
+  //       duration: 3000,
+  //       isClosable: true,
+  //     });
+
+  //     onClose();
+  //   } catch (error) {
+  //     toast({
+  //       title: "Error",
+  //       description: error.response?.data?.error || "Failed to assign car and driver",
+  //       status: "error",
+  //       duration: 3000,
+  //       isClosable: true,
+  //     });
+  //     console.error("Error assigning car and driver:", error);
+  //   }
+  // };
 
   const handleAssignment = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const carId = Number(formData.get("car"));
     const driverId = Number(formData.get("driver"));
+    const kmAtDeparture = Number(formData.get("kmAtDeparture"));
 
     try {
       const response = await api.patch(
@@ -216,17 +237,18 @@ const Trips = () => {
         {
           carId,
           driverId,
+          kmAtDeparture,
           userId: parseInt(localStorage.getItem("userId"))
         }
       );
 
-      // Update local state
       setTrips(trips.map((trip) =>
         trip.id === selectedTrip.id
           ? {
             ...trip,
             carId,
             driverId,
+            kmAtDeparture,
             car: cars.find(c => c.id === carId),
             driver: drivers.find(d => d.id === driverId),
             status: 'ASSIGNED',
@@ -256,14 +278,6 @@ const Trips = () => {
     }
   };
 
-  // Check if user can approve/reject trip
-  const canManageTrip = (trip) => {
-    if (!currentUser || !trip.employee) return false;
-
-    // Check if current user is the reporting manager of the trip creator
-    return currentUser.employee &&
-      currentUser.employee.id === trip.employee.reportsToId;
-  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('en-US', {
@@ -372,7 +386,7 @@ const Trips = () => {
                   </Badge>
                 </Td>
                 <Td>
-                  {trip.supervisorApproval && !trip.car && trip.status.toLowerCase()!=='rejected' && (
+                  {!trip.car && trip.status.toLowerCase()!=='rejected' && (
                     <Button
                       colorScheme="blue"
                       onClick={() => {
@@ -457,7 +471,7 @@ const Trips = () => {
       </TableContainer>
 
       {/* Car and Driver Assignment Modal */}
-      <Modal isOpen={isOpen} onClose={onClose}>
+      {/* <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Assign Car and Driver</ModalHeader>
@@ -492,6 +506,65 @@ const Trips = () => {
                     ))}
                 </Select>
               </div>
+              <ModalFooter>
+                <Button colorScheme="blue" type="submit" className="w-full">
+                  Assign
+                </Button>
+              </ModalFooter>
+            </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal> */}
+
+<Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Assign Car and Driver</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form onSubmit={handleAssignment}>
+              <div>
+                <label htmlFor="car" className="block mb-2">
+                  Select Car
+                </label>
+                <Select name="car" placeholder="Select a car" isRequired>
+                  {cars
+                    .filter(car => car.status === "AVAILABLE")
+                    .map((car) => (
+                      <option key={car.id} value={car.id}>
+                        {car.make} {car.model} ({car.licensePlate})
+                      </option>
+                    ))}
+                </Select>
+              </div>
+              
+              <div className="mt-4">
+                <label htmlFor="driver" className="block mb-2">
+                  Select Driver
+                </label>
+                <Select name="driver" placeholder="Select a driver" isRequired>
+                  {drivers
+                    .filter(driver => driver.status !== "INACTIVE")
+                    .map((driver) => (
+                      <option key={driver.id} value={driver.id}>
+                        {driver.firstName} {driver.lastName}
+                      </option>
+                    ))}
+                </Select>
+              </div>
+
+              <div className="mt-4">
+                <FormControl isRequired>
+                  <FormLabel>KM at Departure</FormLabel>
+                  <Input
+                    name="kmAtDeparture"
+                    type="number"
+                    min="0"
+                    placeholder="Enter current KM reading"
+                  />
+                </FormControl>
+              </div>
+
               <ModalFooter>
                 <Button colorScheme="blue" type="submit" className="w-full">
                   Assign

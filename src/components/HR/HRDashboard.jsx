@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer 
@@ -8,35 +8,64 @@ import {
 } from 'lucide-react';
 
 const HRDashboard = () => {
-  const [employeeData] = useState([
-    { id: 1, name: 'John Doe', department: 'HR', status: 'Active', performanceScore: 85 },
-    { id: 2, name: 'Jane Smith', department: 'Finance', status: 'Active', performanceScore: 92 },
-    { id: 3, name: 'Mike Johnson', department: 'IT', status: 'Inactive', performanceScore: 78 },
-    { id: 4, name: 'Sarah Williams', department: 'Marketing', status: 'Active', performanceScore: 88 },
-    { id: 5, name: 'Tom Brown', department: 'Sales', status: 'Active', performanceScore: 90 }
-  ]);
+  const [employees, setEmployees] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const departmentDistribution = {
-    HR: employeeData.filter(e => e.department === 'HR').length,
-    Finance: employeeData.filter(e => e.department === 'Finance').length,
-    IT: employeeData.filter(e => e.department === 'IT').length,
-    Marketing: employeeData.filter(e => e.department === 'Marketing').length,
-    Sales: employeeData.filter(e => e.department === 'Sales').length
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [employeesRes, departmentsRes] = await Promise.all([
+          fetch('https://cherryapp.sucafina.com:8012/api/employees'),
+          fetch('https://cherryapp.sucafina.com:8012/api/departments')
+        ]);
+        
+        const employeesData = await employeesRes.json();
+        const departmentsData = await departmentsRes.json();
+        
+        setEmployees(employeesData);
+        setDepartments(departmentsData);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Function to trim "Department" from department names
+  const trimDepartmentName = (name) => {
+    return name.replace(' Department', '');
   };
 
-  const statusDistribution = {
-    Active: employeeData.filter(e => e.status === 'Active').length,
-    Inactive: employeeData.filter(e => e.status === 'Inactive').length
-  };
+  // Calculate department distribution with trimmed names
+  const departmentDistribution = departments.reduce((acc, dept) => {
+    const trimmedName = trimDepartmentName(dept.name);
+    acc[trimmedName] = employees.filter(emp => emp.departmentId === dept.id).length;
+    return acc;
+  }, {});
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+  // Calculate status distribution
+  const statusDistribution = employees.reduce((acc, emp) => {
+    const status = emp.status === 'ACTIVE' ? 'Active' : 'Inactive';
+    acc[status] = (acc[status] || 0) + 1;
+    return acc;
+  }, { Active: 0, Inactive: 0 });
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82ca9d'];
+
+  if (loading) {
+    return <div className="p-6 text-center">Loading...</div>;
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-700">Administration Dashboard</h1>
-          <p className="text-sm text-gray-700">Workforce and Performance Insights</p>
+          <p className="text-sm text-gray-700">Workforce and Department Insights</p>
         </div>
       </div>
 
@@ -48,7 +77,7 @@ const HRDashboard = () => {
               <Users className="h-6 w-6 text-blue-500" />
               <div>
                 <p className="text-xs font-medium text-gray-700">Total Employees</p>
-                <h3 className="text-lg font-bold text-gray-700">{employeeData.length}</h3>
+                <h3 className="text-lg font-bold text-gray-700">{employees.length}</h3>
               </div>
             </div>
           </CardContent>
@@ -59,10 +88,8 @@ const HRDashboard = () => {
             <div className="flex items-center space-x-4">
               <FileText className="h-6 w-6 text-green-500" />
               <div>
-                <p className="text-xs font-medium text-gray-700">Avg Performance</p>
-                <h3 className="text-lg font-bold text-gray-700">
-                  {(employeeData.reduce((sum, e) => sum + e.performanceScore, 0) / employeeData.length).toFixed(1)}%
-                </h3>
+                <p className="text-xs font-medium text-gray-700">Departments</p>
+                <h3 className="text-lg font-bold text-gray-700">{departments.length}</h3>
               </div>
             </div>
           </CardContent>
@@ -75,7 +102,7 @@ const HRDashboard = () => {
               <div>
                 <p className="text-xs font-medium text-gray-700">Active Employees</p>
                 <h3 className="text-lg font-bold text-gray-700">
-                  {employeeData.filter(e => e.status === 'Active').length}
+                  {employees.filter(e => e.status === 'ACTIVE').length}
                 </h3>
               </div>
             </div>
@@ -87,9 +114,9 @@ const HRDashboard = () => {
             <div className="flex items-center space-x-4">
               <Award className="h-6 w-6 text-purple-500" />
               <div>
-                <p className="text-xs font-medium text-gray-700">Top Performers</p>
+                <p className="text-xs font-medium text-gray-700">Departments Active</p>
                 <h3 className="text-lg font-bold text-gray-700">
-                  {employeeData.filter(e => e.performanceScore > 90).length}
+                  {departments.filter(d => d.status === 'ACTIVE').length}
                 </h3>
               </div>
             </div>
@@ -107,10 +134,21 @@ const HRDashboard = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
                 data={Object.entries(departmentDistribution).map(([name, value]) => ({ name, value }))}
+                margin={{ left: 20, right: 20, bottom: 50 }}
               >
-                <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#374151' }} />
+                <XAxis 
+                  dataKey="name" 
+                  tick={{ fontSize: 12, fill: '#374151' }} 
+                  angle={-45} 
+                  textAnchor="end" 
+                  height={100}
+                  interval={0}
+                />
                 <YAxis tick={{ fontSize: 12, fill: '#374151' }} />
-                <Tooltip contentStyle={{ fontSize: 12 }} />
+                <Tooltip 
+                  contentStyle={{ fontSize: 12 }}
+                  formatter={(value, name, props) => [value, 'Employees']}
+                />
                 <Bar dataKey="value" fill="#0088FE" />
               </BarChart>
             </ResponsiveContainer>
@@ -125,10 +163,7 @@ const HRDashboard = () => {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={[
-                    { name: 'Active', value: statusDistribution.Active },
-                    { name: 'Inactive', value: statusDistribution.Inactive }
-                  ]}
+                  data={Object.entries(statusDistribution).map(([name, value]) => ({ name, value }))}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
@@ -136,7 +171,7 @@ const HRDashboard = () => {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {[0, 1].map((entry, index) => (
+                  {Object.keys(statusDistribution).map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index]} />
                   ))}
                 </Pie>

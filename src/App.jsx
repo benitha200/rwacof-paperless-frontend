@@ -45,6 +45,9 @@ import FinishTripPage from './components/Receptionist/FinishTripPage';
 import EmployeeTrips from './components/Employee/EmployeeTrips';
 import TripForm from './components/Employee/TripForm';
 import CreateTrip from './components/Receptionist/CreateTrip';
+import HRDashboard from './components/HR/HRDashboard';
+import EmployeeManagement from './components/HR/EmployeeManagment';
+import DepartmentManagement from './components/HR/DepartmentManagement';
 
 // Custom theme
 const theme = createTheme({
@@ -145,28 +148,24 @@ const App = () => {
         { to: "/drivers", icon: File, text: "Drivers" },
         { to: "/trips", icon: File, text: "Trips" },
       ],
-      // EMPLOYEE: [
-      //   { to: "/", icon: Home, text: "Dashboard" },
-      //   // { to: "/cars", icon: Package, text: "Cars" },
-      //   // { to: "/drivers", icon: File, text: "Drivers" },
-      //   { to: "/trips/employee", icon: File, text: "Trips" },
-      // ],
-
       EMPLOYEE: [
         { to: "/", icon: Home, text: "Dashboard" },
-        { 
-          to: localStorage.getItem('userId') === '17' 
-            ? "/trips/employee-requests" 
-            : "/trips/employee", 
-          icon: File, 
-          text: "Trips" 
+        {
+          to: localStorage.getItem('userId') === '17'
+            ? "/trips/employee-requests"
+            : "/trips/employee",
+          icon: File,
+          text: "Trips"
         },
       ],
       RECEPTIONIST: [
         { to: "/", icon: Home, text: "Dashboard" },
         { to: "/ongoing/trips", icon: Package, text: "Trips" },
-        // { to: "/drivers", icon: File, text: "Drivers" },
-        // { to: "/trips/employee-requests", icon: File, text: "Trips" },
+      ],
+      HR: [
+        { to: "/", icon: Home, text: "Dashboard" },
+        { to: "/employees", icon: Package, text: "Employee" },
+        { to: "/departments", icon: Package, text: "Department" },
       ],
     };
 
@@ -202,6 +201,8 @@ const App = () => {
         return <EmployeeDashboard />
       case 'RECEPTIONIST':
         return <ReceptionistDashboard />
+      case 'HR':
+        return <HRDashboard />
       default:
         return (
           <VStack spacing={8} align="center" w="full" h="80vh" justify="center">
@@ -411,29 +412,40 @@ const App = () => {
                     </ProtectedRoute>
                   } />
                   <Route path="/trip/create" element={
-                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION','RECEPTIONIST']}>
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION', 'RECEPTIONIST']}>
                       <CreateTrip />
                     </ProtectedRoute>
                   } />
-                  
+
                   <Route path="/trips/employee-requests" element={
-                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION','EMPLOYEE']}>
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION', 'EMPLOYEE']}>
                       <MyTrips />
                     </ProtectedRoute>
                   } />
                   <Route path="/trips/employee" element={
-                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION','EMPLOYEE']}>
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION', 'EMPLOYEE']}>
                       <EmployeeTrips />
                     </ProtectedRoute>
                   } />
                   <Route path="/trips/employee/create" element={
-                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION','EMPLOYEE']}>
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION', 'EMPLOYEE']}>
                       <TripForm />
                     </ProtectedRoute>
                   } />
                   <Route path="/ongoing/trips" element={
-                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION','RECEPTIONIST']}>
+                    <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATION', 'RECEPTIONIST']}>
                       <FinishTripPage />
+                    </ProtectedRoute>
+                  } />
+
+                  <Route path="/employees" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'HR', 'RECEPTIONIST']}>
+                      <EmployeeManagement />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/departments" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'HR', 'RECEPTIONIST']}>
+                      <DepartmentManagement />
                     </ProtectedRoute>
                   } />
 

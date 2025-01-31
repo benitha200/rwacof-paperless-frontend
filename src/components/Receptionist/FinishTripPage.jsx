@@ -114,7 +114,7 @@ const FinishTripPage = () => {
 
   return (
     <div>
-      <Button className="w-1/12 mt-4">
+      <Button className="w-md-1/12 w-sm-1/6 mt-4">
         <ArrowLeftRightIcon className="ml-2 h-4 w-4" />
         <a href='/trip/create' className="w-full">Add New Trip</a>
       </Button>

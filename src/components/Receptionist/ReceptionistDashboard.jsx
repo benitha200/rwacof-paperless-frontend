@@ -222,11 +222,12 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Car, MapPin, Clock, Calendar, User } from 'lucide-react';
+import { Car, MapPin, Clock, Calendar, User, AlertTriangle } from 'lucide-react';
 
 const ReceptionistDashboard = () => {
   const [activeTrips, setActiveTrips] = useState([]);
   const [completedTrips, setCompletedTrips] = useState([]);
+  const [overdueTrips, setOverdueTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -246,8 +247,25 @@ const ReceptionistDashboard = () => {
         }
 
         const data = await response.json();
-        setActiveTrips(data.filter(trip => trip.status !== 'COMPLETED'));
-        setCompletedTrips(data.filter(trip => trip.status === 'COMPLETED'));
+        const now = new Date();
+
+        // Separate trips into different categories
+        const sortedTrips = data.reduce((acc, trip) => {
+          const returnDate = new Date(trip.returnDate);
+          
+          if (trip.status === 'COMPLETED') {
+            acc.completed.push(trip);
+          } else if (returnDate < now) {
+            acc.overdue.push(trip);
+          } else {
+            acc.active.push(trip);
+          }
+          return acc;
+        }, { active: [], completed: [], overdue: [] });
+
+        setActiveTrips(sortedTrips.active);
+        setCompletedTrips(sortedTrips.completed);
+        setOverdueTrips(sortedTrips.overdue);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -259,15 +277,42 @@ const ReceptionistDashboard = () => {
   }, []);
 
   const getTripStats = () => {
-    const totalDistance = completedTrips.reduce((acc, trip) => 
+    const totalDistance = [...completedTrips, ...overdueTrips].reduce((acc, trip) => 
       acc + ((trip.kmAtArrival || 0) - (trip.kmAtDeparture || 0)), 0);
     
     return {
-      totalTrips: completedTrips.length + activeTrips.length,
+      totalTrips: completedTrips.length + activeTrips.length + overdueTrips.length,
       activeTrips: activeTrips.length,
       completedTrips: completedTrips.length,
+      overdueTrips: overdueTrips.length,
       totalDistance
     };
+  };
+
+  const getStatusBadge = (trip) => {
+    const returnDate = new Date(trip.returnDate);
+    const now = new Date();
+    
+    if (trip.status === 'COMPLETED') {
+      return (
+        <Badge className="bg-green-500 p-2">
+          {trip.status}
+        </Badge>
+      );
+    } else if (returnDate < now) {
+      return (
+        <Badge className="bg-red-500 p-2 flex items-center gap-1">
+          <AlertTriangle className="h-4 w-4" />
+          OVERDUE
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge className="bg-blue-500 p-2">
+          IN PROGRESS
+        </Badge>
+      );
+    }
   };
 
   const stats = getTripStats();
@@ -293,7 +338,7 @@ const ReceptionistDashboard = () => {
       <h1 className="text-2xl font-bold">Trip Management Dashboard</h1>
 
       {/* Trip Statistics */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-5 gap-4">
         <Card className="bg-white">
           <CardContent className="pt-6">
             <div className="text-2xl font-bold">{stats.totalTrips}</div>
@@ -304,6 +349,12 @@ const ReceptionistDashboard = () => {
           <CardContent className="pt-6">
             <div className="text-2xl font-bold">{stats.activeTrips}</div>
             <div className="text-sm text-gray-500">Active Trips</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-white">
+          <CardContent className="pt-6">
+            <div className="text-2xl font-bold text-red-500">{stats.overdueTrips}</div>
+            <div className="text-sm text-gray-500">Overdue Trips</div>
           </CardContent>
         </Card>
         <Card className="bg-white">
@@ -325,7 +376,7 @@ const ReceptionistDashboard = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            Recent Trips
+            All Trips
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -340,8 +391,8 @@ const ReceptionistDashboard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[...completedTrips, ...activeTrips].map(trip => (
-                <TableRow key={trip.id}>
+              {[...overdueTrips, ...activeTrips, ...completedTrips].map(trip => (
+                <TableRow key={trip.id} className={new Date(trip.returnDate) < new Date() && trip.status !== 'COMPLETED' ? 'bg-red-50' : ''}>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4" />
@@ -380,15 +431,7 @@ const ReceptionistDashboard = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge 
-                      className={
-                        trip.status === 'COMPLETED' 
-                          ? 'bg-green-500' 
-                          : 'bg-blue-500'
-                      }
-                    >
-                      {trip.status}
-                    </Badge>
+                    {getStatusBadge(trip)}
                   </TableCell>
                 </TableRow>
               ))}

@@ -156,7 +156,7 @@ const Trips = () => {
       case 'SUPERVISOR_APPROVED':
         return 'bg-blue-100 text-blue-800 border border-blue-200';
       case 'ASSIGNED':
-        return 'bg-green-100 text-green-800 border border-green-200';
+        return 'bg-sky-100 text-sky-800 border border-sky-200';
       case 'COMPLETED':
         return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
       case 'REJECTED':

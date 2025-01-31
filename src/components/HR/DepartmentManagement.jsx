@@ -395,7 +395,7 @@ const DepartmentManagement = () => {
         </div>
 
         <TableContainer>
-          <Table>
+        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 <TableCell><strong>Name</strong></TableCell>

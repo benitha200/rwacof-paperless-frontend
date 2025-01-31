@@ -202,7 +202,7 @@ const Drivers = () => {
           </div>
           {userRole !== "EMPLOYEE" && (
             <Button
-            variant='contained'
+              variant='contained'
               onClick={() => setIsAddingDriver(true)}
               className="bg-teal-800 hover:bg-teal-700 text-white"
             >
@@ -213,7 +213,7 @@ const Drivers = () => {
         </div>
 
         <TableContainer>
-          <Table>
+          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 <TableCell><strong>First Name</strong></TableCell>

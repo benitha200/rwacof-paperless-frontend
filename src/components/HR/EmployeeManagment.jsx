@@ -76,7 +76,7 @@ const EmployeeManagement = () => {
 
   // Update filtered employees when search term or employees change
   useEffect(() => {
-    const filtered = employees.filter(emp => 
+    const filtered = employees.filter(emp =>
       emp.user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       emp.user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       emp.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -232,7 +232,7 @@ const EmployeeManagement = () => {
           <Skeleton variant="rectangular" width={150} height={40} />
         </Box>
         <TableContainer component={Paper}>
-          <Table>
+          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 {['Employee ID', 'Full Name', 'Email', 'Department', 'Status', 'Actions'].map((header) => (
@@ -302,7 +302,7 @@ const EmployeeManagement = () => {
 
 
         <TableContainer component={Paper}>
-          <Table>
+          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 <TableCell>Employee ID</TableCell>

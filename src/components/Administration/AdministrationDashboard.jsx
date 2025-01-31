@@ -478,7 +478,7 @@ const AdministrationDashboard = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
+          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHeader>
               <TableRow>
                 <TableHead>Vehicle</TableHead>

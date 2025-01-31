@@ -186,14 +186,14 @@ const Cars = () => {
           mileage: parseInt(newCar.mileage)
         })
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to add car');
       }
-  
+
       // Refresh the car list
       fetchCars();
-  
+
       // Reset new car form and close dialog
       setNewCar({
         make: '',
@@ -208,7 +208,7 @@ const Cars = () => {
       console.error('Error adding car:', error);
     }
   };
-  
+
   const handleUpdateCar = async () => {
     try {
       const response = await fetch(`${API_URL}/api/car/${editingCar.id}`, {
@@ -225,11 +225,11 @@ const Cars = () => {
           status: editingCar.status
         })
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to update car');
       }
-  
+
       // Refresh the car list
       fetchCars();
       setEditingCar(null);
@@ -251,7 +251,7 @@ const Cars = () => {
         details: 'Car details modified'
       }] : [])
     ];
-  
+
     setHistoryModalCar({ ...car, history });
   };
 
@@ -281,7 +281,7 @@ const Cars = () => {
         </div>
 
         <TableContainer>
-          <Table>
+          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 <TableCell><strong>Make</strong></TableCell>

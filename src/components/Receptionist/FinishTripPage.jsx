@@ -28,8 +28,10 @@ import API_URL from '../../constants/Constants';
 import { Button } from '@/components/ui/button';
 import FinishTripModal from './FinishTripModal1';
 import { TripOrigin, TripOriginRounded } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const FinishTripPage = () => {
+  const navigate = useNavigate();
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -114,9 +116,12 @@ const FinishTripPage = () => {
 
   return (
     <div>
-      <Button className="w-md-1/12 w-sm-1/6 mt-4">
+      <Button 
+        className="w-md-1/12 w-sm-1/6 mt-4"
+        onClick={() => navigate('/trip/create')}
+      >
         <ArrowLeftRightIcon className="ml-2 h-4 w-4" />
-        <a href='/trip/create' className="w-full">Add New Trip</a>
+        Add New Trip
       </Button>
       <div className="p-6 space-y-6">
         <Card>

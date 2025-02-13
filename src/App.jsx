@@ -231,7 +231,7 @@ const App = () => {
   return (
     <ChakraProvider>
       <Router>
-        <Box minHeight="100vh" bg={bgColor}>
+        <Box minHeight="100vh" bg={bgColor}  style={{ fontFamily: 'Inter, sans-serif', fontSize:"14px" }}>
           <Flex direction="column" h="full">
             <Flex
               as="header"

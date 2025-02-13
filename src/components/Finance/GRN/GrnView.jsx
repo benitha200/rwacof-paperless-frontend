@@ -377,19 +377,12 @@ const GrnView = () => {
                                     <Tr>
                                         <Th>RPG</Th>
                                         <Th>PRICE</Th>
+                                        <Th>RATE</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
                                     <Tr>
                                         <Td>
-                                            {/* <select className="border border-1 p-2 rounded w-full">
-                                                <option value="" disabled selected>
-                                                    Select Contract Ref
-                                                </option>
-                                                <option value="23551">SCRW-200</option>
-                                                <option value="23551">SCRW-201</option>
-                                                <option value="23551">SCRW-202</option>
-                                            </select> */}
                                              <input
                                                 className="border border-1 p-2 rounded w-full"
                                                 placeholder="Contract Ref"
@@ -399,6 +392,12 @@ const GrnView = () => {
                                             <input
                                                 className="border border-1 p-2 rounded w-full"
                                                 placeholder="Price"
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <input
+                                                className="border border-1 p-2 rounded w-full"
+                                                placeholder="Rate"
                                             />
                                         </Td>
                                     </Tr>

@@ -46,6 +46,7 @@ const EditableField = ({ label, name, value, onChange, type = "text" }) => (
             name={name}
             value={value}
             onChange={onChange}
+            style={{"backgroundColor": "transparent"}}
         />
     </FormControl>
 );
@@ -231,7 +232,7 @@ const GRN = () => {
                         </SimpleGrid>
 
                         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={spacing}>
-                            <EditableField size="sm" label="SUPPLIER ADDRESS" name="supplierAddress" value={formData.supplierAddress} onChange={handleInputChange} />
+                            <EditableField size="sm" className="w-1/2" label="SUPPLIER ADDRESS" name="supplierAddress" value={formData.supplierAddress} onChange={handleInputChange} />
                             <EditableField size="sm" label="PLATE NO" name="plate_no" value={formData.plate_no} onChange={handleInputChange} />
                         </SimpleGrid>
 

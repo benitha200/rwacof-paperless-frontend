@@ -23,6 +23,7 @@ import {
     AlertDialogHeader,
     AlertDialogContent,
     AlertDialogOverlay,
+    Input,
 } from '@chakra-ui/react';
 import {
     Stepper,
@@ -56,6 +57,12 @@ const GrnView = () => {
     const orientation = useBreakpointValue({ base: 'vertical', md: 'horizontal' });
     const [isPaymentConfirmationOpen, setIsPaymentConfirmationOpen] = useState(false);
 
+    const [contractRef, setContractRef] = useState('');
+    const [price, setPrice] = useState('');
+    const [exchangeRate, setExchangeRate] = useState('');
+    const [isPriceEditable, setIsPriceEditable] = useState(false);
+    const [isExchangeRateEditable, setIsExchangeRateEditable] = useState(false);
+
     const steps = [
         { title: 'Receive', description: 'Weight Bridge Manager' },
         { title: 'Quality', description: 'QUALITYMANAGER' },
@@ -68,6 +75,18 @@ const GrnView = () => {
         fetchGrnDetails();
         fetchCurrentUserRole();
     }, [id]);
+
+    useEffect(() => {
+        // Determine editability based on role and current step
+        setIsPriceEditable(
+            currentUserRole === 'COO' &&
+            grnData?.currentStep === 2
+        );
+        setIsExchangeRateEditable(
+            currentUserRole === 'FINANCE' &&
+            grnData?.currentStep === 4
+        );
+    }, [currentUserRole, grnData?.currentStep]);
 
 
     const fetchGrnDetails = async () => {
@@ -146,6 +165,90 @@ const GrnView = () => {
                 description: "An unexpected error occurred.",
                 status: "error",
                 duration: 5000,
+                isClosable: true,
+            });
+        }
+    };
+
+    const handlePriceUpdate = async () => {
+        if (!contractRef || !price) {
+            toast({
+                title: "Error",
+                description: "Please enter both contract reference and price",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        try {
+            const response = await axios.post(`${API_URL}/api/grn`, {
+                ...grnData,
+                contractRef,
+                price: parseFloat(price),
+                status: 'PriceSet',
+                currentStep: 2
+            });
+
+            setGrnData(response.data);
+            toast({
+                title: "Price updated successfully",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
+        } catch (error) {
+            toast({
+                title: "Error updating price",
+                description: error.response?.data?.message || "An error occurred",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
+        }
+    };
+
+    const handleExchangeRate = async () => {
+        if (!exchangeRate) {
+            toast({
+                title: "Error",
+                description: "Please enter the exchange rate",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        try {
+            const payment_quantity = grnData.netWeightKg;
+            const payment_rate = grnData.price * parseFloat(exchangeRate);
+            const payment_amount = payment_quantity * payment_rate;
+
+            const response = await axios.post(`${API_URL}/api/grn`, {
+                ...grnData,
+                exchange_rate: parseFloat(exchangeRate),
+                payment_quantity,
+                payment_rate,
+                payment_amount,
+                status: 'Paid',
+                currentStep: 4
+            });
+
+            setGrnData(response.data);
+            toast({
+                title: "Payment details updated successfully",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
+        } catch (error) {
+            toast({
+                title: "Error updating payment details",
+                description: error.response?.data?.message || "An error occurred",
+                status: "error",
+                duration: 3000,
                 isClosable: true,
             });
         }
@@ -239,7 +342,66 @@ const GrnView = () => {
         return <Box>No GRN data found.</Box>;
     }
 
-    const canApprove = currentUserRole === steps[grnData.currentStep].description;
+    // const canApprove = currentUserRole === steps[grnData.currentStep].description;
+    
+    
+    const PriceInfoSection = ({ grnData, currentUserRole, contractRef, price, setContractRef, setPrice, handlePriceUpdate }) => {
+        const isEditable = currentUserRole === "COO" && grnData.currentStep === 1;
+        const shouldShow = ["COO", "FINANCE", "MANAGINGDIRECTOR", "ADMIN"].includes(currentUserRole);
+
+        if (!shouldShow) return null;
+
+        return (
+            <VStack spacing={4} align="stretch">
+                <Table variant="simple">
+                    <Thead>
+                        <Tr>
+                            <Th>Contract Ref</Th>
+                            <Th>Price</Th>
+                            {isEditable && <Th>Action</Th>}
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        <Tr>
+                            <Td>
+                                {isEditable ? (
+                                    <Input
+                                        value={contractRef}
+                                        onChange={(e) => setContractRef(e.target.value)}
+                                        placeholder="Contract Reference"
+                                    />
+                                ) : (
+                                    <span>{grnData.contractRef || '-'}</span>
+                                )}
+                            </Td>
+                            <Td>
+                                {isEditable ? (
+                                    <Input
+                                        value={price}
+                                        onChange={(e) => setPrice(e.target.value)}
+                                        placeholder="Price"
+                                        type="number"
+                                    />
+                                ) : (
+                                    <span>{grnData.price || '-'}</span>
+                                )}
+                            </Td>
+                            {isEditable && (
+                                <Td>
+                                    <Button
+                                        colorScheme="teal"
+                                        onClick={handlePriceUpdate}
+                                    >
+                                        Update Price & Approve
+                                    </Button>
+                                </Td>
+                            )}
+                        </Tr>
+                    </Tbody>
+                </Table>
+            </VStack>
+        );
+    };
 
     return (
         <Container maxW="6xl" py={6}>
@@ -368,6 +530,91 @@ const GrnView = () => {
                     </HStack>
 
                     <Heading size="md" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
+                    {/* {(localStorage.getItem('userRole') === "COO" && grnData.currentStep === 1) && (
+                        <VStack spacing={4} align="stretch">
+                            <Table variant="simple">
+                                <Thead>
+                                    <Tr>
+                                        <Th>Contract Ref</Th>
+                                        <Th>Price</Th>
+                                        <Th>Action</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    <Tr>
+                                        <Td>
+                                            <Input
+                                                value={contractRef}
+                                                onChange={(e) => setContractRef(e.target.value)}
+                                                placeholder="Contract Reference"
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <Input
+                                                value={price}
+                                                onChange={(e) => setPrice(e.target.value)}
+                                                placeholder="Price"
+                                                type="number"
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <Button
+                                                colorScheme="teal"
+                                                onClick={handlePriceUpdate}
+                                            >
+                                                Update Price & Approve
+                                            </Button>
+                                        </Td>
+                                    </Tr>
+                                </Tbody>
+                            </Table>
+                        </VStack>
+                    )} */}
+
+                    <PriceInfoSection
+                        grnData={grnData}
+                        currentUserRole={currentUserRole}
+                        contractRef={contractRef}
+                        price={price}
+                        setContractRef={setContractRef}
+                        setPrice={setPrice}
+                        handlePriceUpdate={handlePriceUpdate}
+                    />
+
+                    {(localStorage.getItem('userRole') === "FINANCE" && (grnData.currentStep === 3 || grnData.currentStep === 4)) && (
+                        <VStack spacing={4} align="stretch">
+                            <Table variant="simple">
+                                <Thead>
+                                    <Tr>
+                                        <Th>Exchange Rate</Th>
+                                        <Th>Action</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    <Tr>
+                                        <Td>
+                                            <Input
+                                                value={exchangeRate}
+                                                onChange={(e) => setExchangeRate(e.target.value)}
+                                                placeholder="Exchange Rate"
+                                                type="number"
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <Button
+                                                colorScheme="teal"
+                                                onClick={handleExchangeRate}
+                                            >
+                                                Update Exchange Rate
+                                            </Button>
+                                        </Td>
+                                    </Tr>
+                                </Tbody>
+                            </Table>
+                        </VStack>
+                    )}
+
+                    {/* <Heading size="md" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
                     {(localStorage.getItem('userRole')?.toUpperCase() === "ADMIN" ||
                         localStorage.getItem('userRole')?.toUpperCase() === "FINANCE" ||
                         localStorage.getItem('userRole')?.toUpperCase() === "COO" ||
@@ -377,13 +624,13 @@ const GrnView = () => {
                                     <Tr>
                                         <Th>RPG</Th>
                                         <Th>PRICE</Th>
-                                        <Th>RATE</Th>
+                                        <Th>EXCHANGE RATE</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
                                     <Tr>
                                         <Td>
-                                             <input
+                                            <input
                                                 className="border border-1 p-2 rounded w-full"
                                                 placeholder="Contract Ref"
                                             />
@@ -397,46 +644,75 @@ const GrnView = () => {
                                         <Td>
                                             <input
                                                 className="border border-1 p-2 rounded w-full"
-                                                placeholder="Rate"
+                                                placeholder="Exchange Rate"
                                             />
                                         </Td>
                                     </Tr>
+                                </Tbody>
+                            </Table>
+                        )} */}
+
+                    {(localStorage.getItem('userRole')?.toUpperCase() === "ADMIN" ||
+                        localStorage.getItem('userRole')?.toUpperCase() === "FINANCE" ||
+                        localStorage.getItem('userRole')?.toUpperCase() === "COO" ||
+                        localStorage.getItem('userRole')?.toUpperCase() === "MANAGINGDIRECTOR") && (
+                            <Table variant="simple">
+                                <Thead>
+                                    <Tr>
+                                        <Th>ITEM</Th>
+                                        <Th>QTY</Th>
+                                        <Th>RATE</Th>
+                                        <Th>AMOUNT</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    <Tr>
+                                        <Td>Payment weight</Td>
+                                        {/* <Td>{grnData.payment_weight}</Td>
+                                <Td>{grnData.payment_rate}</Td>
+                                <Td>{(parseFloat(grnData.payment_weight) * parseFloat(grnData.payment_rate)).toFixed(0)}</Td> */}
+
+                                        {/* <Td>{grnData.payment_quantity || grnData.netWeightKg}</Td> */}
+                                        <Td>
+                                            {new Intl.NumberFormat('en-US').format(
+                                                grnData.payment_quantity || grnData.netWeightKg
+                                            )}
+                                        </Td>
+                                        {/* <Td>{grnData.payment_rate || (grnData.price * grnData.exchange_rate || 0)}</Td> */}
+                                        <Td>
+                                            {new Intl.NumberFormat('en-US').format(
+                                                grnData.payment_rate || 0
+                                            )}
+                                        </Td>
+                                        <Td>
+                                            {new Intl.NumberFormat('en-US').format(
+                                                grnData.payment_amount ||
+                                                ((grnData.payment_quantity || grnData.netWeightKg) * (grnData.payment_rate || 0))
+                                            )}
+                                        </Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Td>Security Retained</Td>
+                                        <Td></Td>
+                                        <Td></Td>
+                                        <Td></Td>
+                                    </Tr>
                                     <Tr fontWeight="bold">
-                                        <Td colSpan={2}>Total</Td>
-                                        <Td>{(parseFloat(grnData.payment_weight) * parseFloat(grnData.payment_rate)).toFixed(0)}</Td>
+                                        <Td colSpan={3}>Total</Td>
+                                        {/* <Td>{grnData.payment_amount || ((grnData.payment_quantity || grnData.netWeightKg) * (grnData.payment_rate || 0))}</Td>
+                                         */}
+
+                                        <Td>
+                                            {new Intl.NumberFormat('en-US').format(
+                                                grnData.payment_amount ||
+                                                ((grnData.payment_quantity || grnData.netWeightKg) * (grnData.payment_rate || 0))
+                                            )}
+                                        </Td>
+
                                     </Tr>
                                 </Tbody>
                             </Table>
                         )}
-
-                    <Table variant="simple">
-                        <Thead>
-                            <Tr>
-                                <Th>ITEM</Th>
-                                <Th>QTY</Th>
-                                <Th>RATE</Th>
-                                <Th>AMOUNT</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            <Tr>
-                                <Td>Payment weight</Td>
-                                <Td>{grnData.payment_weight}</Td>
-                                <Td>{grnData.payment_rate}</Td>
-                                <Td>{(parseFloat(grnData.payment_weight) * parseFloat(grnData.payment_rate)).toFixed(0)}</Td>
-                            </Tr>
-                            <Tr>
-                                <Td>Security Retained</Td>
-                                <Td></Td>
-                                <Td></Td>
-                                <Td></Td>
-                            </Tr>
-                            <Tr fontWeight="bold">
-                                <Td colSpan={3}>Total</Td>
-                                <Td>{(parseFloat(grnData.payment_weight) * parseFloat(grnData.payment_rate)).toFixed(0)}</Td>
-                            </Tr>
-                        </Tbody>
-                    </Table>
 
 
                 </VStack>

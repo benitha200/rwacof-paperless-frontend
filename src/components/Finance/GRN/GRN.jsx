@@ -52,6 +52,43 @@ const EditableField = ({ label, name, value, onChange, type = "text" }) => (
 );
 
 const GRN = () => {
+    // const [formData, setFormData] = useState({
+    //     receivedDate: new Date(),
+    //     supplierName: 'IMPEXCOR',
+    //     supplierAddress: 'Kigali City',
+    //     plate_no: 'RAE345A',
+    //     wbridgeRef: '',
+    //     moisture: '12.3',
+    //     parch: '14.4',
+    //     coffee_type: 'ARABICA PARCH FW',
+    //     bags: '100',
+    //     quantity: '6000',
+    //     quantityUnit: 'kgs',
+    //     totalWeight: '6000',
+    //     weightUnit: 'kgs',
+    //     lessNoOfBags: '100',
+    //     subGrossKg: '5980',
+    //     lessMoistureKg: '',
+    //     lessQualityKg: '',
+    //     netWeightKg: '5980',
+    //     cheque_in_favor_of: 'Rwacof',
+    //     payment_weight: '5980',
+    //     payment_quantity: '5980',
+    //     payment_rate: '4500',
+    //     payment_amount: '675600',
+    //     paymentDate: new Date(),
+    //     drAc: '',
+    //     qualityGrade: 'Grade A',
+    //     rate: '10',
+    //     preparedById: 1,
+    //     checkedById: 1,
+    //     authorizedById: 1,
+    //     receivedById: 1,
+    //     remarks: '',
+    //     status: 'Received',
+    //     currentStep: 0,
+    // });
+
     const [formData, setFormData] = useState({
         receivedDate: new Date(),
         supplierName: 'IMPEXCOR',
@@ -72,18 +109,8 @@ const GRN = () => {
         lessQualityKg: '',
         netWeightKg: '5980',
         cheque_in_favor_of: 'Rwacof',
-        payment_weight: '5980',
-        payment_quantity: '5980',
-        payment_rate: '4500',
-        payment_amount: '675600',
-        paymentDate: new Date(),
-        drAc: '',
         qualityGrade: 'Grade A',
-        rate: '10',
         preparedById: 1,
-        checkedById: 1,
-        authorizedById: 1,
-        receivedById: 1,
         remarks: '',
         status: 'Received',
         currentStep: 0,
@@ -132,7 +159,6 @@ const GRN = () => {
             const transformedData = {
                 ...formData,
                 receivedDate: formData.receivedDate.toISOString(),
-                paymentDate: formData.paymentDate.toISOString(),
                 quantity: parseInt(formData.quantity, 10),
                 bags: parseInt(formData.bags, 10),
                 lessNoOfBags: parseInt(formData.lessNoOfBags, 10) || 0,
@@ -140,29 +166,21 @@ const GRN = () => {
                 lessMoistureKg: parseInt(formData.lessMoistureKg, 10) || 0,
                 lessQualityKg: parseInt(formData.lessQualityKg, 10) || 0,
                 netWeightKg: parseInt(formData.netWeightKg, 10),
-                payment_quantity: parseInt(formData.payment_quantity, 10),
-                payment_rate: parseInt(formData.payment_rate, 10),
-                payment_amount: parseInt(formData.payment_amount, 10),
-                drAc: parseInt(formData.drAc, 10),
-                rate: parseInt(formData.rate, 10),
                 moisture: parseFloat(formData.moisture),
                 parch: parseFloat(formData.parch) || null,
                 totalWeight: parseFloat(formData.totalWeight),
             };
-
-            // Get the token from localStorage (or wherever you store it)
-            const token = localStorage.getItem('token'); // Adjust this if you store the token differently
-
-            // Set up the config object for axios, including the Authorization header
+    
+            const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             };
-
+    
             const response = await axios.post(`${API_URL}/api/grn`, transformedData, config);
-
+    
             toast({
                 title: "GRN submitted successfully.",
                 status: "success",
@@ -302,7 +320,12 @@ const GRN = () => {
 
                         <Heading as="h3" size="md" mb={4} color="teal.600">PAYMENT VOUCHER</Heading>
 
-                        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={spacing}>
+                        {(localStorage.getItem('userRole')?.toUpperCase() === "ADMIN" ||
+                        localStorage.getItem('userRole')?.toUpperCase() === "FINANCE" ||
+                        localStorage.getItem('userRole')?.toUpperCase() === "COO" ||
+                        localStorage.getItem('userRole')?.toUpperCase() === "MANAGINGDIRECTOR") && (
+                        <>
+                         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={spacing}>
                             <EditableField size="sm" label="PAYMENT WEIGHT" name="payment_weight" value={formData.payment_weight} onChange={handleInputChange} />
                             <EditableField size="sm" label="PAYMENT QUANTITY" name="payment_quantity" value={formData.payment_quantity} onChange={handleInputChange} />
                             <EditableField size="sm" label="PAYMENT RATE" name="payment_rate" value={formData.payment_rate} onChange={handleInputChange} />
@@ -321,10 +344,15 @@ const GRN = () => {
                             </FormControl>
                             <EditableField size="sm" label="DR. A/C" name="drAc" value={formData.drAc} onChange={handleInputChange} />
                         </SimpleGrid>
+                        </>
+                       
+                        )}
+
+                        
 
                         <EditableField className="w-1/2" size="sm" label="CHEQUE IN FAVOUR OF" name="cheque_in_favor_of" value={formData.cheque_in_favor_of} onChange={handleInputChange} />
                         <EditableField className="w-1/2" size="sm" label="QUALITY GRADE" name="qualityGrade" value={formData.qualityGrade} onChange={handleInputChange} />
-                        <EditableField className="w-1/2" size="sm" label="RATE" name="rate" value={formData.rate} onChange={handleInputChange} />
+                        {/* <EditableField className="w-1/2" size="sm" label="RATE" name="rate" value={formData.rate} onChange={handleInputChange} /> */}
                         <EditableField className="w-1/2" size="sm" label="REMARKS" name="remarks" value={formData.remarks} onChange={handleInputChange} />
                         {/* 
                         <HStack justify="space-between">

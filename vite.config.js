@@ -24,17 +24,18 @@ export default defineConfig({
     },
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return id.split('node_modules/')[1].split('/')[0]; // Splits vendor files
-          }
-        },
-      },
-    },
+    // Comment out or remove the rollupOptions temporarily
+    // rollupOptions: {
+    //   output: {
+    //     manualChunks(id) {
+    //       if (id.includes('node_modules')) {
+    //         return id.split('node_modules/')[1].split('/')[0];
+    //       }
+    //     },
+    //   },
+    // },
   },
-  base: '/', // This is important for routing
+  base: '/',
   server: {
     host: true,
   },

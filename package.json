@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "tsc"
+    "test": "tsc",
+    "start": "vite preview"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.10.4",

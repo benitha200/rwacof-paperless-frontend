@@ -335,7 +335,8 @@ const ReceptionistDashboard = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Trip Management Dashboard</h1>
+      <h1 className="text-2xl font-bold text-center">Trip Management
+      </h1>
 
       {/* Trip Statistics */}
       <div className="grid grid-cols-5 gap-4">

@@ -22,6 +22,11 @@
 //   FormControl,
 //   FormLabel,
 //   Input,
+//   Box,
+//   Text,
+//   Flex,
+//   Stack,
+//   Heading,
 // } from "@chakra-ui/react";
 // import API_URL from "../../constants/Constants";
 // import { Calendar, CarIcon, Clock, FileText, Navigation, User } from "lucide-react";
@@ -38,7 +43,6 @@
 // const Trips = () => {
 //   const [trips, setTrips] = useState([]);
 //   const [cars, setCars] = useState([]);
-//   // const [cars, setCars] = useState([]);
 //   const [pagination, setPagination] = useState({
 //     currentPage: 1,
 //     totalPages: 1,
@@ -47,8 +51,19 @@
 //   const [drivers, setDrivers] = useState([]);
 //   const [selectedTrip, setSelectedTrip] = useState(null);
 //   const [currentUser, setCurrentUser] = useState(null);
+//   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 //   const { isOpen, onOpen, onClose } = useDisclosure();
 //   const toast = useToast();
+
+//   // Check window size for responsive design
+//   useEffect(() => {
+//     const handleResize = () => {
+//       setIsMobile(window.innerWidth < 768);
+//     };
+
+//     window.addEventListener('resize', handleResize);
+//     return () => window.removeEventListener('resize', handleResize);
+//   }, []);
 
 //   // Fetch data from APIs
 //   useEffect(() => {
@@ -62,8 +77,6 @@
 
 //         // Fetch cars
 //         const carsResponse = await api.get("/car");
-//         // setCars(carsResponse.data);
-//         // setCars(data.cars);
 //         setCars(carsResponse.data.cars);
 //         console.log(carsResponse);
 
@@ -93,7 +106,6 @@
 //     fetchData();
 //   }, []);
 
-//   // Update other methods to use the api instance
 //   const handleApprove = async (tripId) => {
 //     try {
 //       const response = await api.patch(
@@ -133,17 +145,17 @@
 //   const getStatusColor = (status) => {
 //     switch (status) {
 //       case 'AVAILABLE':
-//         return 'bg-emerald-200 text-emerald-900';  // Brighter, more vivid green
+//         return 'bg-emerald-200 text-emerald-900';
 //       case 'PENDING':
-//         return 'bg-amber-200 text-amber-900';      // Warmer, more visible yellow
+//         return 'bg-amber-200 text-amber-900';
 //       case 'SUPERVISOR_APPROVED':
-//         return 'bg-sky-200 text-sky-900';          // Brighter, more noticeable blue
+//         return 'bg-sky-200 text-sky-900';
 //       case 'ASSIGNED':
-//         return 'bg-lime-200 text-lime-900';        // Different shade of green than AVAILABLE
+//         return 'bg-lime-200 text-lime-900';
 //       case 'REJECTED':
-//         return 'bg-rose-200 text-rose-900';        // More vibrant red
+//         return 'bg-rose-200 text-rose-900';
 //       case 'COMPLETED':
-//         return 'bg-purple-200 text-purple-900';    // Rich purple that stands out
+//         return 'bg-purple-200 text-purple-900';
 //       default:
 //         return 'bg-gray-100 text-gray-800';
 //     }
@@ -167,62 +179,6 @@
 //         return 'bg-gray-100 text-gray-800 border border-gray-200';
 //     }
 //   };
-
-
-
-//   // Similar updates for handleReject and handleAssignment methods...
-
-//   // const handleAssignment = async (event) => {
-//   //   event.preventDefault();
-//   //   const formData = new FormData(event.target);
-//   //   const carId = Number(formData.get("car"));
-//   //   const driverId = Number(formData.get("driver"));
-
-//   //   try {
-//   //     const response = await api.patch(
-//   //       `/trips/${selectedTrip.id}/assign`,
-//   //       {
-//   //         carId,
-//   //         driverId,
-//   //         userId: parseInt(localStorage.getItem("userId"))
-//   //       }
-//   //     );
-
-//   //     // Update local state
-//   //     setTrips(trips.map((trip) =>
-//   //       trip.id === selectedTrip.id
-//   //         ? {
-//   //           ...trip,
-//   //           carId,
-//   //           driverId,
-//   //           car: cars.find(c => c.id === carId),
-//   //           driver: drivers.find(d => d.id === driverId),
-//   //           status: 'ASSIGNED',
-//   //           adminApproval: true
-//   //         }
-//   //         : trip
-//   //     ));
-
-//   //     toast({
-//   //       title: "Assigned",
-//   //       description: "Car and driver assigned successfully",
-//   //       status: "success",
-//   //       duration: 3000,
-//   //       isClosable: true,
-//   //     });
-
-//   //     onClose();
-//   //   } catch (error) {
-//   //     toast({
-//   //       title: "Error",
-//   //       description: error.response?.data?.error || "Failed to assign car and driver",
-//   //       status: "error",
-//   //       duration: 3000,
-//   //       isClosable: true,
-//   //     });
-//   //     console.error("Error assigning car and driver:", error);
-//   //   }
-//   // };
 
 //   const handleAssignment = async (event) => {
 //     event.preventDefault();
@@ -278,7 +234,6 @@
 //     }
 //   };
 
-
 //   const formatDate = (dateString) => {
 //     return new Date(dateString).toLocaleString('en-US', {
 //       year: 'numeric',
@@ -289,162 +244,246 @@
 //     });
 //   };
 
+//   // Mobile card view for each trip
+//   const TripCard = ({ trip }) => (
+//     <Box 
+//       p={4} 
+//       mb={4} 
+//       borderWidth="1px" 
+//       borderRadius="lg" 
+//       boxShadow="sm"
+//       bg="white"
+//     >
+//       <Flex justify="space-between" align="center" mb={2}>
+//         <Heading size="sm">
+//           {trip.employee?.user?.firstName} {trip.employee?.user?.lastName}
+//         </Heading>
+//         <Badge
+//           className={`p-2 ${getStatusBadgeVariant(trip.status)}`}
+//         >
+//           {trip.status}
+//         </Badge>
+//       </Flex>
+
+//       <Text fontSize="sm" color="gray.600" mb={3}>
+//         {trip.employee?.employeeNumber} • {trip.employee?.department}
+//       </Text>
+
+//       <Stack spacing={2} mb={3}>
+//         <Flex align="center">
+//           <FileText className="mr-2 h-4 w-4" />
+//           <Box>
+//             <Text fontWeight="medium">{trip.reason}</Text>
+//             <Text fontSize="sm" color="gray.600">{trip.itinerary}</Text>
+//           </Box>
+//         </Flex>
+
+//         <Flex align="center">
+//           <Calendar className="mr-2 h-4 w-4" />
+//           <Box>
+//             <Text fontSize="sm">Departure: {formatDate(trip.departureDate)}</Text>
+//             <Text fontSize="sm">Return: {formatDate(trip.returnDate)}</Text>
+//           </Box>
+//         </Flex>
+
+//         {trip.car ? (
+//           <Flex align="center">
+//             <CarIcon className="mr-2 h-4 w-4" />
+//             <Box>
+//               <Text fontSize="sm">{trip.car.make} {trip.car.model}</Text>
+//               <Text fontSize="xs" color="gray.600">Plate: {trip.car.licensePlate} • Year: {trip.car.year}</Text>
+//             </Box>
+//           </Flex>
+//         ) : (
+//           <Text fontSize="sm" color="gray.600">No car assigned</Text>
+//         )}
+
+//         <Flex align="center">
+//           <Navigation className="mr-2 h-4 w-4" />
+//           <Box>
+//             <Text fontSize="sm">Start: {trip.kmAtDeparture || 'N/A'} km</Text>
+//             <Text fontSize="sm">End: {trip.kmAtArrival || 'N/A'} km</Text>
+//             {trip.kmAtDeparture && trip.kmAtArrival && (
+//               <Text fontSize="xs" color="gray.600">
+//                 Total: {trip.kmAtArrival - trip.kmAtDeparture} km
+//               </Text>
+//             )}
+//           </Box>
+//         </Flex>
+//       </Stack>
+
+//       {!trip.car && trip.status.toLowerCase() !== 'rejected' && (
+//         <Button
+//           colorScheme="blue"
+//           size="sm"
+//           width="full"
+//           onClick={() => {
+//             setSelectedTrip(trip);
+//             onOpen();
+//           }}
+//         >
+//           Assign Car
+//         </Button>
+//       )}
+//     </Box>
+//   );
 
 //   return (
-//     <div className="p-4">
-//       <h2 className="text-2xl mb-4">Trip Requests</h2>
-//       <TableContainer>
-//         <Table variant="simple">
-//           <Thead>
-//             <Tr>
-//               <Th>Employee</Th>
-//               <Th>Reporting Manager</Th>
-//               <Th>Department</Th>
-//               <Th>Vehicle</Th>
-//               <Th>Driver</Th>
-//               <Th>Status</Th>
-//               <Th>Actions</Th>
-//             </Tr>
-//           </Thead>
-//           <Tbody>
-//             {trips.map((trip) => (
-//               <Tr key={trip.id}>
-//                 <Td>
-//                   <div className="flex items-center">
-//                     <User className="mr-2 h-4 w-4" />
-//                     {trip.employee?.user?.firstName} {trip.employee?.user?.lastName}
+//     <Box className="p-4">
+//       <Heading size="lg" mb={4}>Trip Requests</Heading>
 
-//                   </div>
-//                   <div className="mr-2 text-sm text-muted-foreground">
-//                     {trip.employee?.employeeNumber}
-//                   </div>
-//                   <div className="text-sm text-muted-foreground">
-//                     {trip.employee?.department}
-//                   </div>
-//                 </Td>
-//                 <Td>
-//                   <div className="flex items-center">
-//                     <FileText className="mr-2 h-4 w-4" />
-//                     <div>
-//                       <div>{trip.reason}</div>
-//                       <div className="text-sm text-muted-foreground">
-//                         {trip.itinerary}
-//                       </div>
-//                     </div>
-//                   </div>
-//                 </Td>
-//                 <Td>
-//                   <div className="flex flex-col">
-//                     <div className="flex items-center mb-1">
-//                       <Calendar className="mr-2 h-4 w-4" />
-//                       <span>Departure: {formatDate(trip.departureDate)}</span>
-//                     </div>
-//                     <div className="flex items-center">
-//                       <Clock className="mr-2 h-4 w-4" />
-//                       <span>Return: {formatDate(trip.returnDate)}</span>
-//                     </div>
-//                   </div>
-//                 </Td>
-//                 <Td>
-//                   {trip.car ? (
-//                     <div className="flex flex-col">
-//                       <div className="flex items-center">
-//                         <CarIcon className="mr-2 h-4 w-4" />
-//                         {trip.car.make} {trip.car.model}
-//                       </div>
-//                       <div className="text-sm text-muted-foreground">
-//                         Plate: {trip.car.licensePlate}
-//                       </div>
-//                       <div className="text-sm text-muted-foreground">
-//                         Year: {trip.car.year}
-//                       </div>
-//                     </div>
-//                   ) : (
-//                     'No car assigned'
-//                   )}
-//                 </Td>
-//                 <Td>
-//                   <div className="flex flex-col">
-//                     <div className="flex items-center">
-//                       <Navigation className="mr-2 h-4 w-4" />
-//                       <span>Start: {trip.kmAtDeparture} km</span>
-//                     </div>
-//                     <div className="flex items-center">
-//                       <Navigation className="mr-2 h-4 w-4" />
-//                       <span>End: {trip.kmAtArrival} km</span>
-//                     </div>
-//                     <div className="text-sm text-muted-foreground">
-//                       Total: {trip.kmAtArrival - trip.kmAtDeparture} km
-//                     </div>
-//                   </div>
-//                 </Td>
-//                 <Td>
-//                   <Badge
-//                     className={`p-2 ${getStatusBadgeVariant(trip.status)}`}
-//                   >
-//                     {trip.status}
-//                   </Badge>
-//                 </Td>
-//                 <Td>
-//                   {!trip.car && trip.status.toLowerCase() !== 'rejected' && (
-//                     <Button
-//                       colorScheme="blue"
-//                       onClick={() => {
-//                         setSelectedTrip(trip); // Set the selected trip for assignment
-//                         onOpen(); // Open the modal
-//                       }}
-//                     >
-//                       Assign Car
-//                     </Button>
+//       {isMobile ? (
+//         // Mobile view - cards
+//         <Box>
+//           {trips.map((trip) => (
+//             <TripCard key={trip.id} trip={trip} />
+//           ))}
+//         </Box>
+//       ) : (
+//         // Desktop view - table
+//         <Box overflowX="auto">
+//           <TableContainer>
+//             <Table variant="simple" size={{base: "sm", lg: "md"}}>
+//               <Thead>
+//                 <Tr>
+//                   <Th>Employee</Th>
+//                   <Th>Reporting Manager</Th>
+//                   <Th>Department</Th>
+//                   <Th>Vehicle</Th>
+//                   <Th>Driver</Th>
+//                   <Th>Status</Th>
+//                   <Th>Actions</Th>
+//                 </Tr>
+//               </Thead>
+//               <Tbody>
+//                 {trips.map((trip) => (
+//                   <Tr key={trip.id}>
+//                     <Td>
+//                       <Flex align="center">
+//                         <User className="mr-2 h-4 w-4" />
+//                         <Box>
+//                           <Text>{trip.employee?.user?.firstName} {trip.employee?.user?.lastName}</Text>
+//                           <Text fontSize="sm" color="gray.600">{trip.employee?.employeeNumber}</Text>
+//                           <Text fontSize="sm" color="gray.600">{trip.employee?.department}</Text>
+//                         </Box>
+//                       </Flex>
+//                     </Td>
+//                     <Td>
+//                       <Flex align="center">
+//                         <FileText className="mr-2 h-4 w-4" />
+//                         <Box>
+//                           <Text>{trip.reason}</Text>
+//                           <Text fontSize="sm" color="gray.600">{trip.itinerary}</Text>
+//                         </Box>
+//                       </Flex>
+//                     </Td>
+//                     <Td>
+//                       <Stack spacing={1}>
+//                         <Flex align="center">
+//                           <Calendar className="mr-2 h-4 w-4" />
+//                           <Text fontSize="sm">Departure: {formatDate(trip.departureDate)}</Text>
+//                         </Flex>
+//                         <Flex align="center">
+//                           <Clock className="mr-2 h-4 w-4" />
+//                           <Text fontSize="sm">Return: {formatDate(trip.returnDate)}</Text>
+//                         </Flex>
+//                       </Stack>
+//                     </Td>
+//                     <Td>
+//                       {trip.car ? (
+//                         <Stack spacing={1}>
+//                           <Flex align="center">
+//                             <CarIcon className="mr-2 h-4 w-4" />
+//                             <Text>{trip.car.make} {trip.car.model}</Text>
+//                           </Flex>
+//                           <Text fontSize="sm" color="gray.600">Plate: {trip.car.licensePlate}</Text>
+//                           <Text fontSize="sm" color="gray.600">Year: {trip.car.year}</Text>
+//                         </Stack>
+//                       ) : (
+//                         <Text color="gray.600">No car assigned</Text>
+//                       )}
+//                     </Td>
+//                     <Td>
+//                       <Stack spacing={1}>
+//                         <Flex align="center">
+//                           <Navigation className="mr-2 h-4 w-4" />
+//                           <Text fontSize="sm">Start: {trip.kmAtDeparture || 'N/A'} km</Text>
+//                         </Flex>
+//                         <Flex align="center">
+//                           <Navigation className="mr-2 h-4 w-4" />
+//                           <Text fontSize="sm">End: {trip.kmAtArrival || 'N/A'} km</Text>
+//                         </Flex>
+//                         {trip.kmAtDeparture && trip.kmAtArrival && (
+//                           <Text fontSize="sm" color="gray.600">
+//                             Total: {trip.kmAtArrival - trip.kmAtDeparture} km
+//                           </Text>
+//                         )}
+//                       </Stack>
+//                     </Td>
+//                     <Td>
+//                       <Badge
+//                         className={`p-2 ${getStatusBadgeVariant(trip.status)}`}
+//                       >
+//                         {trip.status}
+//                       </Badge>
+//                     </Td>
+//                     <Td>
+//                       {!trip.car && trip.status.toLowerCase() !== 'rejected' && (
+//                         <Button
+//                           colorScheme="blue"
+//                           size="sm"
+//                           onClick={() => {
+//                             setSelectedTrip(trip);
+//                             onOpen();
+//                           }}
+//                         >
+//                           Assign Car
+//                         </Button>
+//                       )}
+//                     </Td>
+//                   </Tr>
+//                 ))}
+//               </Tbody>
+//             </Table>
+//           </TableContainer>
+//         </Box>
+//       )}
 
-
-//                   )}
-//                 </Td>
-//               </Tr>
-//             ))}
-//           </Tbody>
-//         </Table>
-//       </TableContainer>
-
-
-//       <Modal isOpen={isOpen} onClose={onClose}>
+//       {/* Assignment Modal - same for both views */}
+//       <Modal isOpen={isOpen} onClose={onClose} size={isMobile ? "full" : "md"}>
 //         <ModalOverlay />
 //         <ModalContent>
 //           <ModalHeader>Assign Car and Driver</ModalHeader>
 //           <ModalCloseButton />
 //           <ModalBody>
-//             <form onSubmit={handleAssignment}>
-//               <div>
-//                 <label htmlFor="car" className="block mb-2">
-//                   Select Car
-//                 </label>
-//                 <Select name="car" placeholder="Select a car" isRequired>
-//                   {cars
-//                     .filter(car => car.status === "AVAILABLE")
-//                     .map((car) => (
-//                       <option key={car.id} value={car.id}>
-//                         {car.make} {car.model} ({car.licensePlate})
-//                       </option>
-//                     ))}
-//                 </Select>
-//               </div>
+//             <form onSubmit={handleAssignment} id="assignment-form">
+//               <Stack spacing={4}>
+//                 <FormControl isRequired>
+//                   <FormLabel htmlFor="car">Select Car</FormLabel>
+//                   <Select name="car" placeholder="Select a car">
+//                     {cars
+//                       .filter(car => car.status === "AVAILABLE")
+//                       .map((car) => (
+//                         <option key={car.id} value={car.id}>
+//                           {car.make} {car.model} ({car.licensePlate})
+//                         </option>
+//                       ))}
+//                   </Select>
+//                 </FormControl>
 
-//               <div className="mt-4">
-//                 <label htmlFor="driver" className="block mb-2">
-//                   Select Driver
-//                 </label>
-//                 <Select name="driver" placeholder="Select a driver" isRequired>
-//                   {drivers
-//                     .filter(driver => driver.status !== "INACTIVE")
-//                     .map((driver) => (
-//                       <option key={driver.id} value={driver.id}>
-//                         {driver.firstName} {driver.lastName}
-//                       </option>
-//                     ))}
-//                 </Select>
-//               </div>
+//                 <FormControl isRequired>
+//                   <FormLabel htmlFor="driver">Select Driver</FormLabel>
+//                   <Select name="driver" placeholder="Select a driver">
+//                     {drivers
+//                       .filter(driver => driver.status !== "INACTIVE")
+//                       .map((driver) => (
+//                         <option key={driver.id} value={driver.id}>
+//                           {driver.firstName} {driver.lastName}
+//                         </option>
+//                       ))}
+//                   </Select>
+//                 </FormControl>
 
-//               <div className="mt-4">
 //                 <FormControl isRequired>
 //                   <FormLabel>KM at Departure</FormLabel>
 //                   <Input
@@ -454,18 +493,17 @@
 //                     placeholder="Enter current KM reading"
 //                   />
 //                 </FormControl>
-//               </div>
-
-//               <ModalFooter>
-//                 <Button colorScheme="blue" type="submit" className="w-full">
-//                   Assign
-//                 </Button>
-//               </ModalFooter>
+//               </Stack>
 //             </form>
 //           </ModalBody>
+//           <ModalFooter>
+//             <Button colorScheme="blue" type="submit" form="assignment-form" width="full">
+//               Assign
+//             </Button>
+//           </ModalFooter>
 //         </ModalContent>
 //       </Modal>
-//     </div>
+//     </Box>
 //   );
 // };
 
@@ -500,6 +538,11 @@ import {
   Flex,
   Stack,
   Heading,
+  useBreakpointValue,
+  HStack,
+  VStack,
+  Icon,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import API_URL from "../../constants/Constants";
 import { Calendar, CarIcon, Clock, FileText, Navigation, User } from "lucide-react";
@@ -524,19 +567,31 @@ const Trips = () => {
   const [drivers, setDrivers] = useState([]);
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
-  // Check window size for responsive design
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+  // Use Chakra UI's responsive utilities
+  const displayMode = useBreakpointValue({
+    base: "card",
+    sm: "card",
+    md: "card",
+    lg: "table",
+    xl: "table"
+  });
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const columnCount = useBreakpointValue({
+    base: 1,
+    sm: 1,
+    md: 2,
+    lg: 2,
+    xl: 3
+  });
+
+  const buttonSize = useBreakpointValue({ base: "sm", md: "md" });
+  const tableSize = useBreakpointValue({ base: "sm", md: "md", lg: "md" });
+  const modalSize = useBreakpointValue({ base: "full", sm: "full", md: "md" });
+  const headingSize = useBreakpointValue({ base: "md", md: "lg" });
+  const cardPadding = useBreakpointValue({ base: 3, md: 4 });
 
   // Fetch data from APIs
   useEffect(() => {
@@ -551,7 +606,6 @@ const Trips = () => {
         // Fetch cars
         const carsResponse = await api.get("/car");
         setCars(carsResponse.data.cars);
-        console.log(carsResponse);
 
         // Update pagination information
         setPagination({
@@ -562,7 +616,6 @@ const Trips = () => {
 
         // Fetch drivers
         const driversResponse = await api.get("/driver");
-        console.log(driversResponse);
         setDrivers(driversResponse.data);
       } catch (error) {
         toast({
@@ -612,25 +665,6 @@ const Trips = () => {
         isClosable: true,
       });
       console.error("Error approving trip:", error);
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'AVAILABLE':
-        return 'bg-emerald-200 text-emerald-900';
-      case 'PENDING':
-        return 'bg-amber-200 text-amber-900';
-      case 'SUPERVISOR_APPROVED':
-        return 'bg-sky-200 text-sky-900';
-      case 'ASSIGNED':
-        return 'bg-lime-200 text-lime-900';
-      case 'REJECTED':
-        return 'bg-rose-200 text-rose-900';
-      case 'COMPLETED':
-        return 'bg-purple-200 text-purple-900';
-      default:
-        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -717,18 +751,19 @@ const Trips = () => {
     });
   };
 
-  // Mobile card view for each trip
+  // Card view component for each trip
   const TripCard = ({ trip }) => (
-    <Box 
-      p={4} 
-      mb={4} 
-      borderWidth="1px" 
-      borderRadius="lg" 
+    <Box
+      p={cardPadding}
+      mb={4}
+      borderWidth="1px"
+      borderRadius="lg"
       boxShadow="sm"
       bg="white"
+      width="100%"
     >
-      <Flex justify="space-between" align="center" mb={2}>
-        <Heading size="sm">
+      <Flex justify="space-between" align="center" mb={2} flexWrap="wrap" gap={2}>
+        <Heading size={useBreakpointValue({ base: "xs", md: "sm" })}>
           {trip.employee?.user?.firstName} {trip.employee?.user?.lastName}
         </Heading>
         <Badge
@@ -737,31 +772,31 @@ const Trips = () => {
           {trip.status}
         </Badge>
       </Flex>
-      
+
       <Text fontSize="sm" color="gray.600" mb={3}>
         {trip.employee?.employeeNumber} • {trip.employee?.department}
       </Text>
-      
+
       <Stack spacing={2} mb={3}>
-        <Flex align="center">
-          <FileText className="mr-2 h-4 w-4" />
+        <Flex align="flex-start">
+          <Icon as={FileText} className="mr-2 h-4 w-4" mt={1} />
           <Box>
             <Text fontWeight="medium">{trip.reason}</Text>
             <Text fontSize="sm" color="gray.600">{trip.itinerary}</Text>
           </Box>
         </Flex>
-        
-        <Flex align="center">
-          <Calendar className="mr-2 h-4 w-4" />
+
+        <Flex align="flex-start">
+          <Icon as={Calendar} className="mr-2 h-4 w-4" mt={1} />
           <Box>
             <Text fontSize="sm">Departure: {formatDate(trip.departureDate)}</Text>
             <Text fontSize="sm">Return: {formatDate(trip.returnDate)}</Text>
           </Box>
         </Flex>
-        
+
         {trip.car ? (
-          <Flex align="center">
-            <CarIcon className="mr-2 h-4 w-4" />
+          <Flex align="flex-start">
+            <Icon as={CarIcon} className="mr-2 h-4 w-4" mt={1} />
             <Box>
               <Text fontSize="sm">{trip.car.make} {trip.car.model}</Text>
               <Text fontSize="xs" color="gray.600">Plate: {trip.car.licensePlate} • Year: {trip.car.year}</Text>
@@ -770,9 +805,9 @@ const Trips = () => {
         ) : (
           <Text fontSize="sm" color="gray.600">No car assigned</Text>
         )}
-        
-        <Flex align="center">
-          <Navigation className="mr-2 h-4 w-4" />
+
+        <Flex align="flex-start">
+          <Icon as={Navigation} className="mr-2 h-4 w-4" mt={1} />
           <Box>
             <Text fontSize="sm">Start: {trip.kmAtDeparture || 'N/A'} km</Text>
             <Text fontSize="sm">End: {trip.kmAtArrival || 'N/A'} km</Text>
@@ -784,11 +819,11 @@ const Trips = () => {
           </Box>
         </Flex>
       </Stack>
-      
+
       {!trip.car && trip.status.toLowerCase() !== 'rejected' && (
         <Button
           colorScheme="blue"
-          size="sm"
+          size={buttonSize}
           width="full"
           onClick={() => {
             setSelectedTrip(trip);
@@ -802,28 +837,28 @@ const Trips = () => {
   );
 
   return (
-    <Box className="p-4">
-      <Heading size="lg" mb={4}>Trip Requests</Heading>
-      
-      {isMobile ? (
-        // Mobile view - cards
-        <Box>
+    <Box className="">
+      <Heading size={headingSize} mb={4}>Trip Requests</Heading>
+
+      {displayMode === "card" ? (
+        // Card view - optimized for tablets and mobile
+        <SimpleGrid columns={columnCount} spacing={4}>
           {trips.map((trip) => (
             <TripCard key={trip.id} trip={trip} />
           ))}
-        </Box>
+        </SimpleGrid>
       ) : (
         // Desktop view - table
         <Box overflowX="auto">
           <TableContainer>
-            <Table variant="simple" size={{base: "sm", lg: "md"}}>
+            <Table variant="simple" size={tableSize}>
               <Thead>
                 <Tr>
                   <Th>Employee</Th>
-                  <Th>Reporting Manager</Th>
-                  <Th>Department</Th>
+                  <Th>Details</Th>
+                  <Th>Dates</Th>
                   <Th>Vehicle</Th>
-                  <Th>Driver</Th>
+                  <Th>Mileage</Th>
                   <Th>Status</Th>
                   <Th>Actions</Th>
                 </Tr>
@@ -833,7 +868,7 @@ const Trips = () => {
                   <Tr key={trip.id}>
                     <Td>
                       <Flex align="center">
-                        <User className="mr-2 h-4 w-4" />
+                        <Icon as={User} className="mr-2 h-4 w-4" />
                         <Box>
                           <Text>{trip.employee?.user?.firstName} {trip.employee?.user?.lastName}</Text>
                           <Text fontSize="sm" color="gray.600">{trip.employee?.employeeNumber}</Text>
@@ -843,21 +878,50 @@ const Trips = () => {
                     </Td>
                     <Td>
                       <Flex align="center">
-                        <FileText className="mr-2 h-4 w-4" />
-                        <Box>
-                          <Text>{trip.reason}</Text>
-                          <Text fontSize="sm" color="gray.600">{trip.itinerary}</Text>
+                        <Icon as={FileText} className="mr-2 h-4 w-4" />
+                        <Box maxW="200px">
+                          <Text
+                            title={trip.reason}
+                            css={{
+                              display: '-webkit-box',
+                              WebkitLineClamp: 1,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              position: 'relative',
+                              '&::after': {
+                                content: "'...'",
+                                position: 'absolute',
+                                right: 0,
+                                bottom: 0
+                              }
+                            }}
+                          >
+                            {trip.reason}
+                          </Text>
+                          <Text
+                            fontSize="sm"
+                            color="gray.600"
+                            title={trip.itinerary}
+                            css={{
+                              display: '-webkit-box',
+                              WebkitLineClamp: 1,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden'
+                            }}
+                          >
+                            {trip.itinerary}
+                          </Text>
                         </Box>
                       </Flex>
                     </Td>
                     <Td>
                       <Stack spacing={1}>
                         <Flex align="center">
-                          <Calendar className="mr-2 h-4 w-4" />
+                          <Icon as={Calendar} className="mr-2 h-4 w-4" />
                           <Text fontSize="sm">Departure: {formatDate(trip.departureDate)}</Text>
                         </Flex>
                         <Flex align="center">
-                          <Clock className="mr-2 h-4 w-4" />
+                          <Icon as={Clock} className="mr-2 h-4 w-4" />
                           <Text fontSize="sm">Return: {formatDate(trip.returnDate)}</Text>
                         </Flex>
                       </Stack>
@@ -866,7 +930,7 @@ const Trips = () => {
                       {trip.car ? (
                         <Stack spacing={1}>
                           <Flex align="center">
-                            <CarIcon className="mr-2 h-4 w-4" />
+                            <Icon as={CarIcon} className="mr-2 h-4 w-4" />
                             <Text>{trip.car.make} {trip.car.model}</Text>
                           </Flex>
                           <Text fontSize="sm" color="gray.600">Plate: {trip.car.licensePlate}</Text>
@@ -879,11 +943,11 @@ const Trips = () => {
                     <Td>
                       <Stack spacing={1}>
                         <Flex align="center">
-                          <Navigation className="mr-2 h-4 w-4" />
+                          <Icon as={Navigation} className="mr-2 h-4 w-4" />
                           <Text fontSize="sm">Start: {trip.kmAtDeparture || 'N/A'} km</Text>
                         </Flex>
                         <Flex align="center">
-                          <Navigation className="mr-2 h-4 w-4" />
+                          <Icon as={Navigation} className="mr-2 h-4 w-4" />
                           <Text fontSize="sm">End: {trip.kmAtArrival || 'N/A'} km</Text>
                         </Flex>
                         {trip.kmAtDeparture && trip.kmAtArrival && (
@@ -904,7 +968,7 @@ const Trips = () => {
                       {!trip.car && trip.status.toLowerCase() !== 'rejected' && (
                         <Button
                           colorScheme="blue"
-                          size="sm"
+                          size={buttonSize}
                           onClick={() => {
                             setSelectedTrip(trip);
                             onOpen();
@@ -922,8 +986,8 @@ const Trips = () => {
         </Box>
       )}
 
-      {/* Assignment Modal - same for both views */}
-      <Modal isOpen={isOpen} onClose={onClose} size={isMobile ? "full" : "md"}>
+      {/* Assignment Modal - optimized for all screen sizes */}
+      <Modal isOpen={isOpen} onClose={onClose} size={modalSize}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Assign Car and Driver</ModalHeader>
@@ -933,7 +997,11 @@ const Trips = () => {
               <Stack spacing={4}>
                 <FormControl isRequired>
                   <FormLabel htmlFor="car">Select Car</FormLabel>
-                  <Select name="car" placeholder="Select a car">
+                  <Select
+                    name="car"
+                    placeholder="Select a car"
+                    size={buttonSize}
+                  >
                     {cars
                       .filter(car => car.status === "AVAILABLE")
                       .map((car) => (
@@ -946,7 +1014,11 @@ const Trips = () => {
 
                 <FormControl isRequired>
                   <FormLabel htmlFor="driver">Select Driver</FormLabel>
-                  <Select name="driver" placeholder="Select a driver">
+                  <Select
+                    name="driver"
+                    placeholder="Select a driver"
+                    size={buttonSize}
+                  >
                     {drivers
                       .filter(driver => driver.status !== "INACTIVE")
                       .map((driver) => (
@@ -964,13 +1036,20 @@ const Trips = () => {
                     type="number"
                     min="0"
                     placeholder="Enter current KM reading"
+                    size={buttonSize}
                   />
                 </FormControl>
               </Stack>
             </form>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" type="submit" form="assignment-form" width="full">
+            <Button
+              colorScheme="blue"
+              type="submit"
+              form="assignment-form"
+              width="full"
+              size={buttonSize}
+            >
               Assign
             </Button>
           </ModalFooter>

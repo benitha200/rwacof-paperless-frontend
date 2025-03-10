@@ -465,7 +465,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { Home, Package, FileText, DollarSign, Users, Settings, Menu as MenuIcon, File } from 'lucide-react';
+import { Home, Package, FileText, DollarSign, Users, Settings, Menu as MenuIcon, File, Car } from 'lucide-react';
 import {
   Box, VStack, HStack, Heading, Text, Button, Image, Icon,
   useColorModeValue, ChakraProvider, Flex, Menu, MenuButton, MenuList, MenuItem,
@@ -513,6 +513,8 @@ import CreateTrip from './components/Receptionist/CreateTrip';
 import HRDashboard from './components/HR/HRDashboard';
 import EmployeeManagement from './components/HR/EmployeeManagment';
 import DepartmentManagement from './components/HR/DepartmentManagement';
+import SecurityDashboard from './components/SecurityGate/SecurityDashboard';
+import ApprovedTrips from './components/SecurityGate/ApprovedTrips';
 
 // Custom theme
 const theme = createTheme({
@@ -630,6 +632,10 @@ const App = () => {
         { to: "/employees", icon: Package, text: "Employee" },
         { to: "/departments", icon: Package, text: "Department" },
       ],
+      SECURITY_GATE: [
+        { to: "/", icon: Home, text: "Dashboard" },
+        { to: "/approved-trips", icon: Car, text: "trips" },
+      ],
     };
 
     return (
@@ -665,6 +671,8 @@ const App = () => {
         return <ReceptionistDashboard />
       case 'HR':
         return <HRDashboard />
+      case 'SECURITY_GATE':
+        return <SecurityDashboard />
       default:
         return (
           <VStack spacing={8} align="center" w="full" h="80vh" justify="center">
@@ -921,6 +929,12 @@ const App = () => {
                   <Route path="/departments" element={
                     <ProtectedRoute allowedRoles={['ADMIN', 'HR', 'RECEPTIONIST']}>
                       <DepartmentManagement />
+                    </ProtectedRoute>
+                  } />
+
+                  <Route path="/approved-trips" element={
+                    <ProtectedRoute allowedRoles={['ADMIN', 'SECURITY_GATE']}>
+                      <ApprovedTrips />
                     </ProtectedRoute>
                   } />
 

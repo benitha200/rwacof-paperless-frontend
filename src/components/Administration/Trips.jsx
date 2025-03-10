@@ -680,7 +680,7 @@ const Trips = () => {
         return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
       case 'REJECTED':
         return 'bg-red-100 text-red-800 border border-red-200';
-      case 'IN_PROGRESS':
+      case 'DEPARTED':
         return 'bg-indigo-100 text-indigo-800 border border-indigo-200';
       default:
         return 'bg-gray-100 text-gray-800 border border-gray-200';

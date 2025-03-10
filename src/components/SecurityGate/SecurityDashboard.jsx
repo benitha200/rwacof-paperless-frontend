@@ -32,16 +32,8 @@ import API_URL from '../../constants/Constants';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useNavigate } from 'react-router-dom';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+// Import Material UI components
+import { Modal, Box, Typography, Button as MuiButton } from '@mui/material';
 
 const SecurityDashboard = () => {
   const navigate = useNavigate();
@@ -76,7 +68,7 @@ const SecurityDashboard = () => {
         const data = await response.json();
         // Filter trips that can be approved (e.g., SUPERVISOR_APPROVED or PENDING status)
         const filteredTrips = data.filter(trip => 
-          trip.status === 'SUPERVISOR_APPROVED' || trip.status === 'PENDING'
+        trip.status === 'ASSIGNED'
         );
         setTrips(filteredTrips);
       } catch (err) {
@@ -97,6 +89,8 @@ const SecurityDashboard = () => {
         return 'bg-blue-100 text-blue-800 border border-blue-200';
       case 'ASSIGNED':
         return 'bg-indigo-100 text-indigo-800 border border-indigo-200';
+      case 'DEPARTED':
+        return 'bg-purple-100 text-purple-800 border border-purple-200';
       case 'COMPLETED':
         return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
       case 'REJECTED':
@@ -153,15 +147,10 @@ const SecurityDashboard = () => {
     const token = localStorage.getItem('token');
     
     try {
-      let endpoint, requestBody;
-      
-      if (action === 'approve') {
-        endpoint = `${API_URL}/api/trips/${tripToApprove.id}/approve-exit`;
-        requestBody = { status: 'ASSIGNED' };
-      } else if (action === 'reject') {
-        endpoint = `${API_URL}/api/trips/${tripToApprove.id}/reject`;
-        requestBody = { status: 'REJECTED', rejectionReason: 'Trip exit request denied' };
-      }
+      // Only handling the approve action since rejection is not needed
+      const endpoint = `${API_URL}/api/trips/${tripToApprove.id}/approve-exit`;
+      // Updated to set status to DEPARTED instead of ASSIGNED
+      const requestBody = { status: 'DEPARTED' };
       
       const response = await fetch(endpoint, {
         method: 'PUT',
@@ -173,7 +162,7 @@ const SecurityDashboard = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to ${action} trip`);
+        throw new Error(`Failed to authorize trip departure`);
       }
 
       // Update the trips list by removing the processed trip
@@ -189,6 +178,10 @@ const SecurityDashboard = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    setShowConfirmDialog(false);
+  };
+
   if (loading) return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="text-lg">Loading trips pending approval...</div>
@@ -201,6 +194,19 @@ const SecurityDashboard = () => {
     </div>
   );
 
+  // Material UI Modal style
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    borderRadius: '8px',
+  };
+
   return (
     <div className="w-full px-4 md:px-6">
       <div className="space-y-6 my-6">
@@ -209,10 +215,10 @@ const SecurityDashboard = () => {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div>
                 <CardTitle className="flex items-center text-xl md:text-2xl">
-                  <MapPin className="mr-2 h-5 w-5" /> Trips Pending Approval
+                  <MapPin className="mr-2 h-5 w-5" /> Trips Pending Departure Authorization
                 </CardTitle>
                 <CardDescription>
-                  Approve or reject vehicle exits for pending trips
+                  Authorize vehicle exits for assigned trips
                 </CardDescription>
               </div>
               
@@ -227,24 +233,6 @@ const SecurityDashboard = () => {
                   />
                 </div>
                 
-                <div className="flex space-x-2">
-                  <Button 
-                    variant={showPending ? "default" : "outline"} 
-                    className={`text-xs px-2 py-1 ${showPending ? "bg-yellow-600" : ""}`}
-                    onClick={() => setShowPending(!showPending)}
-                  >
-                    <Filter className="mr-1 h-3 w-3" />
-                    Pending
-                  </Button>
-                  <Button 
-                    variant={showSupervisorApproved ? "default" : "outline"} 
-                    className={`text-xs px-2 py-1 ${showSupervisorApproved ? "bg-blue-600" : ""}`}
-                    onClick={() => setShowSupervisorApproved(!showSupervisorApproved)}
-                  >
-                    <Filter className="mr-1 h-3 w-3" />
-                    Supervisor Approved
-                  </Button>
-                </div>
               </div>
             </div>
           </CardHeader>
@@ -263,7 +251,6 @@ const SecurityDashboard = () => {
                     <TableHead>Trip Details</TableHead>
                     <TableHead>Vehicle</TableHead>
                     <TableHead>Dates</TableHead>
-                    <TableHead>Status</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -324,13 +311,6 @@ const SecurityDashboard = () => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge
-                          className={`p-2 ${getStatusBadgeVariant(trip.status)}`}
-                        >
-                          {trip.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
                         <div className="flex space-x-2">
                           <Button
                             size="sm"
@@ -338,15 +318,7 @@ const SecurityDashboard = () => {
                             onClick={() => handleApproveAction(trip, 'approve')}
                           >
                             <Check className="mr-2 h-4 w-4" />
-                            Approve
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleApproveAction(trip, 'reject')}
-                          >
-                            <X className="mr-2 h-4 w-4" />
-                            Reject
+                            Authorize Departure
                           </Button>
                         </div>
                       </TableCell>
@@ -419,21 +391,13 @@ const SecurityDashboard = () => {
                       </div>
                     </div>
                     
-                    <div className="flex space-x-2 mt-2">
+                    <div className="mt-4">
                       <Button
-                        className="flex-1 bg-green-600 hover:bg-green-700"
+                        className="w-full bg-green-600 hover:bg-green-700"
                         onClick={() => handleApproveAction(trip, 'approve')}
                       >
                         <Check className="mr-2 h-4 w-4" />
-                        Approve
-                      </Button>
-                      <Button
-                        className="flex-1"
-                        variant="destructive"
-                        onClick={() => handleApproveAction(trip, 'reject')}
-                      >
-                        <X className="mr-2 h-4 w-4" />
-                        Reject
+                        Authorize Departure
                       </Button>
                     </div>
                   </div>
@@ -443,31 +407,40 @@ const SecurityDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Confirmation Dialog */}
-        <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex items-center">
-                <AlertTriangle className="mr-2 h-5 w-5 text-yellow-500" />
-                Confirm {action === 'approve' ? 'Exit Approval' : 'Rejection'}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {action === 'approve' 
-                  ? "Are you sure you want to approve the exit for this trip? This will change the trip status to \"ASSIGNED\" and allow the employee to proceed with the trip."
-                  : "Are you sure you want to reject this trip? This will prevent the employee from proceeding with the trip and notify them of the rejection."}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction 
-                className={action === 'approve' ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"} 
-                onClick={confirmAction}
+        {/* Material UI Modal for approval confirmation */}
+        <Modal
+          open={showConfirmDialog}
+          onClose={handleCloseModal}
+          aria-labelledby="confirm-modal-title"
+          aria-describedby="confirm-modal-description"
+        >
+          <Box sx={modalStyle}>
+            <Typography id="confirm-modal-title" variant="h6" component="h2" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <AlertTriangle style={{ marginRight: '8px', color: '#F59E0B' }} />
+              Confirm Exit Authorization
+            </Typography>
+            <Typography id="confirm-modal-description" sx={{ mt: 2, mb: 3 }}>
+              Are you sure you want to authorize the exit for this trip? This will change the trip status to "DEPARTED" and allow the employee to proceed with the trip.
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+              <MuiButton onClick={handleCloseModal} variant="outlined">
+                Cancel
+              </MuiButton>
+              <MuiButton 
+                onClick={confirmAction} 
+                variant="contained"
+                sx={{ 
+                  bgcolor: '#16a34a', 
+                  '&:hover': { 
+                    bgcolor: '#15803d'
+                  }
+                }}
               >
-                Yes, {action === 'approve' ? 'Approve Exit' : 'Reject Trip'}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+                Authorize
+              </MuiButton>
+            </Box>
+          </Box>
+        </Modal>
       </div>
     </div>
   );

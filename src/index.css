@@ -11,3 +11,7 @@ body {
 text{
   color: rgb(100, 100, 100);
 }
+
+.MuiChip-label{
+  color: white !important;
+}

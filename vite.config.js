@@ -37,7 +37,8 @@ export default defineConfig({
   },
   base: '/',
   server: {
-    host: true,
+    host: true, // This allows external access
+    port: 5173, // Ensure this port is open
   },
   preview: {
     port: 8011,

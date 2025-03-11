@@ -634,7 +634,7 @@ const App = () => {
       ],
       SECURITY_GATE: [
         { to: "/", icon: Home, text: "Dashboard" },
-        { to: "/approved-trips", icon: Car, text: "trips" },
+        // { to: "/approved-trips", icon: Car, text: "trips" },
       ],
     };
 

@@ -547,6 +547,7 @@ import {
 import API_URL from "../../constants/Constants";
 import { Calendar, CarIcon, Clock, FileText, Navigation, User } from "lucide-react";
 import { Badge } from '@/components/ui/badge';
+import AssignmentModal from "./AssignmentModal";
 
 // Create an axios instance with default configuration
 const api = axios.create({
@@ -592,6 +593,8 @@ const Trips = () => {
   const modalSize = useBreakpointValue({ base: "full", sm: "full", md: "md" });
   const headingSize = useBreakpointValue({ base: "md", md: "lg" });
   const cardPadding = useBreakpointValue({ base: 3, md: 4 });
+
+  const [isAssigning, setIsAssigning] = useState(false);
 
   // Fetch data from APIs
   useEffect(() => {
@@ -687,20 +690,16 @@ const Trips = () => {
     }
   };
 
-  const handleAssignment = async (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const carId = Number(formData.get("car"));
-    const driverId = Number(formData.get("driver"));
-    const kmAtDeparture = Number(formData.get("kmAtDeparture"));
+  const handleAssignment = async (formData) => {
+    setIsAssigning(true);
 
     try {
       const response = await api.patch(
         `/trips/${selectedTrip.id}/assign`,
         {
-          carId,
-          driverId,
-          kmAtDeparture,
+          carId: formData.carId,
+          driverId: formData.driverId,
+          kmAtDeparture: formData.kmAtDeparture,
           userId: parseInt(localStorage.getItem("userId"))
         }
       );
@@ -709,11 +708,11 @@ const Trips = () => {
         trip.id === selectedTrip.id
           ? {
             ...trip,
-            carId,
-            driverId,
-            kmAtDeparture,
-            car: cars.find(c => c.id === carId),
-            driver: drivers.find(d => d.id === driverId),
+            carId: formData.carId,
+            driverId: formData.driverId,
+            kmAtDeparture: formData.kmAtDeparture,
+            car: cars.find(c => c.id === formData.carId),
+            driver: drivers.find(d => d.id === formData.driverId),
             status: 'ASSIGNED',
             adminApproval: true
           }
@@ -738,8 +737,66 @@ const Trips = () => {
         isClosable: true,
       });
       console.error("Error assigning car and driver:", error);
+    } finally {
+      setIsAssigning(false);
     }
   };
+
+  // const handleAssignment = async (event) => {
+  //   event.preventDefault();
+  //   const formData = new FormData(event.target);
+  //   const carId = Number(formData.get("car"));
+  //   const driverId = Number(formData.get("driver"));
+  //   const kmAtDeparture = Number(formData.get("kmAtDeparture"));
+
+  //   try {
+  //     const response = await api.patch(
+  //       `/trips/${selectedTrip.id}/assign`,
+  //       {
+  //         carId,
+  //         driverId,
+  //         kmAtDeparture,
+  //         userId: parseInt(localStorage.getItem("userId"))
+  //       }
+  //     );
+
+  //     setTrips(trips.map((trip) =>
+  //       trip.id === selectedTrip.id
+  //         ? {
+  //           ...trip,
+  //           carId,
+  //           driverId,
+  //           kmAtDeparture,
+  //           car: cars.find(c => c.id === carId),
+  //           driver: drivers.find(d => d.id === driverId),
+  //           status: 'ASSIGNED',
+  //           adminApproval: true
+  //         }
+  //         : trip
+  //     ));
+
+  //     toast({
+  //       title: "Assigned",
+  //       description: "Car and driver assigned successfully",
+  //       status: "success",
+  //       duration: 3000,
+  //       isClosable: true,
+  //     });
+
+  //     onClose();
+  //   } catch (error) {
+  //     toast({
+  //       title: "Error",
+  //       description: error.response?.data?.error || "Failed to assign car and driver",
+  //       status: "error",
+  //       duration: 3000,
+  //       isClosable: true,
+  //     });
+  //     console.error("Error assigning car and driver:", error);
+  //   }
+  // };
+
+
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('en-US', {
@@ -987,7 +1044,26 @@ const Trips = () => {
       )}
 
       {/* Assignment Modal - optimized for all screen sizes */}
-      <Modal isOpen={isOpen} onClose={onClose} size={modalSize}>
+
+      {isOpen && (
+        <Modal isOpen={isOpen} onClose={onClose} size={modalSize}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalCloseButton />
+            <ModalBody p={0}>
+              <AssignmentModal
+                cars={cars}
+                drivers={drivers}
+                onSubmit={handleAssignment}
+                isLoading={isAssigning}
+                onClose={onClose}
+              />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      )}
+
+      {/* <Modal isOpen={isOpen} onClose={onClose} size={modalSize}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Assign Car and Driver</ModalHeader>
@@ -1054,7 +1130,7 @@ const Trips = () => {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </Box>
   );
 };

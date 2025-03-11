@@ -470,7 +470,8 @@ import {
   Box, VStack, HStack, Heading, Text, Button, Image, Icon,
   useColorModeValue, ChakraProvider, Flex, Menu, MenuButton, MenuList, MenuItem,
   Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton,
-  useDisclosure, Avatar, Tooltip, useBreakpointValue, Grid, GridItem
+  useDisclosure, Avatar, Tooltip, useBreakpointValue, Grid, GridItem,
+  Spinner
 } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -647,39 +648,130 @@ const App = () => {
     );
   };
 
+  // const Welcome = () => {
+  //   switch (localStorage.getItem('userRole')?.toUpperCase()) {
+  //     case 'FINANCE':
+  //       return <DashboardFinance />;
+  //     case 'LOGISTICS':
+  //       return <LogisticsDashboard />;
+  //     case 'ADMIN':
+  //       return <AdminDashboard />;
+  //     case 'WEIGHTBRIDGEMANAGER':
+  //       return <WeightBridgeManagerDashboad />
+  //     case 'MANAGINGDIRECTOR':
+  //       return <ManagingDirectorDashboard />
+  //     case 'QUALITYMANAGER':
+  //       return <QualityManagerDashboard />
+  //     case 'COO':
+  //       return <CooDashboard />
+  //     case 'ADMINISTRATION':
+  //       return <AdministrationDashboard />
+  //     case 'EMPLOYEE':
+  //       return <EmployeeDashboard />
+  //     case 'RECEPTIONIST':
+  //       return <ReceptionistDashboard />
+  //     case 'HR':
+  //       return <HRDashboard />
+  //     case 'SECURITY_GATE':
+  //       return <SecurityDashboard />
+  //     default:
+  //       return (
+  //         <VStack spacing={8} align="center" w="full" h="80vh" justify="center">
+  //           <Heading as="h1" size="2xl" textAlign="center">Welcome to RWACOF Export Management</Heading>
+  //         </VStack>
+  //       );
+  //   }
+  // };
+
+
   const Welcome = () => {
-    switch (localStorage.getItem('userRole')?.toUpperCase()) {
-      case 'FINANCE':
-        return <DashboardFinance />;
-      case 'LOGISTICS':
-        return <LogisticsDashboard />;
-      case 'ADMIN':
-        return <AdminDashboard />;
-      case 'WEIGHTBRIDGEMANAGER':
-        return <WeightBridgeManagerDashboad />
-      case 'MANAGINGDIRECTOR':
-        return <ManagingDirectorDashboard />
-      case 'QUALITYMANAGER':
-        return <QualityManagerDashboard />
-      case 'COO':
-        return <CooDashboard />
-      case 'ADMINISTRATION':
-        return <AdministrationDashboard />
-      case 'EMPLOYEE':
-        return <EmployeeDashboard />
-      case 'RECEPTIONIST':
-        return <ReceptionistDashboard />
-      case 'HR':
-        return <HRDashboard />
-      case 'SECURITY_GATE':
-        return <SecurityDashboard />
-      default:
-        return (
-          <VStack spacing={8} align="center" w="full" h="80vh" justify="center">
-            <Heading as="h1" size="2xl" textAlign="center">Welcome to RWACOF Export Management</Heading>
-          </VStack>
-        );
+    const [userRole, setUserRole] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [windowWidth, setWindowWidth] = useState(
+      typeof window !== 'undefined' ? window.innerWidth : 0
+    );
+
+    useEffect(() => {
+      // Get user role from localStorage
+      const role = localStorage.getItem('userRole')?.toUpperCase() || '';
+      setUserRole(role);
+      setLoading(false);
+
+      // Handle window resize
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      // Cleanup
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
+
+    if (loading) {
+      return (
+        <>
+          <div className="container items-center justify-center w-full h-[80vh] space-y-4">
+            <div className={`animate-spin rounded-full h-${windowWidth < 768 ? '8' : '12'} w-${windowWidth < 768 ? '8' : '12'} border-4 border-blue-500 border-t-transparent`}></div>
+            <p>Loading dashboard...</p>
+          </div>
+          {/* <VStack spacing={4} align="center" w="full" h="80vh" justify="center">
+          <Spinner size={windowWidth < 768 ? "md" : "lg"} color="blue.500" />
+          <Text>Loading dashboard...</Text>
+        </VStack> */}
+        </>
+
+      );
     }
+
+    // Dashboard mapping to avoid lengthy switch statement
+    const dashboardComponents = {
+      'FINANCE': DashboardFinance,
+      'LOGISTICS': LogisticsDashboard,
+      'ADMIN': AdminDashboard,
+      'WEIGHTBRIDGEMANAGER': WeightBridgeManagerDashboad,
+      'MANAGINGDIRECTOR': ManagingDirectorDashboard,
+      'QUALITYMANAGER': QualityManagerDashboard,
+      'COO': CooDashboard,
+      'ADMINISTRATION': AdministrationDashboard,
+      'EMPLOYEE': EmployeeDashboard,
+      'RECEPTIONIST': ReceptionistDashboard,
+      'HR': HRDashboard,
+      'SECURITY_GATE': SecurityDashboard
+    };
+
+    // Render the appropriate dashboard based on user role
+    const Dashboard = dashboardComponents[userRole];
+
+    if (Dashboard) {
+      return <Dashboard />;
+    }
+
+    // Default welcome screen
+    return (
+      <VStack
+        spacing={4}
+        align="center"
+        w="full"
+        h="80vh"
+        justify="center"
+        px={4} // Add padding for smaller screens
+      >
+        <Heading
+          as="h1"
+          size={windowWidth < 480 ? "xl" : windowWidth < 768 ? "xl" : "2xl"}
+          textAlign="center"
+          lineHeight="1.4"
+        >
+          Welcome to RWACOF Export Management
+        </Heading>
+        <Text fontSize={windowWidth < 768 ? "sm" : "md"} textAlign="center" color="gray.600">
+          Please contact your administrator if you're unable to access your dashboard.
+        </Text>
+      </VStack>
+    );
   };
 
   const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -742,31 +834,31 @@ const App = () => {
             <Flex flex={1}>
               {isAuthenticated && isMobile && (
                 <Drawer placement="left" onClose={onClose} isOpen={isOpen} size="xs">
-                <DrawerOverlay backdropFilter="blur(5px)" />
-                <DrawerContent bg="linear-gradient(135deg,rgb(255, 255, 255),rgb(247, 255, 254))" color="gray">
-                  <DrawerCloseButton size="lg" color="white" mt={2} mr={2} />
-                  <DrawerHeader borderBottomWidth="1px" fontSize="xl" fontWeight="bold" py={4}>
-                    RWACOF
-                  </DrawerHeader>
-                  <DrawerBody py={4}>
-                    <VStack spacing={4} align="stretch">
-                      <MenuContent />
-                    </VStack>
-                  </DrawerBody>
-                  <Box textAlign="center" py={4} borderTopWidth="1px">
-                    <Button
-                      onClick={onClose}
-                      variant="ghost"
-                      colorScheme="teal"
-                      leftIcon={<Icon as={MenuIcon} />}
-                      size="lg"
-                      w="full"
-                    >
-                      Close Menu
-                    </Button>
-                  </Box>
-                </DrawerContent>
-              </Drawer>
+                  <DrawerOverlay backdropFilter="blur(5px)" />
+                  <DrawerContent bg="linear-gradient(135deg,rgb(255, 255, 255),rgb(247, 255, 254))" color="gray">
+                    <DrawerCloseButton size="lg" color="white" mt={2} mr={2} />
+                    <DrawerHeader borderBottomWidth="1px" fontSize="xl" fontWeight="bold" py={4}>
+                      RWACOF
+                    </DrawerHeader>
+                    <DrawerBody py={4}>
+                      <VStack spacing={4} align="stretch">
+                        <MenuContent />
+                      </VStack>
+                    </DrawerBody>
+                    <Box textAlign="center" py={4} borderTopWidth="1px">
+                      <Button
+                        onClick={onClose}
+                        variant="ghost"
+                        colorScheme="teal"
+                        leftIcon={<Icon as={MenuIcon} />}
+                        size="lg"
+                        w="full"
+                      >
+                        Close Menu
+                      </Button>
+                    </Box>
+                  </DrawerContent>
+                </Drawer>
               )}
 
               <Box flex={1} p={8}>

@@ -116,7 +116,7 @@
 //       <div className="text-lg">Loading trips...</div>
 //     </div>
 //   );
-  
+
 //   if (error) return (
 //     <div className="flex justify-center items-center min-h-screen">
 //       <div className="text-lg text-red-500">Error: {error}</div>
@@ -134,7 +134,7 @@
 //           Add New Trip
 //         </Button>
 //       </div>
-      
+
 //       <div className="space-y-6">
 //         <Card className="w-full">
 //           <CardHeader>
@@ -142,7 +142,7 @@
 //               <MapPin className="mr-2 h-5 w-5" /> All Trips
 //             </CardTitle>
 //           </CardHeader>
-          
+
 //           {/* Desktop view: Full table */}
 //           <CardContent className="hidden md:block overflow-x-auto">
 //             <Table>
@@ -250,7 +250,7 @@
 //               </TableBody>
 //             </Table>
 //           </CardContent>
-          
+
 //           {/* Mobile view: Card-based layout */}
 //           <CardContent className="md:hidden space-y-6">
 //             {trips.map((trip) => (
@@ -267,7 +267,7 @@
 //                     {trip.status}
 //                   </Badge>
 //                 </div>
-                
+
 //                 <div className="grid grid-cols-1 gap-4">
 //                   <div>
 //                     <div className="text-sm font-medium mb-1">Trip Details</div>
@@ -279,7 +279,7 @@
 //                       </div>
 //                     </div>
 //                   </div>
-                  
+
 //                   <div>
 //                     <div className="text-sm font-medium mb-1">Dates</div>
 //                     <div className="space-y-1">
@@ -293,7 +293,7 @@
 //                       </div>
 //                     </div>
 //                   </div>
-                  
+
 //                   {trip.car && (
 //                     <div>
 //                       <div className="text-sm font-medium mb-1">Vehicle</div>
@@ -307,7 +307,7 @@
 //                       </div>
 //                     </div>
 //                   )}
-                  
+
 //                   <div>
 //                     <div className="text-sm font-medium mb-1">Kilometers</div>
 //                     <div className="space-y-1">
@@ -324,7 +324,7 @@
 //                       </div>
 //                     </div>
 //                   </div>
-                  
+
 //                   {trip.status === 'ASSIGNED' && (
 //                     <div className="mt-2">
 //                       <Button
@@ -472,7 +472,7 @@ const FinishTripPage = () => {
 
   // Use the TripsLoadingSkeleton component during loading
   if (loading) return <TripsLoadingSkeleton />;
-  
+
   if (error) return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="text-lg text-red-500">Error: {error}</div>
@@ -482,7 +482,7 @@ const FinishTripPage = () => {
   return (
     <div className="w-full px-4 md:px-6">
       <div className="my-4">
-        <Button 
+        <Button
           className="w-full sm:w-auto"
           onClick={() => navigate('/trip/create')}
         >
@@ -490,7 +490,7 @@ const FinishTripPage = () => {
           Add New Trip
         </Button>
       </div>
-      
+
       <div className="space-y-6">
         <Card className="w-full">
           <CardHeader>
@@ -498,7 +498,7 @@ const FinishTripPage = () => {
               <MapPin className="mr-2 h-5 w-5" /> All Trips
             </CardTitle>
           </CardHeader>
-          
+
           {/* Desktop view: Full table */}
           <CardContent className="hidden md:block overflow-x-auto">
             <Table>
@@ -592,13 +592,15 @@ const FinishTripPage = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {trip.status === 'ASSIGNED' && (
-                        <Button
-                          size="sm"
-                          onClick={() => setSelectedTripToFinish(trip)}
-                        >
-                          Finish Trip
-                        </Button>
+                      {(trip.status === 'ASSIGNED' || trip.status === 'DEPARTED') && (
+                        <div className="mt-2">
+                          <Button
+                            className="w-full"
+                            onClick={() => setSelectedTripToFinish(trip)}
+                          >
+                            Finish Trip
+                          </Button>
+                        </div>
                       )}
                     </TableCell>
                   </TableRow>
@@ -606,7 +608,7 @@ const FinishTripPage = () => {
               </TableBody>
             </Table>
           </CardContent>
-          
+
           {/* Mobile view: Card-based layout */}
           <CardContent className="md:hidden space-y-6">
             {trips.map((trip) => (
@@ -623,7 +625,7 @@ const FinishTripPage = () => {
                     {trip.status}
                   </Badge>
                 </div>
-                
+
                 <div className="grid grid-cols-1 gap-4">
                   <div>
                     <div className="text-sm font-medium mb-1">Trip Details</div>
@@ -635,7 +637,7 @@ const FinishTripPage = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div>
                     <div className="text-sm font-medium mb-1">Dates</div>
                     <div className="space-y-1">
@@ -649,7 +651,7 @@ const FinishTripPage = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   {trip.car && (
                     <div>
                       <div className="text-sm font-medium mb-1">Vehicle</div>
@@ -663,7 +665,7 @@ const FinishTripPage = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   <div>
                     <div className="text-sm font-medium mb-1">Kilometers</div>
                     <div className="space-y-1">
@@ -680,8 +682,8 @@ const FinishTripPage = () => {
                       </div>
                     </div>
                   </div>
-                  
-                  {trip.status === 'ASSIGNED' && (
+
+                  {(trip.status === 'ASSIGNED' || trip.status === 'DEPARTED') && (
                     <div className="mt-2">
                       <Button
                         className="w-full"

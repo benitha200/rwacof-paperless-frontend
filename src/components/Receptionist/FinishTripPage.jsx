@@ -1,4 +1,5 @@
 // import React, { useState, useEffect } from 'react';
+
 // import {
 //   Card,
 //   CardHeader,
@@ -22,12 +23,11 @@
 //   Clock,
 //   Navigation,
 //   FileText,
-//   ArrowLeftRightIcon
+//   ArrowLeftRight
 // } from 'lucide-react';
 // import API_URL from '../../constants/Constants';
 // import { Button } from '@/components/ui/button';
 // import FinishTripModal from './FinishTripModal1';
-// import { TripOrigin, TripOriginRounded } from '@mui/icons-material';
 // import { useNavigate } from 'react-router-dom';
 
 // const FinishTripPage = () => {
@@ -70,8 +70,6 @@
 //     fetchTrips();
 //   }, []);
 
-
-
 //   const getStatusBadgeVariant = (status) => {
 //     switch (status) {
 //       case 'PENDING':
@@ -92,13 +90,15 @@
 //   };
 
 //   const formatDate = (dateString) => {
-//     return new Date(dateString).toLocaleString('en-US', {
+//     const options = {
 //       year: 'numeric',
 //       month: 'short',
 //       day: 'numeric',
 //       hour: '2-digit',
-//       minute: '2-digit'
-//     });
+//       minute: '2-digit',
+//       timeZone: 'UTC' // This forces the date to be interpreted in UTC
+//     };
+//     return new Date(dateString).toLocaleString('en-US', options);
 //   };
 
 //   const handleFinishTrip = (finishedTrip) => {
@@ -111,28 +111,40 @@
 //     setSelectedTripToFinish(null);
 //   };
 
-//   if (loading) return <div>Loading trips...</div>;
-//   if (error) return <div>Error: {error}</div>;
+//   if (loading) return (
+//     <div className="flex justify-center items-center min-h-screen">
+//       <div className="text-lg">Loading trips...</div>
+//     </div>
+//   );
+  
+//   if (error) return (
+//     <div className="flex justify-center items-center min-h-screen">
+//       <div className="text-lg text-red-500">Error: {error}</div>
+//     </div>
+//   );
 
 //   return (
-//     <div>
-//       <Button 
-//         className="w-md-1/12 w-sm-1/6 mt-4"
-//         onClick={() => navigate('/trip/create')}
-//       >
-//         <ArrowLeftRightIcon className="ml-2 h-4 w-4" />
-//         Add New Trip
-//       </Button>
-//       <div className="p-6 space-y-6">
-//         <Card>
+//     <div className="w-full px-4 md:px-6">
+//       <div className="my-4">
+//         <Button 
+//           className="w-full sm:w-auto"
+//           onClick={() => navigate('/trip/create')}
+//         >
+//           <ArrowLeftRight className="mr-2 h-4 w-4" />
+//           Add New Trip
+//         </Button>
+//       </div>
+      
+//       <div className="space-y-6">
+//         <Card className="w-full">
 //           <CardHeader>
-//             <CardTitle className="flex items-center mb-6">
-//               <MapPin className="mr-4" /> All Trips
+//             <CardTitle className="flex items-center text-xl md:text-2xl">
+//               <MapPin className="mr-2 h-5 w-5" /> All Trips
 //             </CardTitle>
-
-
 //           </CardHeader>
-//           <CardContent>
+          
+//           {/* Desktop view: Full table */}
+//           <CardContent className="hidden md:block overflow-x-auto">
 //             <Table>
 //               <TableHeader>
 //                 <TableRow>
@@ -152,9 +164,8 @@
 //                       <div className="flex items-center">
 //                         <User className="mr-2 h-4 w-4" />
 //                         {trip.employee?.user?.firstName} {trip.employee?.user?.lastName}
-
 //                       </div>
-//                       <div className="mr-2 text-sm text-muted-foreground">
+//                       <div className="text-sm text-muted-foreground">
 //                         {trip.employee?.employeeNumber}
 //                       </div>
 //                       <div className="text-sm text-muted-foreground">
@@ -210,10 +221,10 @@
 //                         </div>
 //                         <div className="flex items-center">
 //                           <Navigation className="mr-2 h-4 w-4" />
-//                           <span>End: {trip.kmAtArrival} km</span>
+//                           <span>End: {trip.kmAtArrival || '—'} km</span>
 //                         </div>
 //                         <div className="text-sm text-muted-foreground">
-//                           Total: {trip.kmAtArrival - trip.kmAtDeparture} km
+//                           Total: {trip.kmAtArrival ? (trip.kmAtArrival - trip.kmAtDeparture) : '—'} km
 //                         </div>
 //                       </div>
 //                     </TableCell>
@@ -239,6 +250,95 @@
 //               </TableBody>
 //             </Table>
 //           </CardContent>
+          
+//           {/* Mobile view: Card-based layout */}
+//           <CardContent className="md:hidden space-y-6">
+//             {trips.map((trip) => (
+//               <Card key={trip.id} className="p-4">
+//                 <div className="flex justify-between items-start mb-4">
+//                   <div className="flex items-center">
+//                     <User className="mr-2 h-4 w-4" />
+//                     <div>
+//                       <div className="font-medium">{trip.employee?.user?.firstName} {trip.employee?.user?.lastName}</div>
+//                       <div className="text-sm text-muted-foreground">{trip.employee?.employeeNumber}</div>
+//                     </div>
+//                   </div>
+//                   <Badge className={`p-1 ${getStatusBadgeVariant(trip.status)}`}>
+//                     {trip.status}
+//                   </Badge>
+//                 </div>
+                
+//                 <div className="grid grid-cols-1 gap-4">
+//                   <div>
+//                     <div className="text-sm font-medium mb-1">Trip Details</div>
+//                     <div className="flex items-start">
+//                       <FileText className="mr-2 h-4 w-4 mt-1" />
+//                       <div>
+//                         <div>{trip.reason}</div>
+//                         <div className="text-sm text-muted-foreground">{trip.itinerary}</div>
+//                       </div>
+//                     </div>
+//                   </div>
+                  
+//                   <div>
+//                     <div className="text-sm font-medium mb-1">Dates</div>
+//                     <div className="space-y-1">
+//                       <div className="flex items-center">
+//                         <Calendar className="mr-2 h-4 w-4" />
+//                         <span className="text-sm">Departure: {formatDate(trip.departureDate)}</span>
+//                       </div>
+//                       <div className="flex items-center">
+//                         <Clock className="mr-2 h-4 w-4" />
+//                         <span className="text-sm">Return: {formatDate(trip.returnDate)}</span>
+//                       </div>
+//                     </div>
+//                   </div>
+                  
+//                   {trip.car && (
+//                     <div>
+//                       <div className="text-sm font-medium mb-1">Vehicle</div>
+//                       <div className="space-y-1">
+//                         <div className="flex items-center">
+//                           <CarIcon className="mr-2 h-4 w-4" />
+//                           <span className="text-sm">{trip.car.make} {trip.car.model}</span>
+//                         </div>
+//                         <div className="text-sm text-muted-foreground">Plate: {trip.car.licensePlate}</div>
+//                         <div className="text-sm text-muted-foreground">Year: {trip.car.year}</div>
+//                       </div>
+//                     </div>
+//                   )}
+                  
+//                   <div>
+//                     <div className="text-sm font-medium mb-1">Kilometers</div>
+//                     <div className="space-y-1">
+//                       <div className="flex items-center">
+//                         <Navigation className="mr-2 h-4 w-4" />
+//                         <span className="text-sm">Start: {trip.kmAtDeparture} km</span>
+//                       </div>
+//                       <div className="flex items-center">
+//                         <Navigation className="mr-2 h-4 w-4" />
+//                         <span className="text-sm">End: {trip.kmAtArrival || '—'} km</span>
+//                       </div>
+//                       <div className="text-sm text-muted-foreground">
+//                         Total: {trip.kmAtArrival ? (trip.kmAtArrival - trip.kmAtDeparture) : '—'} km
+//                       </div>
+//                     </div>
+//                   </div>
+                  
+//                   {trip.status === 'ASSIGNED' && (
+//                     <div className="mt-2">
+//                       <Button
+//                         className="w-full"
+//                         onClick={() => setSelectedTripToFinish(trip)}
+//                       >
+//                         Finish Trip
+//                       </Button>
+//                     </div>
+//                   )}
+//                 </div>
+//               </Card>
+//             ))}
+//           </CardContent>
 //         </Card>
 
 //         {/* Finish Trip Modal */}
@@ -251,7 +351,6 @@
 //         />
 //       </div>
 //     </div>
-
 //   );
 // };
 
@@ -287,6 +386,8 @@ import API_URL from '../../constants/Constants';
 import { Button } from '@/components/ui/button';
 import FinishTripModal from './FinishTripModal1';
 import { useNavigate } from 'react-router-dom';
+import TripsLoadingSkeleton from '../Administration/TripsLoadingSkeleton';
+// import TripsLoadingSkeleton from './TripsLoadingSkeleton'; // Import the skeleton component
 
 const FinishTripPage = () => {
   const navigate = useNavigate();
@@ -348,13 +449,15 @@ const FinishTripPage = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('en-US', {
+    const options = {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
-    });
+      minute: '2-digit',
+      timeZone: 'UTC' // This forces the date to be interpreted in UTC
+    };
+    return new Date(dateString).toLocaleString('en-US', options);
   };
 
   const handleFinishTrip = (finishedTrip) => {
@@ -367,11 +470,8 @@ const FinishTripPage = () => {
     setSelectedTripToFinish(null);
   };
 
-  if (loading) return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="text-lg">Loading trips...</div>
-    </div>
-  );
+  // Use the TripsLoadingSkeleton component during loading
+  if (loading) return <TripsLoadingSkeleton />;
   
   if (error) return (
     <div className="flex justify-center items-center min-h-screen">

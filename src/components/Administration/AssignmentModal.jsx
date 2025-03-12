@@ -29,13 +29,13 @@ const AssignmentModal = ({
     <div className="bg-white rounded-lg shadow-md p-6 max-w-md w-full mx-auto">
       <div className="mb-6">
         <h2 className="text-xl font-bold mb-4">Assign Car and Driver</h2>
-        <button 
+        {/* <button 
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
           aria-label="Close"
         >
           ×
-        </button>
+        </button> */}
       </div>
       
       <form onSubmit={handleSubmit}>
